@@ -1,3 +1,7 @@
+using MatrixBugtracker.API.ProviderImpls;
+using MatrixBugtracker.DAL.Extensions;
+using MatrixBugtracker.DAL.ProviderInterfaces;
+
 namespace MatrixBugtracker.API
 {
     public class Program
@@ -8,6 +12,9 @@ namespace MatrixBugtracker.API
 
             // Add services to the container.
 
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<IUserIdProvider, UserIdProvider>();
+            builder.Services.AddRepositories(builder.Configuration);
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

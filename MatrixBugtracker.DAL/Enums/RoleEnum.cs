@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MatrixBugtracker.DAL.Enums
+﻿namespace MatrixBugtracker.DAL.Enums
 {
-    public enum RoleEnum
+    public enum RoleEnum : byte
     {
         Admin = 1,
-        GlobalModerator = 2,
-        Employee = 3,
+        Employee = 2,
+        GlobalModerator = 3,
         Tester = 4
     }
 }

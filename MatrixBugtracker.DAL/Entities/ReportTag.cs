@@ -1,0 +1,12 @@
+﻿namespace MatrixBugtracker.DAL.Entities;
+
+public class ReportTag
+{
+    public int ReportId { get; set; }
+
+    public int TagId { get; set; }
+
+    public virtual Product Report { get; set; }
+
+    public virtual Tag Tag { get; set; }
+}

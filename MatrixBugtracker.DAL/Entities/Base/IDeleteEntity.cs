@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MatrixBugtracker.DAL.Entities.Base
+﻿namespace MatrixBugtracker.DAL.Entities.Base
 {
-    public interface IDeleteEntity : ICreateEntity
+    public interface IDeleteEntity : IEntity
     {
         public bool IsDeleted { get; set; }
     }
