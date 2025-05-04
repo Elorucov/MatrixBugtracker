@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MatrixBugtracker.DAL.Configs
 {
-    internal class UserConfig : BaseEntityConfig<User>
+    internal class UserConfig : DeleteConfig<User>
     {
         public override void Configure(EntityTypeBuilder<User> builder)
         {

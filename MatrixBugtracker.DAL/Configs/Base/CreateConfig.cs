@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MatrixBugtracker.DAL.Configs.Base
 {
-    internal class CreateConfig<T> : EntityConfig<T> where T : class, ICreateEntity
+    internal class CreateConfig<T> : DeleteConfig<T> where T : class, ICreateEntity
     {
         public override void Configure(EntityTypeBuilder<T> builder)
         {

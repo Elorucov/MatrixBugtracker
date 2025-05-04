@@ -2,8 +2,11 @@
 
 namespace MatrixBugtracker.DAL.Entities;
 
-public partial class User : BaseEntity
+public partial class User : IDeleteEntity
 {
+    public int Id { get; init; }
+    public bool IsDeleted { get; set; }
+
     public string FirstName { get; set; }
 
     public string LastName { get; set; }

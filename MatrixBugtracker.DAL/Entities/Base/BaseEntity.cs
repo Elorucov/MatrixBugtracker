@@ -1,6 +1,6 @@
 ﻿namespace MatrixBugtracker.DAL.Entities.Base
 {
-    public abstract class BaseEntity : ICreateEntity, IDeleteEntity
+    public abstract class BaseEntity : ICreateEntity
     {
         public int Id { get; init; }
         public bool IsDeleted { get; set; }
