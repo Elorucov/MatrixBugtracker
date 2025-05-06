@@ -30,4 +30,5 @@ public partial class User : IDeleteEntity
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

@@ -8,12 +8,12 @@ namespace MatrixBugtracker.DAL.Data;
 public partial class BugtrackerContext : DbContext
 {
     private readonly IUserIdProvider _userIdProvider;
-    //public BugtrackerContext(DbContextOptions<BugtrackerContext> options, IUserIdProvider userIdProvider) : base(options)
-    //{
-    //    _userIdProvider = userIdProvider;
-    //}
+    public BugtrackerContext(DbContextOptions<BugtrackerContext> options, IUserIdProvider userIdProvider) : base(options)
+    {
+        _userIdProvider = userIdProvider;
+    }
 
-    public BugtrackerContext(DbContextOptions<BugtrackerContext> options) : base(options) { }
+    // public BugtrackerContext(DbContextOptions<BugtrackerContext> options) : base(options) { }
 
     public virtual DbSet<Comment> Comments { get; set; }
 

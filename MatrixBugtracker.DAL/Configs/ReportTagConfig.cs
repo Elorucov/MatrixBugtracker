@@ -8,8 +8,9 @@ namespace MatrixBugtracker.DAL.Configs
     {
         public void Configure(EntityTypeBuilder<ReportTag> builder)
         {
-            builder.HasNoKey().ToTable("report_tags");
+            builder.ToTable("report_tags");
 
+            builder.HasKey(e => new { e.ReportId, e.TagId }).HasName("K_ReportTag");
             builder.HasIndex(e => new { e.ReportId, e.TagId }, "UQ_ReportTag").IsUnique();
 
             builder.Property(e => e.ReportId).HasColumnName("report_id");

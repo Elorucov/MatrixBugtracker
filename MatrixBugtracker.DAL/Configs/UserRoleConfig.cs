@@ -8,8 +8,9 @@ namespace MatrixBugtracker.DAL.Configs
     {
         public void Configure(EntityTypeBuilder<UserRole> builder)
         {
-            builder.HasNoKey().ToTable("user_roles");
+            builder.ToTable("user_roles");
 
+            builder.HasKey(e => new { e.UserId, e.RoleId }).HasName("K_UserRole");
             builder.HasIndex(e => new { e.UserId, e.RoleId }, "UQ_UserRole").IsUnique();
 
             builder.Property(e => e.RoleId).HasColumnName("role_id");
@@ -18,7 +19,7 @@ namespace MatrixBugtracker.DAL.Configs
             builder.HasOne(d => d.Role).WithMany()
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_UR_Role");
+                .HasConstraintName("FK_UR_Role");
 
             builder.HasOne(d => d.User).WithMany()
                 .HasForeignKey(d => d.UserId)

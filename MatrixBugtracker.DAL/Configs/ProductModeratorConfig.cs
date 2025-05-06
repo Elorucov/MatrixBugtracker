@@ -8,8 +8,9 @@ namespace MatrixBugtracker.DAL.Configs
     {
         public void Configure(EntityTypeBuilder<ProductModerator> builder)
         {
-            builder.HasNoKey().ToTable("product_moderators");
+            builder.ToTable("product_moderators");
 
+            builder.HasKey(e => new { e.ProductId, e.ModeratorId }).HasName("K_ProductModerator");
             builder.HasIndex(e => new { e.ProductId, e.ModeratorId }, "UQ_ProductModer").IsUnique();
 
             builder.Property(e => e.ModeratorId).HasColumnName("moderator_id");

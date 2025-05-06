@@ -8,8 +8,9 @@ namespace MatrixBugtracker.DAL.Configs
     {
         public void Configure(EntityTypeBuilder<CommentAttachment> builder)
         {
-            builder.HasNoKey().ToTable("comment_attachments");
+            builder.ToTable("comment_attachments");
 
+            builder.HasKey(e => new { e.CommentId, e.FileId }).HasName("K_CommentAttachment");
             builder.HasIndex(e => new { e.CommentId, e.FileId }, "UQ_CommentAttachment").IsUnique();
 
             builder.Property(e => e.CommentId).IsRequired().HasColumnName("comment_id");

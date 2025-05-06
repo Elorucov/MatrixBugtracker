@@ -39,6 +39,8 @@ namespace MatrixBugtracker.DAL.Configs
                 .HasForeignKey(d => d.PhotoFileId)
                 .HasConstraintName("FK_UserPhoto");
 
+            //builder.HasMany(d => d.UserRoles).WithOne();
+
             base.Configure(builder);
         }
     }
