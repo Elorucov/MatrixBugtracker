@@ -9,8 +9,8 @@ namespace MatrixBugtracker.BL.DTOs.Infra
 {
     public class ResponseDTO<T>
     {
-        public T Response { get; private set; }
         public bool Success { get; private set; }
+        public T Response { get; private set; }
         public int HttpStatusCode { get; private set; }
         public string ErrorMessage { get; private set; }
 

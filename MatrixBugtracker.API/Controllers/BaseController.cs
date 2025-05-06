@@ -1,10 +1,12 @@
-﻿using MatrixBugtracker.BL.DTOs.Infra;
+﻿using MatrixBugtracker.API.Filters;
+using MatrixBugtracker.BL.DTOs.Infra;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [ModelStateFilter]
     public class BaseController : ControllerBase
     {
         readonly int[] _statusCodesWithoutBody = {

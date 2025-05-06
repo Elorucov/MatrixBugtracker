@@ -1,9 +1,11 @@
+using MatrixBugtracker.API.Middlewares;
 using MatrixBugtracker.API.Misc;
 using MatrixBugtracker.API.ProviderImpls;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.DAL.Extensions;
 using MatrixBugtracker.DAL.ProviderInterfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -19,11 +21,14 @@ namespace MatrixBugtracker.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddTransient<ExceptionHandlerMiddleware>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IUserIdProvider, UserIdProvider>();
             builder.Services.AddRepositories(builder.Configuration);
             builder.Services.AddServices();
+
+            builder.Services.Configure<JsonOptions>(options =>
+                options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull);
 
             builder.Services.AddControllers(opts =>
             {
@@ -31,9 +36,8 @@ namespace MatrixBugtracker.API
             }).ConfigureApiBehaviorOptions(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
-            }).AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            }).AddJsonOptions(options => {
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull;
             });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -78,6 +82,7 @@ namespace MatrixBugtracker.API
             });
 
             var app = builder.Build();
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
