@@ -1,6 +1,6 @@
 ﻿namespace MatrixBugtracker.DAL.Enums
 {
-    public enum RoleEnum : byte
+    public enum UserRole : byte
     {
         Admin = 1,
         Employee = 2,

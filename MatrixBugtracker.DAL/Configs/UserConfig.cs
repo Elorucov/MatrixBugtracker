@@ -33,13 +33,16 @@ namespace MatrixBugtracker.DAL.Configs
                 .HasMaxLength(255)
                 .HasColumnName("password");
 
+            builder.Property(e => e.Role)
+                .IsRequired()
+                .HasConversion<byte>()
+                .HasColumnName("role");
+
             builder.Property(e => e.PhotoFileId).HasColumnName("photo_file_id");
 
             builder.HasOne(d => d.PhotoFile).WithMany(p => p.Users)
                 .HasForeignKey(d => d.PhotoFileId)
                 .HasConstraintName("FK_UserPhoto");
-
-            //builder.HasMany(d => d.UserRoles).WithOne();
 
             base.Configure(builder);
         }

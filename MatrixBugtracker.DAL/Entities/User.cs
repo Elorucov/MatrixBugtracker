@@ -1,4 +1,5 @@
 ﻿using MatrixBugtracker.DAL.Entities.Base;
+using MatrixBugtracker.DAL.Enums;
 
 namespace MatrixBugtracker.DAL.Entities;
 
@@ -14,6 +15,7 @@ public partial class User : IDeleteEntity
     public string Email { get; set; }
 
     public string Password { get; set; }
+    public UserRole Role { get; set; }
 
     public int? PhotoFileId { get; set; }
 
@@ -30,5 +32,4 @@ public partial class User : IDeleteEntity
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

@@ -8,11 +8,6 @@ using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -21,7 +16,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepo;
-        private readonly IRoleRepository _roleRepo;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
 
@@ -30,7 +24,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _config = config;
             _unitOfWork = unitOfWork;
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
-            _roleRepo = unitOfWork.GetRepository<IRoleRepository>();
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
         }
@@ -46,17 +39,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 FirstName = _config["FirstUser:FirstName"],
                 LastName = _config["FirstUser:LastName"],
                 Email = email,
-                Password = _passwordHasher.HashPassword(_config["FirstUser:Password"])
-            };
-
-            var adminRole = await _roleRepo.GetByEnumAsync(RoleEnum.Admin);
-
-            newUser.UserRoles = new List<UserRole>()
-            {
-                new UserRole() {
-                    User = newUser,
-                    Role = adminRole
-                }
+                Password = _passwordHasher.HashPassword(_config["FirstUser:Password"]),
+                Role = UserRole.Admin
             };
 
             await _userRepo.AddAsync(newUser);
