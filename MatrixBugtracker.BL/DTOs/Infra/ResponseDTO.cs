@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MatrixBugtracker.BL.Resources;
+using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
 
 namespace MatrixBugtracker.BL.DTOs.Infra
@@ -26,5 +27,10 @@ namespace MatrixBugtracker.BL.DTOs.Infra
                 ErrorMessage = message
             };
         }
+
+        public static ResponseDTO<T> BadRequest(string message = null) => ResponseDTO<T>.Error(400, message ?? Errors.BadRequest);
+        public static ResponseDTO<T> Unauthorized(string message = null) => ResponseDTO<T>.Error(401, message ?? Errors.Unauthorized);
+        public static ResponseDTO<T> Forbidden(string message = null) => ResponseDTO<T>.Error(403, message ?? Errors.Forbidden);
+        public static ResponseDTO<T> NotImplemented() => ResponseDTO<T>.Error(500, Errors.NotImplemented);
     }
 }

@@ -61,11 +61,38 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The first user already created.
+        ///   Looks up a localized string similar to Bad request.
         /// </summary>
-        internal static string FirstUserCreated {
+        internal static string BadRequest {
             get {
-                return ResourceManager.GetString("FirstUserCreated", resourceCulture);
+                return ResourceManager.GetString("BadRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access denied.
+        /// </summary>
+        internal static string Forbidden {
+            get {
+                return ResourceManager.GetString("Forbidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not implemented yet.
+        /// </summary>
+        internal static string NotImplemented {
+            get {
+                return ResourceManager.GetString("NotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unauthorized.
+        /// </summary>
+        internal static string Unauthorized {
+            get {
+                return ResourceManager.GetString("Unauthorized", resourceCulture);
             }
         }
         

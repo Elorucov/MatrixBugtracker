@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FirstUserCreated" xml:space="preserve">
-    <value>The first user already created</value>
+  <data name="BadRequest" xml:space="preserve">
+    <value>Bad request</value>
+  </data>
+  <data name="Forbidden" xml:space="preserve">
+    <value>Access denied</value>
+  </data>
+  <data name="NotImplemented" xml:space="preserve">
+    <value>Not implemented yet</value>
+  </data>
+  <data name="Unauthorized" xml:space="preserve">
+    <value>Unauthorized</value>
   </data>
   <data name="WrongEmailOrPassword" xml:space="preserve">
     <value>E-mail or password is incorrect</value>
