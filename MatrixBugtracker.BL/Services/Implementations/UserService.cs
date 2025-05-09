@@ -3,8 +3,6 @@ using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.DAL.Entities;
-using MatrixBugtracker.DAL.Enums;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using Microsoft.AspNetCore.Http;

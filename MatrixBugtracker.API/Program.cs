@@ -36,7 +36,8 @@ namespace MatrixBugtracker.API
             }).ConfigureApiBehaviorOptions(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
-            }).AddJsonOptions(options => {
+            }).AddJsonOptions(options =>
+            {
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull;
             });
 

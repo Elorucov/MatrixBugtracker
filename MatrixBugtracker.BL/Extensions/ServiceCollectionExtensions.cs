@@ -5,11 +5,6 @@ using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.BL.Services.Implementations;
 using MatrixBugtracker.BL.Validators;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.BL.Extensions
 {

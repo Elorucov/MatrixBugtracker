@@ -77,7 +77,8 @@ public partial class BugtrackerContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(BugtrackerContext).Assembly);
 
-        modelBuilder.Entity<User>().HasData(new User {
+        modelBuilder.Entity<User>().HasData(new User
+        {
             Id = 1,
             FirstName = _config["FirstUser:FirstName"],
             LastName = _config["FirstUser:LastName"],

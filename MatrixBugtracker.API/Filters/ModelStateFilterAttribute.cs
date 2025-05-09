@@ -1,7 +1,6 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using FluentValidation;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace MatrixBugtracker.API.Filters
 {

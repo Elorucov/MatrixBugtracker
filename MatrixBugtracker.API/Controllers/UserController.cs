@@ -14,7 +14,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromForm]LoginRequestDTO request)
+        public async Task<IActionResult> Login([FromForm] LoginRequestDTO request)
         {
             return APIResponse(await _userService.LoginAsync(request));
         }
