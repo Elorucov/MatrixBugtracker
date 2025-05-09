@@ -26,7 +26,9 @@ namespace MatrixBugtracker.DAL.Configs
                 .HasMaxLength(64)
                 .HasColumnName("name");
 
-            builder.Property(e => e.Type).HasColumnName("type");
+            builder.Property(e => e.Type)
+                .HasConversion<byte>()
+                .HasColumnName("type");
 
             builder.HasOne(d => d.Creator).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CreatorId)

@@ -13,7 +13,10 @@ public partial class BugtrackerContext : DbContext
     private readonly IPasswordHasher _passwordHasher;
     private readonly IUserIdProvider _userIdProvider;
 
-    public BugtrackerContext(DbContextOptions<BugtrackerContext> options, IConfiguration config, IPasswordHasher passwordHasher, IUserIdProvider userIdProvider) : base(options)
+    public BugtrackerContext(DbContextOptions<BugtrackerContext> options, 
+        IConfiguration config, 
+        IPasswordHasher passwordHasher, 
+        IUserIdProvider userIdProvider) : base(options)
     {
         _config = config;
         _passwordHasher = passwordHasher;
@@ -21,30 +24,19 @@ public partial class BugtrackerContext : DbContext
     }
 
     public virtual DbSet<Comment> Comments { get; set; }
-
-    public virtual DbSet<CommentAttachment> CommentAttachments { get; set; }
-
-    public virtual DbSet<UploadedFile> Files { get; set; }
-
-    public virtual DbSet<Moderator> Moderators { get; set; }
-
-    public virtual DbSet<Product> Products { get; set; }
-
-    public virtual DbSet<ProductMember> ProductMembers { get; set; }
-
-    public virtual DbSet<ProductModerator> ProductModerators { get; set; }
-
-    public virtual DbSet<Report> Reports { get; set; }
-
-    public virtual DbSet<ReportAttachment> ReportAttachments { get; set; }
-
-    public virtual DbSet<ReportReproduce> ReportReproduces { get; set; }
-
-    public virtual DbSet<ReportTag> ReportTags { get; set; }
-
-    public virtual DbSet<Tag> Tags { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<CommentAttachment> CommentAttachments { get; set; }
+    public virtual DbSet<Confirmation> Confirmations { get; set; }
+    public virtual DbSet<UploadedFile> Files { get; set; }
+    public virtual DbSet<Moderator> Moderators { get; set; }
+    public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<ProductMember> ProductMembers { get; set; }
+    public virtual DbSet<ProductModerator> ProductModerators { get; set; }
+    public virtual DbSet<Report> Reports { get; set; }
+    public virtual DbSet<ReportAttachment> ReportAttachments { get; set; }
+    public virtual DbSet<ReportReproduce> ReportReproduces { get; set; }
+    public virtual DbSet<ReportTag> ReportTags { get; set; }
+    public virtual DbSet<Tag> Tags { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -77,7 +69,7 @@ public partial class BugtrackerContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(BugtrackerContext).Assembly);
 
-        modelBuilder.Entity<User>().HasData(new User
+        var firstUser = new User
         {
             Id = 1,
             FirstName = _config["FirstUser:FirstName"],
@@ -85,6 +77,13 @@ public partial class BugtrackerContext : DbContext
             Email = _config["FirstUser:Email"],
             Password = _passwordHasher.HashPassword(_config["FirstUser:Password"]),
             Role = UserRole.Admin
+        };
+
+        modelBuilder.Entity<User>().HasData(firstUser);
+
+        modelBuilder.Entity<Moderator>().HasData(new Moderator { 
+            Id = 1,
+            UserId = 1
         });
     }
 }

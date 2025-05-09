@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -10,6 +11,25 @@ namespace MatrixBugtracker.DAL.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "confirmations",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    kind = table.Column<byte>(type: "tinyint", nullable: false),
+                    is_deleted = table.Column<bool>(type: "bit", nullable: false),
+                    creator_id = table.Column<int>(type: "int", nullable: false),
+                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_confirmations", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "comment_attachments",
                 columns: table => new
@@ -97,8 +117,6 @@ namespace MatrixBugtracker.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<int>(type: "int", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
-                    creator_id = table.Column<int>(type: "int", nullable: false),
-                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -109,12 +127,6 @@ namespace MatrixBugtracker.DAL.Migrations
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_moderators_users_creator_id",
-                        column: x => x.creator_id,
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -316,7 +328,12 @@ namespace MatrixBugtracker.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "users",
                 columns: new[] { "id", "deleted_by_user_id", "email", "first_name", "is_deleted", "last_name", "password", "photo_file_id", "role" },
-                values: new object[] { 1, 0, "admin@example.com", "John", false, "Doe", "WRPVqULdTdbdBz7ND8mZ+WI1K6IxUD8Bw5itdLyk8k4zOXaMCKBpKXMGVzNawJVP", null, (byte)1 });
+                values: new object[] { 1, 0, "admin@example.com", "John", false, "Doe", "z3o6hySfT52dypBz1SvgbT8lfBQ0lXdInTiV9GTr8MggHqOV55QJm2Fdd7KCOWoj", null, (byte)1 });
+
+            migrationBuilder.InsertData(
+                table: "moderators",
+                columns: new[] { "id", "deleted_by_user_id", "is_deleted", "user_id" },
+                values: new object[] { 1, 0, false, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_comment_attachments_file_id",
@@ -340,6 +357,12 @@ namespace MatrixBugtracker.DAL.Migrations
                 column: "report_id");
 
             migrationBuilder.CreateIndex(
+                name: "UQ_EmailConfirm",
+                table: "confirmations",
+                column: "email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_files_creator_id",
                 table: "files",
                 column: "creator_id");
@@ -349,11 +372,6 @@ namespace MatrixBugtracker.DAL.Migrations
                 table: "files",
                 column: "path",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_moderators_creator_id",
-                table: "moderators",
-                column: "creator_id");
 
             migrationBuilder.CreateIndex(
                 name: "UQ_Moder",
@@ -508,6 +526,9 @@ namespace MatrixBugtracker.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "comment_attachments");
+
+            migrationBuilder.DropTable(
+                name: "confirmations");
 
             migrationBuilder.DropTable(
                 name: "product_members");

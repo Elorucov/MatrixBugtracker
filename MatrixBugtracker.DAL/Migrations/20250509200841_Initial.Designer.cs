@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    [Migration("20250509080359_Initial")]
+    [Migration("20250509200841_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -109,7 +109,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("comment_attachments", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Moderator", b =>
+            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Confirmation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -118,6 +118,9 @@ namespace MatrixBugtracker.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("creation_time");
@@ -125,6 +128,41 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
+
+                    b.Property<int>("DeletedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("deleted_by_user_id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("email");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<byte>("Kind")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("kind");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "Email" }, "UQ_EmailConfirm")
+                        .IsUnique();
+
+                    b.ToTable("confirmations", (string)null);
+                });
+
+            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Moderator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("int")
@@ -140,12 +178,19 @@ namespace MatrixBugtracker.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
-
                     b.HasIndex(new[] { "UserId" }, "UQ_Moder")
                         .IsUnique();
 
                     b.ToTable("moderators", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DeletedByUserId = 0,
+                            IsDeleted = false,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
@@ -560,7 +605,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             FirstName = "John",
                             IsDeleted = false,
                             LastName = "Doe",
-                            Password = "WRPVqULdTdbdBz7ND8mZ+WI1K6IxUD8Bw5itdLyk8k4zOXaMCKBpKXMGVzNawJVP",
+                            Password = "z3o6hySfT52dypBz1SvgbT8lfBQ0lXdInTiV9GTr8MggHqOV55QJm2Fdd7KCOWoj",
                             Role = (byte)1
                         });
                 });
@@ -608,19 +653,11 @@ namespace MatrixBugtracker.DAL.Migrations
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Moderator", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
                         .WithOne("Moderator")
                         .HasForeignKey("MatrixBugtracker.DAL.Entities.Moderator", "UserId")
                         .IsRequired()
                         .HasConstraintName("FK_Moder_Id");
-
-                    b.Navigation("Creator");
 
                     b.Navigation("User");
                 });

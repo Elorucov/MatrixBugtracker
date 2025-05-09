@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MatrixBugtracker.DAL.Configs
 {
-    internal class ModeratorConfig : BaseEntityConfig<Moderator>
+    internal class ModeratorConfig : DeleteConfig<Moderator>
     {
         public override void Configure(EntityTypeBuilder<Moderator> builder)
         {
