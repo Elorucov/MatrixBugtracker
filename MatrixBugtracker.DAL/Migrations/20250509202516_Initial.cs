@@ -18,12 +18,13 @@ namespace MatrixBugtracker.DAL.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    code = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     kind = table.Column<byte>(type: "tinyint", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
+                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     creator_id = table.Column<int>(type: "int", nullable: false),
-                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,9 +57,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     is_attachments_private = table.Column<bool>(type: "bit", nullable: false),
                     as_moderator = table.Column<bool>(type: "bit", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
+                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     creator_id = table.Column<int>(type: "int", nullable: false),
-                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,9 +77,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     mime_type = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
+                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     creator_id = table.Column<int>(type: "int", nullable: false),
-                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,13 +94,15 @@ namespace MatrixBugtracker.DAL.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
+                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    is_email_confirmed = table.Column<bool>(type: "bit", nullable: false),
                     first_name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     last_name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     role = table.Column<byte>(type: "tinyint", nullable: false),
-                    photo_file_id = table.Column<int>(type: "int", nullable: true),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                    photo_file_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -117,7 +122,8 @@ namespace MatrixBugtracker.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<int>(type: "int", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
+                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,9 +147,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     type = table.Column<byte>(type: "tinyint", nullable: false),
                     is_over = table.Column<bool>(type: "bit", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
+                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     creator_id = table.Column<int>(type: "int", nullable: false),
-                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -164,9 +171,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     is_archived = table.Column<bool>(type: "bit", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
+                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     creator_id = table.Column<int>(type: "int", nullable: false),
-                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -284,9 +292,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     status = table.Column<byte>(type: "tinyint", nullable: false),
                     is_files_private = table.Column<bool>(type: "bit", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
+                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
+                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     creator_id = table.Column<int>(type: "int", nullable: false),
-                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false)
+                    creation_time = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -327,13 +336,13 @@ namespace MatrixBugtracker.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "id", "deleted_by_user_id", "email", "first_name", "is_deleted", "last_name", "password", "photo_file_id", "role" },
-                values: new object[] { 1, 0, "admin@example.com", "John", false, "Doe", "z3o6hySfT52dypBz1SvgbT8lfBQ0lXdInTiV9GTr8MggHqOV55QJm2Fdd7KCOWoj", null, (byte)1 });
+                columns: new[] { "id", "deleted_by_user_id", "deletion_time", "email", "first_name", "is_deleted", "is_email_confirmed", "last_name", "password", "photo_file_id", "role" },
+                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "Cuts6lMCMRFwMAbvUmGfBxUWvJOJneoS7pZpo6etLOBcz+LyuABIcHxmugFpwT2W", null, (byte)1 });
 
             migrationBuilder.InsertData(
                 table: "moderators",
-                columns: new[] { "id", "deleted_by_user_id", "is_deleted", "user_id" },
-                values: new object[] { 1, 0, false, 1 });
+                columns: new[] { "id", "deleted_by_user_id", "deletion_time", "is_deleted", "user_id" },
+                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_comment_attachments_file_id",

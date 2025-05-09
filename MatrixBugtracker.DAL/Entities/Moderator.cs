@@ -9,4 +9,5 @@ public class Moderator : IDeleteEntity
     public virtual User User { get; set; }
     public bool IsDeleted { get; set; }
     public int DeletedByUserId { get; set; }
+    public DateTime DeletionTime { get; set; }
 }

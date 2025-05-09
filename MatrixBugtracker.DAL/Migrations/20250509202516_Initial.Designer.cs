@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    [Migration("20250509200841_Initial")]
+    [Migration("20250509202516_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -49,6 +49,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
+
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletion_time");
 
                     b.Property<bool>("IsAttachmentsPrivate")
                         .HasColumnType("bit")
@@ -119,7 +123,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)")
+                        .HasColumnName("code");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2")
@@ -132,6 +139,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
+
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletion_time");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -168,6 +179,10 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletion_time");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
                         .HasColumnName("is_deleted");
@@ -188,6 +203,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         {
                             Id = 1,
                             DeletedByUserId = 0,
+                            DeletionTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             UserId = 1
                         });
@@ -217,6 +233,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
+
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletion_time");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -323,6 +343,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
+
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletion_time");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
@@ -461,6 +485,10 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletion_time");
+
                     b.Property<bool>("IsArchived")
                         .HasColumnType("bit")
                         .HasColumnName("is_archived");
@@ -505,6 +533,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
+
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletion_time");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
@@ -551,6 +583,10 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletion_time");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -566,6 +602,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
                         .HasColumnName("is_deleted");
+
+                    b.Property<bool>("IsEmailConfirmed")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_email_confirmed");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -601,11 +641,13 @@ namespace MatrixBugtracker.DAL.Migrations
                         {
                             Id = 1,
                             DeletedByUserId = 0,
+                            DeletionTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@example.com",
                             FirstName = "John",
                             IsDeleted = false,
+                            IsEmailConfirmed = true,
                             LastName = "Doe",
-                            Password = "z3o6hySfT52dypBz1SvgbT8lfBQ0lXdInTiV9GTr8MggHqOV55QJm2Fdd7KCOWoj",
+                            Password = "Cuts6lMCMRFwMAbvUmGfBxUWvJOJneoS7pZpo6etLOBcz+LyuABIcHxmugFpwT2W",
                             Role = (byte)1
                         });
                 });

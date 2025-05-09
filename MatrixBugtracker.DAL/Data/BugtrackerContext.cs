@@ -50,6 +50,7 @@ public partial class BugtrackerContext : DbContext
                     var deletedEntity = entry.Entity as IDeleteEntity;
                     if (deletedEntity == null) break;
                     deletedEntity.IsDeleted = true;
+                    deletedEntity.DeletionTime = DateTime.Now;
                     deletedEntity.DeletedByUserId = userId;
                     entry.State = EntityState.Modified;
                     break;
@@ -72,6 +73,7 @@ public partial class BugtrackerContext : DbContext
         var firstUser = new User
         {
             Id = 1,
+            IsEmailConfirmed = true,
             FirstName = _config["FirstUser:FirstName"],
             LastName = _config["FirstUser:LastName"],
             Email = _config["FirstUser:Email"],

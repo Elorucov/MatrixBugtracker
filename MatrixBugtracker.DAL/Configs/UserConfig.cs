@@ -11,6 +11,8 @@ namespace MatrixBugtracker.DAL.Configs
         {
             builder.ToTable("users");
 
+            builder.Property(x => x.IsEmailConfirmed).IsRequired().HasColumnName("is_email_confirmed");
+
             builder.HasIndex(e => e.Email, "UQ_Email").IsUnique();
 
             builder.Property(e => e.Email)

@@ -23,6 +23,11 @@ namespace MatrixBugtracker.DAL.Configs
                 .HasMaxLength(255)
                 .HasColumnName("email");
 
+            builder.Property(e => e.Code)
+                .IsRequired()
+                .HasMaxLength(6)
+                .HasColumnName("code");
+
             builder.Property(e => e.Kind)
                 .IsRequired()
                 .HasConversion<byte>()
