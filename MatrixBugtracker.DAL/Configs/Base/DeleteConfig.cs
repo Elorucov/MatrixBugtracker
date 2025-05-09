@@ -9,6 +9,7 @@ namespace MatrixBugtracker.DAL.Configs.Base
         public override void Configure(EntityTypeBuilder<T> builder)
         {
             builder.Property(x => x.IsDeleted).IsRequired().HasColumnName("is_deleted");
+            builder.Property(x => x.DeletedByUserId).IsRequired().HasColumnName("deleted_by_user_id");
             builder.HasQueryFilter(x => x.IsDeleted == false);
 
             base.Configure(builder);

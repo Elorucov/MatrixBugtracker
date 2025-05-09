@@ -18,6 +18,7 @@ public partial class User : IDeleteEntity
     public UserRole Role { get; set; }
 
     public int? PhotoFileId { get; set; }
+    public int DeletedByUserId { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 

@@ -14,12 +14,6 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Init()
-        {
-            return APIResponse(await _userService.CreateFirstUserAsync());
-        }
-
-        [HttpGet]
         public IActionResult TestError()
         {
             throw new ApplicationException("This is a crash. Not bandicoot, but a crash.");

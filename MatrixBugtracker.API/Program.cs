@@ -1,9 +1,9 @@
+using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.API.Middlewares;
 using MatrixBugtracker.API.Misc;
 using MatrixBugtracker.API.ProviderImpls;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.DAL.Extensions;
-using MatrixBugtracker.DAL.ProviderInterfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;

@@ -1,4 +1,5 @@
-﻿using MatrixBugtracker.BL.DTOs.Auth;
+﻿using MatrixBugtracker.Abstractions;
+using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
@@ -26,26 +27,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
-        }
-
-        public async Task<ResponseDTO<bool>> CreateFirstUserAsync()
-        {
-            string email = _config["FirstUser:Email"];
-            var existUser = await _userRepo.GetByEmailAsync(email);
-            if (existUser != null) return ResponseDTO<bool>.Error(StatusCodes.Status400BadRequest, Errors.FirstUserCreated);
-
-            User newUser = new User()
-            {
-                FirstName = _config["FirstUser:FirstName"],
-                LastName = _config["FirstUser:LastName"],
-                Email = email,
-                Password = _passwordHasher.HashPassword(_config["FirstUser:Password"]),
-                Role = UserRole.Admin
-            };
-
-            await _userRepo.AddAsync(newUser);
-            await _unitOfWork.CommitAsync();
-            return new ResponseDTO<bool>(true);
         }
 
         public async Task<ResponseDTO<TokenDTO>> LoginAsync(LoginRequestDTO request)

@@ -1,4 +1,4 @@
-﻿namespace MatrixBugtracker.DAL.ProviderInterfaces
+﻿namespace MatrixBugtracker.Abstractions
 {
     // Needs to access an authorized user's id from data layer.
     public interface IUserIdProvider

@@ -1,4 +1,4 @@
-﻿using MatrixBugtracker.DAL.ProviderInterfaces;
+﻿using MatrixBugtracker.Abstractions;
 using System.Security.Claims;
 
 namespace MatrixBugtracker.API.ProviderImpls

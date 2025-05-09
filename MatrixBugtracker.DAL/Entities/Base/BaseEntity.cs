@@ -6,5 +6,6 @@
         public bool IsDeleted { get; set; }
         public int CreatorId { get; set; }
         public DateTime CreationTime { get; set; }
+        public int DeletedByUserId { get; set; }
     }
 }

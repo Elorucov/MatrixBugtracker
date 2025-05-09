@@ -1,19 +1,24 @@
-﻿using MatrixBugtracker.DAL.Entities;
+﻿using MatrixBugtracker.Abstractions;
+using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Entities.Base;
-using MatrixBugtracker.DAL.ProviderInterfaces;
+using MatrixBugtracker.DAL.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace MatrixBugtracker.DAL.Data;
 
 public partial class BugtrackerContext : DbContext
 {
+    private readonly IConfiguration _config;
+    private readonly IPasswordHasher _passwordHasher;
     private readonly IUserIdProvider _userIdProvider;
-    public BugtrackerContext(DbContextOptions<BugtrackerContext> options, IUserIdProvider userIdProvider) : base(options)
+
+    public BugtrackerContext(DbContextOptions<BugtrackerContext> options, IConfiguration config, IPasswordHasher passwordHasher, IUserIdProvider userIdProvider) : base(options)
     {
+        _config = config;
+        _passwordHasher = passwordHasher;
         _userIdProvider = userIdProvider;
     }
-
-    // public BugtrackerContext(DbContextOptions<BugtrackerContext> options) : base(options) { }
 
     public virtual DbSet<Comment> Comments { get; set; }
 
@@ -50,16 +55,17 @@ public partial class BugtrackerContext : DbContext
             switch (entry.State)
             {
                 case EntityState.Deleted:
-                    var deleted = entry.Entity as IDeleteEntity;
-                    if (deleted == null) break;
-                    deleted.IsDeleted = true;
+                    var deletedEntity = entry.Entity as IDeleteEntity;
+                    if (deletedEntity == null) break;
+                    deletedEntity.IsDeleted = true;
+                    deletedEntity.DeletedByUserId = userId;
                     entry.State = EntityState.Modified;
                     break;
                 case EntityState.Added:
-                    var created = entry.Entity as ICreateEntity;
-                    if (created == null) break;
-                    created.CreationTime = DateTime.Now;
-                    created.CreatorId = userId;
+                    var createdEntity = entry.Entity as ICreateEntity;
+                    if (createdEntity == null) break;
+                    createdEntity.CreationTime = DateTime.Now;
+                    createdEntity.CreatorId = userId;
                     break;
             }
         }
@@ -70,5 +76,14 @@ public partial class BugtrackerContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(BugtrackerContext).Assembly);
+
+        modelBuilder.Entity<User>().HasData(new User {
+            Id = 1,
+            FirstName = _config["FirstUser:FirstName"],
+            LastName = _config["FirstUser:LastName"],
+            Email = _config["FirstUser:Email"],
+            Password = _passwordHasher.HashPassword(_config["FirstUser:Password"]),
+            Role = UserRole.Admin
+        });
     }
 }

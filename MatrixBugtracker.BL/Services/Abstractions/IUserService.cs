@@ -10,7 +10,6 @@ namespace MatrixBugtracker.BL.Services.Abstractions
 {
     public interface IUserService
     {
-        Task<ResponseDTO<bool>> CreateFirstUserAsync();
         Task<ResponseDTO<TokenDTO>> LoginAsync(LoginRequestDTO request);
     }
 }

@@ -3,5 +3,6 @@
     public interface IDeleteEntity : IEntity
     {
         public bool IsDeleted { get; set; }
+        public int DeletedByUserId { get; set; }
     }
 }

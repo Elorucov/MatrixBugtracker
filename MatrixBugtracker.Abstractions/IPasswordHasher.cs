@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MatrixBugtracker.BL.Services.Abstractions
+namespace MatrixBugtracker.Abstractions
 {
+    // Needs to hash password in DAL and BL
     public interface IPasswordHasher
     {
         string HashPassword(string password);
