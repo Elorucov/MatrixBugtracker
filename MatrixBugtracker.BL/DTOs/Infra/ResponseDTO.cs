@@ -3,15 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MatrixBugtracker.BL.DTOs.Infra
 {
     public class ResponseDTO<T>
     {
+        [JsonIgnore]
+        public int HttpStatusCode { get; private set; }
         public bool Success { get; private set; }
         public T Response { get; private set; }
-        public int HttpStatusCode { get; private set; }
         public string ErrorMessage { get; private set; }
 
         public ResponseDTO(T response, int httpStatusCode = StatusCodes.Status200OK)
