@@ -70,6 +70,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This e-mail is already in use.
+        /// </summary>
+        internal static string EmailInUse {
+            get {
+                return ResourceManager.GetString("EmailInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Access denied.
         /// </summary>
         internal static string Forbidden {

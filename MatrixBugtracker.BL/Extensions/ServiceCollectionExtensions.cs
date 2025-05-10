@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using MatrixBugtracker.Abstractions;
+using MatrixBugtracker.BL.Profiles;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.BL.Services.Implementations;
 using MatrixBugtracker.BL.Validators;
@@ -15,6 +16,10 @@ namespace MatrixBugtracker.BL.Extensions
             services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
             services.AddValidatorsFromAssemblyContaining<TestValidator>();
 
+            services.AddAutoMapper(opt =>
+            {
+                opt.AddProfile<DefaultProfile>();
+            });
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ITokenService, TokenService>();

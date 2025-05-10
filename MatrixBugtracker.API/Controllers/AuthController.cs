@@ -18,5 +18,11 @@ namespace MatrixBugtracker.API.Controllers
         {
             return APIResponse(await _userService.LoginAsync(request));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Register([FromForm] RegisterRequestDTO request)
+        {
+            return APIResponse(await _userService.CreateUserAsync(request));
+        }
     }
 }
