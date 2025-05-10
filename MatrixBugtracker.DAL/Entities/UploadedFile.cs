@@ -11,6 +11,6 @@ public partial class UploadedFile : BaseEntity
     public string MimeType { get; set; }
 
     public virtual User Creator { get; set; }
-
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public virtual User PhotoUser { get; set; } // an user that set this file as own photo
+    public virtual Product PhotoProduct { get; set; } // a product that set this file as logo
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    [Migration("20250509202516_Initial")]
+    [Migration("20250510100832_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -258,6 +258,10 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("nvarchar(64)")
                         .HasColumnName("name");
 
+                    b.Property<int?>("PhotoFileId")
+                        .HasColumnType("int")
+                        .HasColumnName("photo_file_id");
+
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint")
                         .HasColumnName("type");
@@ -265,6 +269,10 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorId");
+
+                    b.HasIndex("PhotoFileId")
+                        .IsUnique()
+                        .HasFilter("[photo_file_id] IS NOT NULL");
 
                     b.HasIndex(new[] { "Name" }, "UQ_ProductName")
                         .IsUnique();
@@ -629,7 +637,9 @@ namespace MatrixBugtracker.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PhotoFileId");
+                    b.HasIndex("PhotoFileId")
+                        .IsUnique()
+                        .HasFilter("[photo_file_id] IS NOT NULL");
 
                     b.HasIndex(new[] { "Email" }, "UQ_Email")
                         .IsUnique();
@@ -647,7 +657,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsDeleted = false,
                             IsEmailConfirmed = true,
                             LastName = "Doe",
-                            Password = "Cuts6lMCMRFwMAbvUmGfBxUWvJOJneoS7pZpo6etLOBcz+LyuABIcHxmugFpwT2W",
+                            Password = "JF5Oh/zsiK7RXJTNi4UB2/jR3Knd6whpyKxFNv6u4U5J+z7ZO1K5l/Gfl/2rCCBa",
                             Role = (byte)1
                         });
                 });
@@ -712,7 +722,14 @@ namespace MatrixBugtracker.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Product_Creator");
 
+                    b.HasOne("MatrixBugtracker.DAL.Entities.UploadedFile", "PhotoFile")
+                        .WithOne("PhotoProduct")
+                        .HasForeignKey("MatrixBugtracker.DAL.Entities.Product", "PhotoFileId")
+                        .HasConstraintName("FK_ProductPhoto");
+
                     b.Navigation("Creator");
+
+                    b.Navigation("PhotoFile");
                 });
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ProductMember", b =>
@@ -855,8 +872,8 @@ namespace MatrixBugtracker.DAL.Migrations
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.User", b =>
                 {
                     b.HasOne("MatrixBugtracker.DAL.Entities.UploadedFile", "PhotoFile")
-                        .WithMany("Users")
-                        .HasForeignKey("PhotoFileId")
+                        .WithOne("PhotoUser")
+                        .HasForeignKey("MatrixBugtracker.DAL.Entities.User", "PhotoFileId")
                         .HasConstraintName("FK_UserPhoto");
 
                     b.Navigation("PhotoFile");
@@ -874,7 +891,9 @@ namespace MatrixBugtracker.DAL.Migrations
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.UploadedFile", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("PhotoProduct");
+
+                    b.Navigation("PhotoUser");
                 });
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.User", b =>

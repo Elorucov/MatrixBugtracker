@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
-    public class UserController : BaseController
+    public class AuthController : BaseController
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        public AuthController(IUserService userService)
         {
             _userService = userService;
         }

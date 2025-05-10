@@ -143,6 +143,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    photo_file_id = table.Column<int>(type: "int", nullable: true),
                     access_level = table.Column<byte>(type: "tinyint", nullable: false),
                     type = table.Column<byte>(type: "tinyint", nullable: false),
                     is_over = table.Column<bool>(type: "bit", nullable: false),
@@ -155,6 +156,11 @@ namespace MatrixBugtracker.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_products", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_ProductPhoto",
+                        column: x => x.photo_file_id,
+                        principalTable: "files",
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_Product_Creator",
                         column: x => x.creator_id,
@@ -337,7 +343,7 @@ namespace MatrixBugtracker.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "users",
                 columns: new[] { "id", "deleted_by_user_id", "deletion_time", "email", "first_name", "is_deleted", "is_email_confirmed", "last_name", "password", "photo_file_id", "role" },
-                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "Cuts6lMCMRFwMAbvUmGfBxUWvJOJneoS7pZpo6etLOBcz+LyuABIcHxmugFpwT2W", null, (byte)1 });
+                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "JF5Oh/zsiK7RXJTNi4UB2/jR3Knd6whpyKxFNv6u4U5J+z7ZO1K5l/Gfl/2rCCBa", null, (byte)1 });
 
             migrationBuilder.InsertData(
                 table: "moderators",
@@ -416,6 +422,13 @@ namespace MatrixBugtracker.DAL.Migrations
                 column: "creator_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_products_photo_file_id",
+                table: "products",
+                column: "photo_file_id",
+                unique: true,
+                filter: "[photo_file_id] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "UQ_ProductName",
                 table: "products",
                 column: "name",
@@ -478,7 +491,9 @@ namespace MatrixBugtracker.DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_users_photo_file_id",
                 table: "users",
-                column: "photo_file_id");
+                column: "photo_file_id",
+                unique: true,
+                filter: "[photo_file_id] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "UQ_Email",

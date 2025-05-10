@@ -37,6 +37,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             return new TokenDTO
             {
+                UserId = userId,
                 Token = token,
                 ExpiresAt = expirationTime
             };

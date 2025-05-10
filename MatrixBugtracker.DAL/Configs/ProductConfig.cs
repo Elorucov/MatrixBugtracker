@@ -35,6 +35,12 @@ namespace MatrixBugtracker.DAL.Configs
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_Creator");
 
+            builder.Property(e => e.PhotoFileId).HasColumnName("photo_file_id");
+
+            builder.HasOne(d => d.PhotoFile).WithOne(p => p.PhotoProduct)
+                .HasForeignKey<Product>(d => d.PhotoFileId)
+                .HasConstraintName("FK_ProductPhoto");
+
             base.Configure(builder);
         }
     }

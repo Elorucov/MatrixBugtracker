@@ -42,8 +42,8 @@ namespace MatrixBugtracker.DAL.Configs
 
             builder.Property(e => e.PhotoFileId).HasColumnName("photo_file_id");
 
-            builder.HasOne(d => d.PhotoFile).WithMany(p => p.Users)
-                .HasForeignKey(d => d.PhotoFileId)
+            builder.HasOne(d => d.PhotoFile).WithOne(p => p.PhotoUser)
+                .HasForeignKey<User>(d => d.PhotoFileId)
                 .HasConstraintName("FK_UserPhoto");
 
             base.Configure(builder);
