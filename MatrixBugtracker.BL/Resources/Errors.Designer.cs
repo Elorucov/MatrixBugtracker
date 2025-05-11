@@ -61,6 +61,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authenticated user not found or deleted.
+        /// </summary>
+        internal static string AuthUserNotFound {
+            get {
+                return ResourceManager.GetString("AuthUserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bad request.
         /// </summary>
         internal static string BadRequest {
@@ -84,6 +93,24 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string Forbidden {
             get {
                 return ResourceManager.GetString("Forbidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The format of uploaded file is wrong.
+        /// </summary>
+        internal static string InvalidFileFormat {
+            get {
+                return ResourceManager.GetString("InvalidFileFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not found.
+        /// </summary>
+        internal static string NotFound {
+            get {
+                return ResourceManager.GetString("NotFound", resourceCulture);
             }
         }
         

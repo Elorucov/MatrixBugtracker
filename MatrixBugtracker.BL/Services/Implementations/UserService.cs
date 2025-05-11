@@ -2,9 +2,11 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
+using MatrixBugtracker.DAL.Enums;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using Microsoft.AspNetCore.Http;
@@ -49,12 +51,32 @@ namespace MatrixBugtracker.BL.Services.Implementations
             newUser = _mapper.Map(request, newUser);
             newUser.Password = _passwordHasher.HashPassword(request.Password);
 
+            newUser.Role = UserRole.Tester;
             newUser.IsEmailConfirmed = true; // TODO: remove this after implementing e-mail confirmation
 
             await _userRepo.AddAsync(newUser);
             await _unitOfWork.CommitAsync();
 
             return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<UserDTO>> GetByIdAsync(int userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user != null) return ResponseDTO<UserDTO>.NotFound();
+
+            UserDTO dto = null;
+            dto = _mapper.Map(user, dto);
+
+            return new ResponseDTO<UserDTO>(dto);
+        }
+
+        public async Task<UserRole?> GetUserRoleAsync(int userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null) return null;
+
+            return user.Role;
         }
     }
 }

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AuthUserNotFound" xml:space="preserve">
+    <value>Authenticated user not found or deleted</value>
+  </data>
   <data name="BadRequest" xml:space="preserve">
     <value>Bad request</value>
   </data>
@@ -125,6 +128,12 @@
   </data>
   <data name="Forbidden" xml:space="preserve">
     <value>Access denied</value>
+  </data>
+  <data name="InvalidFileFormat" xml:space="preserve">
+    <value>The format of uploaded file is wrong</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Not found</value>
   </data>
   <data name="NotImplemented" xml:space="preserve">
     <value>Not implemented yet</value>

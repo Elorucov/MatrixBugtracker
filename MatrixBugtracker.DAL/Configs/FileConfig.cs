@@ -18,6 +18,10 @@ namespace MatrixBugtracker.DAL.Configs
                 .HasMaxLength(64)
                 .HasColumnName("mime_type");
 
+            builder.Property(e => e.Length)
+                .IsRequired()
+                .HasColumnName("length");
+
             builder.Property(e => e.OriginalName)
                 .IsRequired()
                 .HasMaxLength(255)

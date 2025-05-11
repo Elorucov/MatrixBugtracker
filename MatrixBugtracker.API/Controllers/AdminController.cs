@@ -1,11 +1,14 @@
 using Azure.Core;
+using MatrixBugtracker.API.Filters;
 using MatrixBugtracker.BL.DTOs;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
+using MatrixBugtracker.DAL.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
+    [AuthorizeApi([UserRole.Admin])]
     public class AdminController : BaseController
     {
         private readonly IPlatformService _platformService;
