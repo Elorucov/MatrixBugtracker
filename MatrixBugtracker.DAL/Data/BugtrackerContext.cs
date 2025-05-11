@@ -13,9 +13,9 @@ public partial class BugtrackerContext : DbContext
     private readonly IPasswordHasher _passwordHasher;
     private readonly IUserIdProvider _userIdProvider;
 
-    public BugtrackerContext(DbContextOptions<BugtrackerContext> options, 
-        IConfiguration config, 
-        IPasswordHasher passwordHasher, 
+    public BugtrackerContext(DbContextOptions<BugtrackerContext> options,
+        IConfiguration config,
+        IPasswordHasher passwordHasher,
         IUserIdProvider userIdProvider) : base(options)
     {
         _config = config;
@@ -83,7 +83,8 @@ public partial class BugtrackerContext : DbContext
 
         modelBuilder.Entity<User>().HasData(firstUser);
 
-        modelBuilder.Entity<Moderator>().HasData(new Moderator { 
+        modelBuilder.Entity<Moderator>().HasData(new Moderator
+        {
             Id = 1,
             UserId = 1
         });

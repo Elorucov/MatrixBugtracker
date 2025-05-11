@@ -1,4 +1,3 @@
-using Azure.Core;
 using MatrixBugtracker.API.Filters;
 using MatrixBugtracker.BL.DTOs;
 using MatrixBugtracker.BL.DTOs.Infra;

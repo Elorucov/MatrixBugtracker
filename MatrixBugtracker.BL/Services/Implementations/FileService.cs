@@ -80,7 +80,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 contentType = defaultContentType;
 
             byte[] content = await File.ReadAllBytesAsync(filePath);
-            
+
             return (content, contentType);
         }
     }

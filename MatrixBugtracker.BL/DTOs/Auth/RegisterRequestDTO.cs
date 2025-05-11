@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MatrixBugtracker.BL.DTOs.Auth
+﻿namespace MatrixBugtracker.BL.DTOs.Auth
 {
     public class RegisterRequestDTO
     {

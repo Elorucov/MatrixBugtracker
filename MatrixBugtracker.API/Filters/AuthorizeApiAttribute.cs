@@ -1,9 +1,9 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using MatrixBugtracker.DAL.Enums;
 using MatrixBugtracker.BL.Services.Abstractions;
+using MatrixBugtracker.DAL.Enums;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 namespace MatrixBugtracker.API.Filters
 {

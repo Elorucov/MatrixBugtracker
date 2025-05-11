@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.Profiles;

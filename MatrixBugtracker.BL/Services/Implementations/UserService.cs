@@ -9,8 +9,6 @@ using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Concurrent;
 
 namespace MatrixBugtracker.BL.Services.Implementations
