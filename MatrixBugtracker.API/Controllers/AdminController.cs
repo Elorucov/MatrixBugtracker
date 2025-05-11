@@ -1,4 +1,6 @@
+using Azure.Core;
 using MatrixBugtracker.BL.DTOs;
+using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,23 +8,29 @@ namespace MatrixBugtracker.API.Controllers
 {
     public class AdminController : BaseController
     {
-        private readonly IUserService _userService;
+        private readonly IPlatformService _platformService;
 
-        public AdminController(ILogger<AdminController> logger, IUserService userService)
+        public AdminController(ILogger<AdminController> logger, IPlatformService platformService)
         {
-            _userService = userService;
+            _platformService = platformService;
+        }
+
+        [HttpGet]
+        public IActionResult GetRoles()
+        {
+            return APIResponse(new ResponseDTO<List<EnumValueDTO>>(_platformService.GetRoleEnums()));
         }
 
         [HttpGet]
         public IActionResult TestError()
         {
-            throw new ApplicationException("This is a crash. Not bandicoot, but a crash.");
+            throw new ApplicationException("Test error.");
         }
 
         [HttpPost]
         public IActionResult TestValidation([FromForm] TestRequestDTO request)
         {
-            return APIResponse(new BL.DTOs.Infra.ResponseDTO<TestRequestDTO>(request));
+            return APIResponse(new ResponseDTO<TestRequestDTO>(request));
         }
     }
 }
