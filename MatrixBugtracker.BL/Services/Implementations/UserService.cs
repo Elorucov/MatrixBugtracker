@@ -11,11 +11,14 @@ using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Concurrent;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
     public class UserService : IUserService
     {
+        private static readonly ConcurrentDictionary<int, User> _cachedUsers = new ConcurrentDictionary<int, User>();
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHasher _passwordHasher;
@@ -60,10 +63,21 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
+        private async Task<User> GetSingleUserAsync(int userId)
+        {
+            if (!_cachedUsers.TryGetValue(userId, out User user))
+            {
+                user = await _userRepo.GetByIdAsync(userId);
+                if (user != null) _cachedUsers.TryAdd(userId, user);
+            }
+
+            return user;
+        }
+
         public async Task<ResponseDTO<UserDTO>> GetByIdAsync(int userId)
         {
-            var user = await _userRepo.GetByIdAsync(userId);
-            if (user != null) return ResponseDTO<UserDTO>.NotFound();
+            var user = await GetSingleUserAsync(userId);
+            if (user == null) return ResponseDTO<UserDTO>.NotFound();
 
             UserDTO dto = null;
             dto = _mapper.Map(user, dto);
@@ -73,7 +87,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public async Task<UserRole?> GetUserRoleAsync(int userId)
         {
-            var user = await _userRepo.GetByIdAsync(userId);
+            var user = await GetSingleUserAsync(userId);
             if (user == null) return null;
 
             return user.Role;

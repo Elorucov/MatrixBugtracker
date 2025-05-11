@@ -46,7 +46,6 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations.Base
         public void Update(T entity)
         {
             _dbSet.Update(entity);
-            // _db.Entry(oldEntity).CurrentValues.SetValues(newEntity);
         }
     }
 }
