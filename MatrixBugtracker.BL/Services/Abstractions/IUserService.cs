@@ -11,5 +11,6 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<bool>> CreateUserAsync(RegisterRequestDTO request);
         Task<ResponseDTO<UserDTO>> GetByIdAsync(int userId);
         Task<UserRole?> GetUserRoleAsync(int userId);
+        Task<ResponseDTO<bool>> EditAsync(UserEditDTO request);
     }
 }

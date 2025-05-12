@@ -1,4 +1,5 @@
 ﻿using MatrixBugtracker.API.Filters;
+using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,12 @@ namespace MatrixBugtracker.API.Controllers
         public async Task<IActionResult> GetById(int userId)
         {
             return APIResponse(await _service.GetByIdAsync(userId));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Edit([FromForm]UserEditDTO request)
+        {
+            return APIResponse(await _service.EditAsync(request));
         }
     }
 }

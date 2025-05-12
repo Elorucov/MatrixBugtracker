@@ -21,14 +21,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
+        private readonly IUserIdProvider _userIdProvider;
         private readonly IMapper _mapper;
 
-        public UserService(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, ITokenService tokenService, IMapper mapper)
+        public UserService(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher,
+            ITokenService tokenService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
+            _userIdProvider = userIdProvider;
             _mapper = mapper;
         }
 
@@ -89,6 +92,19 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (user == null) return null;
 
             return user.Role;
+        }
+
+        public async Task<ResponseDTO<bool>> EditAsync(UserEditDTO request)
+        {
+            int userId = _userIdProvider.UserId;
+
+            User user = await GetSingleUserAsync(userId);
+            _mapper.Map(request, user);
+
+            _userRepo.Update(user);
+            await _unitOfWork.CommitAsync();
+
+            return new ResponseDTO<bool>(true);
         }
     }
 }

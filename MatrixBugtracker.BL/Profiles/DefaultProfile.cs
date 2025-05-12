@@ -20,6 +20,7 @@ namespace MatrixBugtracker.BL.Profiles
             CreateMap<User, UserDTO>().AfterMap(ToUserDTO);
 
             CreateMap<RegisterRequestDTO, User>().ReverseMap();
+            CreateMap<UserEditDTO, User>().ReverseMap();
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)
