@@ -79,6 +79,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot change your role.
+        /// </summary>
+        internal static string CannotRevokeAdminRoleFromCurrentUser {
+            get {
+                return ResourceManager.GetString("CannotRevokeAdminRoleFromCurrentUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This e-mail is already in use.
         /// </summary>
         internal static string EmailInUse {
@@ -129,6 +138,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string NotImplemented {
             get {
                 return ResourceManager.GetString("NotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This user already has this role.
+        /// </summary>
+        internal static string RoleIsSame {
+            get {
+                return ResourceManager.GetString("RoleIsSame", resourceCulture);
             }
         }
         

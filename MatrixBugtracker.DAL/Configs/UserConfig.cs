@@ -40,6 +40,10 @@ namespace MatrixBugtracker.DAL.Configs
                 .HasConversion<byte>()
                 .HasColumnName("role");
 
+            builder.Property(e => e.ModeratorName)
+                .HasMaxLength(32)
+                .HasColumnName("moderator_name");
+
             builder.Property(e => e.PhotoFileId).HasColumnName("photo_file_id");
 
             builder.HasOne(d => d.PhotoFile).WithOne(p => p.PhotoUser)

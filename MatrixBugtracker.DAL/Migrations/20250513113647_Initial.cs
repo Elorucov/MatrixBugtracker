@@ -75,6 +75,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     original_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     mime_type = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    length = table.Column<long>(type: "bigint", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
                     deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
                     deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -101,6 +102,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     role = table.Column<byte>(type: "tinyint", nullable: false),
+                    moderator_name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
                     photo_file_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -110,27 +112,6 @@ namespace MatrixBugtracker.DAL.Migrations
                         name: "FK_UserPhoto",
                         column: x => x.photo_file_id,
                         principalTable: "files",
-                        principalColumn: "id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "moderators",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    user_id = table.Column<int>(type: "int", nullable: false),
-                    is_deleted = table.Column<bool>(type: "bit", nullable: false),
-                    deleted_by_user_id = table.Column<int>(type: "int", nullable: false),
-                    deletion_time = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_moderators", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_Moder_Id",
-                        column: x => x.user_id,
-                        principalTable: "users",
                         principalColumn: "id");
                 });
 
@@ -209,28 +190,6 @@ namespace MatrixBugtracker.DAL.Migrations
                         principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_PU_Product",
-                        column: x => x.product_id,
-                        principalTable: "products",
-                        principalColumn: "id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "product_moderators",
-                columns: table => new
-                {
-                    product_id = table.Column<int>(type: "int", nullable: false),
-                    moderator_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("K_ProductModerator", x => new { x.product_id, x.moderator_id });
-                    table.ForeignKey(
-                        name: "FK_PM_Moderator",
-                        column: x => x.moderator_id,
-                        principalTable: "moderators",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_PM_Product",
                         column: x => x.product_id,
                         principalTable: "products",
                         principalColumn: "id");
@@ -341,13 +300,8 @@ namespace MatrixBugtracker.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "id", "deleted_by_user_id", "deletion_time", "email", "first_name", "is_deleted", "is_email_confirmed", "last_name", "password", "photo_file_id", "role" },
-                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "JF5Oh/zsiK7RXJTNi4UB2/jR3Knd6whpyKxFNv6u4U5J+z7ZO1K5l/Gfl/2rCCBa", null, (byte)1 });
-
-            migrationBuilder.InsertData(
-                table: "moderators",
-                columns: new[] { "id", "deleted_by_user_id", "deletion_time", "is_deleted", "user_id" },
-                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1 });
+                columns: new[] { "id", "deleted_by_user_id", "deletion_time", "email", "first_name", "is_deleted", "is_email_confirmed", "last_name", "moderator_name", "password", "photo_file_id", "role" },
+                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "Moderator", "IyGxxZpwoLbfxe7mgOkgfXTlBeJGUwtDLIJutr+v3NZO4QyHQCLZ8cBU8i1BxDZ4", null, (byte)1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_comment_attachments_file_id",
@@ -388,12 +342,6 @@ namespace MatrixBugtracker.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "UQ_Moder",
-                table: "moderators",
-                column: "user_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_product_members_member_id",
                 table: "product_members",
                 column: "member_id");
@@ -402,17 +350,6 @@ namespace MatrixBugtracker.DAL.Migrations
                 name: "UQ_ProductMember",
                 table: "product_members",
                 columns: new[] { "product_id", "member_id" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_product_moderators_moderator_id",
-                table: "product_moderators",
-                column: "moderator_id");
-
-            migrationBuilder.CreateIndex(
-                name: "UQ_ProductModer",
-                table: "product_moderators",
-                columns: new[] { "product_id", "moderator_id" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -557,9 +494,6 @@ namespace MatrixBugtracker.DAL.Migrations
                 name: "product_members");
 
             migrationBuilder.DropTable(
-                name: "product_moderators");
-
-            migrationBuilder.DropTable(
                 name: "report_attachments");
 
             migrationBuilder.DropTable(
@@ -570,9 +504,6 @@ namespace MatrixBugtracker.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "comments");
-
-            migrationBuilder.DropTable(
-                name: "moderators");
 
             migrationBuilder.DropTable(
                 name: "tags");

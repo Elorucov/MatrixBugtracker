@@ -28,10 +28,8 @@ public partial class BugtrackerContext : DbContext
     public virtual DbSet<CommentAttachment> CommentAttachments { get; set; }
     public virtual DbSet<Confirmation> Confirmations { get; set; }
     public virtual DbSet<UploadedFile> Files { get; set; }
-    public virtual DbSet<Moderator> Moderators { get; set; }
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<ProductMember> ProductMembers { get; set; }
-    public virtual DbSet<ProductModerator> ProductModerators { get; set; }
     public virtual DbSet<Report> Reports { get; set; }
     public virtual DbSet<ReportAttachment> ReportAttachments { get; set; }
     public virtual DbSet<ReportReproduce> ReportReproduces { get; set; }
@@ -78,15 +76,10 @@ public partial class BugtrackerContext : DbContext
             LastName = _config["FirstUser:LastName"],
             Email = _config["FirstUser:Email"],
             Password = _passwordHasher.HashPassword(_config["FirstUser:Password"]),
-            Role = UserRole.Admin
+            Role = UserRole.Admin,
+            ModeratorName = "Moderator"
         };
 
         modelBuilder.Entity<User>().HasData(firstUser);
-
-        modelBuilder.Entity<Moderator>().HasData(new Moderator
-        {
-            Id = 1,
-            UserId = 1
-        });
     }
 }

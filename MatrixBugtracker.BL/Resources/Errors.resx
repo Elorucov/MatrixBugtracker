@@ -123,6 +123,9 @@
   <data name="BadRequest" xml:space="preserve">
     <value>Bad request</value>
   </data>
+  <data name="CannotRevokeAdminRoleFromCurrentUser" xml:space="preserve">
+    <value>You cannot change your role</value>
+  </data>
   <data name="EmailInUse" xml:space="preserve">
     <value>This e-mail is already in use</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="NotImplemented" xml:space="preserve">
     <value>Not implemented yet</value>
+  </data>
+  <data name="RoleIsSame" xml:space="preserve">
+    <value>This user already has this role</value>
   </data>
   <data name="Unauthorized" xml:space="preserve">
     <value>Unauthorized</value>

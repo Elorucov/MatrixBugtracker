@@ -163,49 +163,6 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("confirmations", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Moderator", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DeletedByUserId")
-                        .HasColumnType("int")
-                        .HasColumnName("deleted_by_user_id");
-
-                    b.Property<DateTime>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deletion_time");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "UserId" }, "UQ_Moder")
-                        .IsUnique();
-
-                    b.ToTable("moderators", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DeletedByUserId = 0,
-                            DeletionTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            UserId = 1
-                        });
-                });
-
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -300,27 +257,6 @@ namespace MatrixBugtracker.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("product_members", (string)null);
-                });
-
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ProductModerator", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int")
-                        .HasColumnName("product_id");
-
-                    b.Property<int>("ModeratorId")
-                        .HasColumnType("int")
-                        .HasColumnName("moderator_id");
-
-                    b.HasKey("ProductId", "ModeratorId")
-                        .HasName("K_ProductModerator");
-
-                    b.HasIndex("ModeratorId");
-
-                    b.HasIndex(new[] { "ProductId", "ModeratorId" }, "UQ_ProductModer")
-                        .IsUnique();
-
-                    b.ToTable("product_moderators", (string)null);
                 });
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Report", b =>
@@ -622,6 +558,11 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("nvarchar(32)")
                         .HasColumnName("last_name");
 
+                    b.Property<string>("ModeratorName")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)")
+                        .HasColumnName("moderator_name");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -658,7 +599,8 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsDeleted = false,
                             IsEmailConfirmed = true,
                             LastName = "Doe",
-                            Password = "ErqJddTnzV4KPDIxiAoQbBHiF07iX50TOGDBy9DVJamEO6PjBt3Ht5mx1QlbmT/T",
+                            ModeratorName = "Moderator",
+                            Password = "IyGxxZpwoLbfxe7mgOkgfXTlBeJGUwtDLIJutr+v3NZO4QyHQCLZ8cBU8i1BxDZ4",
                             Role = (byte)1
                         });
                 });
@@ -704,17 +646,6 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("File");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Moderator", b =>
-                {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
-                        .WithOne("Moderator")
-                        .HasForeignKey("MatrixBugtracker.DAL.Entities.Moderator", "UserId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Moder_Id");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
                 {
                     b.HasOne("MatrixBugtracker.DAL.Entities.User", "Creator")
@@ -748,25 +679,6 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasConstraintName("FK_PU_Product");
 
                     b.Navigation("Member");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ProductModerator", b =>
-                {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Moderator", "Moderator")
-                        .WithMany()
-                        .HasForeignKey("ModeratorId")
-                        .IsRequired()
-                        .HasConstraintName("FK_PM_Moderator");
-
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .IsRequired()
-                        .HasConstraintName("FK_PM_Product");
-
-                    b.Navigation("Moderator");
 
                     b.Navigation("Product");
                 });
@@ -900,8 +812,6 @@ namespace MatrixBugtracker.DAL.Migrations
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Moderator");
 
                     b.Navigation("Products");
 

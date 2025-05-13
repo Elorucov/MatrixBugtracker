@@ -15,11 +15,11 @@ public partial class User : IDeleteEntity
     public string Email { get; set; }
     public string Password { get; set; }
     public UserRole Role { get; set; }
+    public string? ModeratorName { get; set; }
     public int? PhotoFileId { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ICollection<UploadedFile> UploadedFiles { get; set; } = new List<UploadedFile>();
-    public virtual Moderator Moderator { get; set; }
     public virtual UploadedFile PhotoFile { get; set; }
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();

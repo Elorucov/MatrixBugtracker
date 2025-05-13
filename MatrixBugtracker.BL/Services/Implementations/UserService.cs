@@ -97,6 +97,30 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return user.Role;
         }
 
+        public async Task<ResponseDTO<bool>> SetUserRoleAsync(int userId, UserRole role)
+        {
+            int currentUserId = _userIdProvider.UserId;
+            if (userId == currentUserId) return ResponseDTO<bool>.BadRequest(Errors.CannotRevokeAdminRoleFromCurrentUser);
+
+            var user = await GetSingleUserAsync(userId);
+            if (user == null) return ResponseDTO<bool>.NotFound();
+            if (user.Role == role) return ResponseDTO<bool>.BadRequest(Errors.RoleIsSame);
+
+            // Set default moderator name if user's role changed from tester to higher role.
+            // We get the count of users with moder name, add 1 to the count and assign it to the moder name.
+            if (user.Role == UserRole.Tester && user.ModeratorName == null)
+            {
+                int modersTotalCount = await _userRepo.GetUsersCountWithModeratorNamesAsync();
+                user.ModeratorName = $"{Common.Moderator} #{modersTotalCount + 1}";
+            }
+            user.Role = role;
+
+            _userRepo.Update(user);
+            await _unitOfWork.CommitAsync();
+
+            return new ResponseDTO<bool>(true);
+        }
+
         public async Task<ResponseDTO<bool>> EditAsync(UserEditDTO request)
         {
             int userId = _userIdProvider.UserId;

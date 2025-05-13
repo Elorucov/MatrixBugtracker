@@ -19,5 +19,10 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
         {
             return await _dbSet.Include(e => e.PhotoFile).SingleOrDefaultAsync(u => u.Id == id);
         }
+
+        public async Task<int> GetUsersCountWithModeratorNamesAsync()
+        {
+            return await _dbSet.Where(e => e.ModeratorName != null).CountAsync();
+        }
     }
 }

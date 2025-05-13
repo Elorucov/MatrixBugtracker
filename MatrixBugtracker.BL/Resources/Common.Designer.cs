@@ -22,14 +22,14 @@ namespace MatrixBugtracker.BL.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class EnumValues {
+    internal class Common {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal EnumValues() {
+        internal Common() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace MatrixBugtracker.BL.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MatrixBugtracker.BL.Resources.EnumValues", typeof(EnumValues).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MatrixBugtracker.BL.Resources.Common", typeof(Common).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,38 +61,11 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admin.
-        /// </summary>
-        internal static string Role_Admin {
-            get {
-                return ResourceManager.GetString("Role_Admin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Employee.
-        /// </summary>
-        internal static string Role_Employee {
-            get {
-                return ResourceManager.GetString("Role_Employee", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Moderator.
         /// </summary>
-        internal static string Role_Moderator {
+        internal static string Moderator {
             get {
-                return ResourceManager.GetString("Role_Moderator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tester.
-        /// </summary>
-        internal static string Role_Tester {
-            get {
-                return ResourceManager.GetString("Role_Tester", resourceCulture);
+                return ResourceManager.GetString("Moderator", resourceCulture);
             }
         }
     }
