@@ -88,6 +88,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File with this id is not an image.
+        /// </summary>
+        internal static string FileIsNotImage {
+            get {
+                return ResourceManager.GetString("FileIsNotImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Access denied.
         /// </summary>
         internal static string Forbidden {

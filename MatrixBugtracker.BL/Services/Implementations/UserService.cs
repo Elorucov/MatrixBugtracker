@@ -3,6 +3,7 @@ using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Users;
+using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
@@ -19,6 +20,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepo;
+        private readonly IFileRepository _fileRepo;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
         private readonly IUserIdProvider _userIdProvider;
@@ -29,6 +31,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         {
             _unitOfWork = unitOfWork;
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
+            _fileRepo = unitOfWork.GetRepository<IFileRepository>();
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
             _userIdProvider = userIdProvider;
@@ -68,7 +71,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         {
             if (!_cachedUsers.TryGetValue(userId, out User user))
             {
-                user = await _userRepo.GetByIdAsync(userId);
+                user = await _userRepo.GetByIdWithIncludeAsync(userId);
                 if (user != null) _cachedUsers.TryAdd(userId, user);
             }
 
@@ -100,6 +103,25 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             User user = await GetSingleUserAsync(userId);
             _mapper.Map(request, user);
+
+            _userRepo.Update(user);
+            await _unitOfWork.CommitAsync();
+
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> ChangePhotoAsync(int photoFileId)
+        {
+            int userId = _userIdProvider.UserId;
+
+            var file = await _fileRepo.GetByIdAsync(photoFileId);
+            if (file == null) return ResponseDTO<bool>.NotFound();
+
+            if (file.CreatorId != userId) return ResponseDTO<bool>.Forbidden();
+            if (!file.IsImage()) return ResponseDTO<bool>.BadRequest(Errors.FileIsNotImage);
+
+            User user = await GetSingleUserAsync(userId);
+            user.PhotoFile = file;
 
             _userRepo.Update(user);
             await _unitOfWork.CommitAsync();

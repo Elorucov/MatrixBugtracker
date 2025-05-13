@@ -14,5 +14,10 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
         {
             return await _dbSet.SingleOrDefaultAsync(u => u.Email == email);
         }
+
+        public async Task<User> GetByIdWithIncludeAsync(int id)
+        {
+            return await _dbSet.Include(e => e.PhotoFile).SingleOrDefaultAsync(u => u.Id == id);
+        }
     }
 }

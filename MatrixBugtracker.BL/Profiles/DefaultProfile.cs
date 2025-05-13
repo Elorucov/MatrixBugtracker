@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Users;
@@ -11,7 +12,10 @@ namespace MatrixBugtracker.BL.Profiles
     public class DefaultProfile : Profile
     {
         private readonly IHttpContextAccessor _contextAccessor;
+
         private IMapper Mapper => _contextAccessor.HttpContext.RequestServices.GetService<IMapper>();
+        private IUserIdProvider UserIdProvider => _contextAccessor.HttpContext.RequestServices.GetService<IUserIdProvider>();
+
         public DefaultProfile(IHttpContextAccessor contextAccessor)
         {
             _contextAccessor = contextAccessor;
@@ -25,6 +29,10 @@ namespace MatrixBugtracker.BL.Profiles
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)
         {
+            // Only file owner/creator can know its id
+            int currentUserId = UserIdProvider.UserId;
+            dto.FileId = currentUserId == file.CreatorId ? file.Id : 0;
+
             var uri = _contextAccessor.HttpContext.Request;
             string link = $"{uri.Scheme}://{uri.Host}/file/{file.Path}";
             dto.Url = link;

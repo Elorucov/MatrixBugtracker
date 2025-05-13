@@ -1,4 +1,5 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
@@ -17,10 +18,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
         readonly IFileRepository _repo;
         readonly ILogger<FileService> _logger;
         readonly string _uploadedFilesPath;
-
-        readonly string[] _allowedImageContentTypes = new string[] {
-            "image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp", "image/heic"
-        };
 
         public FileService(IUnitOfWork unitOfWork, IConfiguration config, ILogger<FileService> logger)
         {
@@ -42,7 +39,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (!Directory.Exists(_uploadedFilesPath)) Directory.CreateDirectory(_uploadedFilesPath);
 
             IFormFile file = request.File;
-            if (request.IsPhoto && !_allowedImageContentTypes.Contains(file.ContentType))
+            if (request.IsPhoto && !file.IsImage())
                 return ResponseDTO<int>.BadRequest($"{Errors.InvalidFileFormat}: {file.ContentType}");
 
             string newFileName = GetUniqueFileName(file.FileName);

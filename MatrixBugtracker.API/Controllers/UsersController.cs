@@ -25,5 +25,11 @@ namespace MatrixBugtracker.API.Controllers
         {
             return APIResponse(await _service.EditAsync(request));
         }
+
+        [HttpPut]
+        public async Task<IActionResult> ChangePhoto([FromForm] int photoFileId)
+        {
+            return APIResponse(await _service.ChangePhotoAsync(photoFileId));
+        }
     }
 }

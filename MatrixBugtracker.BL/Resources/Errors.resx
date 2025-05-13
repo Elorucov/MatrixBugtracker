@@ -126,6 +126,9 @@
   <data name="EmailInUse" xml:space="preserve">
     <value>This e-mail is already in use</value>
   </data>
+  <data name="FileIsNotImage" xml:space="preserve">
+    <value>File with this id is not an image</value>
+  </data>
   <data name="Forbidden" xml:space="preserve">
     <value>Access denied</value>
   </data>
