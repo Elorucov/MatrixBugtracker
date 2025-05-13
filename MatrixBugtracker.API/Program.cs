@@ -3,6 +3,7 @@ using MatrixBugtracker.API.Middlewares;
 using MatrixBugtracker.API.Misc;
 using MatrixBugtracker.API.ProviderImpls;
 using MatrixBugtracker.BL.Extensions;
+using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
@@ -104,6 +105,12 @@ namespace MatrixBugtracker.API
 
 
             app.MapControllers();
+
+            app.Map("/file/{path}", async (string path, [Microsoft.AspNetCore.Mvc.FromServices] IFileService service) =>
+            {
+                var (content, type) = await service.GetFileContentByPathAsync(path);
+                return Results.File(content, type);
+            });
 
             app.Run();
         }
