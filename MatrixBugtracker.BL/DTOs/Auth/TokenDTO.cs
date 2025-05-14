@@ -3,7 +3,9 @@
     public class TokenDTO
     {
         public int UserId { get; set; }
-        public string Token { get; init; }
-        public DateTime ExpiresAt { get; init; }
+        public string AccessToken { get; init; }
+        public DateTime AccessTokenExpiresAt { get; init; }
+        public string RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiresAt { get; set; }
     }
 }

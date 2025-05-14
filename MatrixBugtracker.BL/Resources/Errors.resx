@@ -144,6 +144,9 @@
   <data name="NotImplemented" xml:space="preserve">
     <value>Not implemented yet</value>
   </data>
+  <data name="RefreshTokenExpired" xml:space="preserve">
+    <value>Refresh token is expired</value>
+  </data>
   <data name="RoleIsSame" xml:space="preserve">
     <value>This user already has this role</value>
   </data>

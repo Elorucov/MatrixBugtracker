@@ -25,6 +25,7 @@ public partial class BugtrackerContext : DbContext
 
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
     public virtual DbSet<CommentAttachment> CommentAttachments { get; set; }
     public virtual DbSet<Confirmation> Confirmations { get; set; }
     public virtual DbSet<UploadedFile> Files { get; set; }

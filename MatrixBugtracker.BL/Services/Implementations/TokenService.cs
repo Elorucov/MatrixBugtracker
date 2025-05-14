@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace MatrixBugtracker.BL.Services.Implementations
@@ -38,9 +39,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new TokenDTO
             {
                 UserId = userId,
-                Token = token,
-                ExpiresAt = expirationTime
+                AccessToken = token,
+                AccessTokenExpiresAt = expirationTime
             };
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var random = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(random);
+            return Convert.ToBase64String(random);
         }
     }
 }

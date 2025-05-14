@@ -5,5 +5,6 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     public interface ITokenService
     {
         TokenDTO GetToken(int userId);
+        string GenerateRefreshToken();
     }
 }

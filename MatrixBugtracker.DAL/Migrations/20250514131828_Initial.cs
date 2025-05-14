@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -144,6 +145,31 @@ namespace MatrixBugtracker.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_Product_Creator",
                         column: x => x.creator_id,
+                        principalTable: "users",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "refresh_tokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    expiration_time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedByUserId = table.Column<int>(type: "int", nullable: false),
+                    DeletionTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatorId = table.Column<int>(type: "int", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_refresh_tokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RT_UserId",
+                        column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id");
                 });
@@ -301,7 +327,7 @@ namespace MatrixBugtracker.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "users",
                 columns: new[] { "id", "deleted_by_user_id", "deletion_time", "email", "first_name", "is_deleted", "is_email_confirmed", "last_name", "moderator_name", "password", "photo_file_id", "role" },
-                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "Moderator", "IyGxxZpwoLbfxe7mgOkgfXTlBeJGUwtDLIJutr+v3NZO4QyHQCLZ8cBU8i1BxDZ4", null, (byte)1 });
+                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "Moderator", "AE+ViO0htfEL94phsl0Ty9KDA16TykAMUomz4lAxfVgXxfxuYVpWk1aq37km+bir", null, (byte)1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_comment_attachments_file_id",
@@ -368,6 +394,18 @@ namespace MatrixBugtracker.DAL.Migrations
                 name: "UQ_ProductName",
                 table: "products",
                 column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "UQ_RefreshToken",
+                table: "refresh_tokens",
+                column: "token",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "UQ_RTUserId",
+                table: "refresh_tokens",
+                column: "user_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -492,6 +530,9 @@ namespace MatrixBugtracker.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "product_members");
+
+            migrationBuilder.DropTable(
+                name: "refresh_tokens");
 
             migrationBuilder.DropTable(
                 name: "report_attachments");

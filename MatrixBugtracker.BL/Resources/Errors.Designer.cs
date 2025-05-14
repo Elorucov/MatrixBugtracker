@@ -142,6 +142,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh token is expired.
+        /// </summary>
+        internal static string RefreshTokenExpired {
+            get {
+                return ResourceManager.GetString("RefreshTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This user already has this role.
         /// </summary>
         internal static string RoleIsSame {

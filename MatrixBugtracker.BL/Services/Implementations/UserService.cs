@@ -21,6 +21,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepo;
         private readonly IFileRepository _fileRepo;
+        private readonly IRefreshTokenRepository _refreshTokenRepo;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
         private readonly IUserIdProvider _userIdProvider;
@@ -32,11 +33,27 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _unitOfWork = unitOfWork;
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
             _fileRepo = unitOfWork.GetRepository<IFileRepository>();
+            _refreshTokenRepo = unitOfWork.GetRepository<IRefreshTokenRepository>();
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
             _userIdProvider = userIdProvider;
             _mapper = mapper;
         }
+
+        #region Private methods
+
+        private async Task<User> GetSingleUserAsync(int userId)
+        {
+            if (!_cachedUsers.TryGetValue(userId, out User user))
+            {
+                user = await _userRepo.GetByIdWithIncludeAsync(userId);
+                if (user != null) _cachedUsers.TryAdd(userId, user);
+            }
+
+            return user;
+        }
+
+        #endregion
 
         public async Task<ResponseDTO<TokenDTO>> LoginAsync(LoginRequestDTO request)
         {
@@ -46,7 +63,55 @@ namespace MatrixBugtracker.BL.Services.Implementations
             bool isPasswordValid = _passwordHasher.VerifyPassword(request.Password, user.Password);
             if (!isPasswordValid) return ResponseDTO<TokenDTO>.Unauthorized(Errors.WrongEmailOrPassword);
 
-            return new ResponseDTO<TokenDTO>(_tokenService.GetToken(user.Id));
+            // Create refresh token entry, but delete exist user's token first
+            string rToken = _tokenService.GenerateRefreshToken();
+            var rTokenExpiresAt = DateTime.Now.AddMinutes(2);
+
+            RefreshToken rte = user.RefreshToken;
+            if (rte != null)
+            {
+                rte.Token = rToken;
+                rte.ExpirationTime = rTokenExpiresAt;
+            } else
+            {
+                rte = new RefreshToken
+                {
+                    User = user,
+                    Token = rToken,
+                    ExpirationTime = rTokenExpiresAt
+                };
+            }
+
+            await _refreshTokenRepo.AddAsync(rte);
+            await _unitOfWork.CommitAsync();
+
+            var tokenDTO = _tokenService.GetToken(user.Id);
+            tokenDTO.RefreshToken = rte.Token;
+            tokenDTO.RefreshTokenExpiresAt = rte.ExpirationTime;
+
+            return new ResponseDTO<TokenDTO>(tokenDTO);
+        }
+
+        public async Task<ResponseDTO<TokenDTO>> RefreshAsync(int userId, string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken)) return ResponseDTO<TokenDTO>.BadRequest();
+
+            RefreshToken rte = await _refreshTokenRepo.GetByTokenAsync(refreshToken, userId);
+            if (rte == null) return ResponseDTO<TokenDTO>.BadRequest();
+            if (rte.ExpirationTime <= DateTime.Now) return ResponseDTO<TokenDTO>.Unauthorized(Errors.RefreshTokenExpired);
+            if (rte.User == null) return ResponseDTO<TokenDTO>.BadRequest();
+
+            var tokenDTO = _tokenService.GetToken(rte.UserId);
+            rte.Token = _tokenService.GenerateRefreshToken();
+            rte.ExpirationTime = DateTime.Now.AddMinutes(2);
+
+            _refreshTokenRepo.Update(rte);
+            await _unitOfWork.CommitAsync();
+
+            tokenDTO.RefreshToken = rte.Token;
+            tokenDTO.RefreshTokenExpiresAt = rte.ExpirationTime;
+
+            return new ResponseDTO<TokenDTO>(tokenDTO);
         }
 
         public async Task<ResponseDTO<bool>> CreateUserAsync(RegisterRequestDTO request)
@@ -65,17 +130,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return new ResponseDTO<bool>(true);
-        }
-
-        private async Task<User> GetSingleUserAsync(int userId)
-        {
-            if (!_cachedUsers.TryGetValue(userId, out User user))
-            {
-                user = await _userRepo.GetByIdWithIncludeAsync(userId);
-                if (user != null) _cachedUsers.TryAdd(userId, user);
-            }
-
-            return user;
         }
 
         public async Task<ResponseDTO<UserDTO>> GetByIdAsync(int userId)

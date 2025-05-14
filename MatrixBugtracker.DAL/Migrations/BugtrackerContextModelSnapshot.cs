@@ -259,6 +259,53 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("product_members", (string)null);
                 });
 
+            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("expiration_time");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("token");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "UserId" }, "UQ_RTUserId")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "Token" }, "UQ_RefreshToken")
+                        .IsUnique();
+
+                    b.ToTable("refresh_tokens", (string)null);
+                });
+
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Report", b =>
                 {
                     b.Property<int>("Id")
@@ -600,7 +647,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsEmailConfirmed = true,
                             LastName = "Doe",
                             ModeratorName = "Moderator",
-                            Password = "IyGxxZpwoLbfxe7mgOkgfXTlBeJGUwtDLIJutr+v3NZO4QyHQCLZ8cBU8i1BxDZ4",
+                            Password = "AE+ViO0htfEL94phsl0Ty9KDA16TykAMUomz4lAxfVgXxfxuYVpWk1aq37km+bir",
                             Role = (byte)1
                         });
                 });
@@ -681,6 +728,17 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Member");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("MatrixBugtracker.DAL.Entities.RefreshToken", "UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_RT_UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Report", b =>
@@ -814,6 +872,8 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Products");
+
+                    b.Navigation("RefreshToken");
 
                     b.Navigation("Reports");
 
