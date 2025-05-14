@@ -1,12 +1,6 @@
-﻿using MatrixBugtracker.DAL.Configs.Base;
-using MatrixBugtracker.DAL.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using MatrixBugtracker.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MatrixBugtracker.DAL.Configs
 {
@@ -20,12 +14,11 @@ namespace MatrixBugtracker.DAL.Configs
             builder.Property(e => e.ExpirationTime).IsRequired().HasColumnName("expiration_time");
             builder.Property(e => e.Token).IsRequired().HasColumnName("token");
 
-            builder.HasIndex(e => e.UserId, "UQ_RTUserId").IsUnique();
             builder.HasIndex(e => e.Token, "UQ_RefreshToken").IsUnique();
 
             builder.HasOne(d => d.User)
-                .WithOne(p => p.RefreshToken)
-                .HasForeignKey<RefreshToken>(d => d.UserId)
+                .WithMany(p => p.RefreshTokens)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK_RT_UserId");
         }

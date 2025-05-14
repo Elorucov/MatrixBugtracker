@@ -12,7 +12,7 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            return await _dbSet.Include(e => e.RefreshToken).SingleOrDefaultAsync(u => u.Email == email);
+            return await _dbSet.SingleOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User> GetByIdWithIncludeAsync(int id)

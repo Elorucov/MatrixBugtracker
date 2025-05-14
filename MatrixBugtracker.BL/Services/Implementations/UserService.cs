@@ -10,6 +10,7 @@ using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Concurrent;
 
 namespace MatrixBugtracker.BL.Services.Implementations
@@ -25,10 +26,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
         private readonly IUserIdProvider _userIdProvider;
+        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
         public UserService(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher,
-            ITokenService tokenService, IUserIdProvider userIdProvider, IMapper mapper)
+            ITokenService tokenService, IUserIdProvider userIdProvider,
+            IConfiguration config, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
@@ -37,6 +40,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
             _userIdProvider = userIdProvider;
+            _config = config;
             _mapper = mapper;
         }
 
@@ -63,24 +67,16 @@ namespace MatrixBugtracker.BL.Services.Implementations
             bool isPasswordValid = _passwordHasher.VerifyPassword(request.Password, user.Password);
             if (!isPasswordValid) return ResponseDTO<TokenDTO>.Unauthorized(Errors.WrongEmailOrPassword);
 
-            // Create refresh token entry, but delete exist user's token first
+            // Create refresh token
             string rToken = _tokenService.GenerateRefreshToken();
-            var rTokenExpiresAt = DateTime.Now.AddMinutes(2);
+            var rTokenExpiresAt = DateTime.Now.AddDays(Convert.ToInt32(_config["Jwt:RefreshTokenExpirationDays"]));
 
-            RefreshToken rte = user.RefreshToken;
-            if (rte != null)
+            RefreshToken rte = new RefreshToken
             {
-                rte.Token = rToken;
-                rte.ExpirationTime = rTokenExpiresAt;
-            } else
-            {
-                rte = new RefreshToken
-                {
-                    User = user,
-                    Token = rToken,
-                    ExpirationTime = rTokenExpiresAt
-                };
-            }
+                User = user,
+                Token = rToken,
+                ExpirationTime = rTokenExpiresAt
+            };
 
             await _refreshTokenRepo.AddAsync(rte);
             await _unitOfWork.CommitAsync();
@@ -98,12 +94,20 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             RefreshToken rte = await _refreshTokenRepo.GetByTokenAsync(refreshToken, userId);
             if (rte == null) return ResponseDTO<TokenDTO>.BadRequest();
-            if (rte.ExpirationTime <= DateTime.Now) return ResponseDTO<TokenDTO>.Unauthorized(Errors.RefreshTokenExpired);
+
+            if (rte.ExpirationTime <= DateTime.Now)
+            {
+                _refreshTokenRepo.Delete(rte);
+                await _unitOfWork.CommitAsync();
+                return ResponseDTO<TokenDTO>.Unauthorized(Errors.RefreshTokenExpired);
+
+            }
+
             if (rte.User == null) return ResponseDTO<TokenDTO>.BadRequest();
 
             var tokenDTO = _tokenService.GetToken(rte.UserId);
             rte.Token = _tokenService.GenerateRefreshToken();
-            rte.ExpirationTime = DateTime.Now.AddMinutes(2);
+            rte.ExpirationTime = DateTime.Now.AddDays(Convert.ToInt32(_config["Jwt:RefreshTokenExpirationDays"]));
 
             _refreshTokenRepo.Update(rte);
             await _unitOfWork.CommitAsync();

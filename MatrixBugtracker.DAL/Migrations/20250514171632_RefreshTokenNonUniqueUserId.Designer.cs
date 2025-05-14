@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    [Migration("20250514131828_Initial")]
-    partial class Initial
+    [Migration("20250514171632_RefreshTokenNonUniqueUserId")]
+    partial class RefreshTokenNonUniqueUserId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -300,8 +300,7 @@ namespace MatrixBugtracker.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "UserId" }, "UQ_RTUserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.HasIndex(new[] { "Token" }, "UQ_RefreshToken")
                         .IsUnique();
@@ -650,7 +649,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsEmailConfirmed = true,
                             LastName = "Doe",
                             ModeratorName = "Moderator",
-                            Password = "AE+ViO0htfEL94phsl0Ty9KDA16TykAMUomz4lAxfVgXxfxuYVpWk1aq37km+bir",
+                            Password = "0dOPb2bunG6uaFAZyUsHc4Esy1rLU9XbvzZu2Qrg47Na2cHJ0vsLnq8lJ7uI+p32",
                             Role = (byte)1
                         });
                 });
@@ -736,8 +735,8 @@ namespace MatrixBugtracker.DAL.Migrations
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.RefreshToken", b =>
                 {
                     b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
-                        .WithOne("RefreshToken")
-                        .HasForeignKey("MatrixBugtracker.DAL.Entities.RefreshToken", "UserId")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
                         .IsRequired()
                         .HasConstraintName("FK_RT_UserId");
 
@@ -876,7 +875,7 @@ namespace MatrixBugtracker.DAL.Migrations
 
                     b.Navigation("Products");
 
-                    b.Navigation("RefreshToken");
+                    b.Navigation("RefreshTokens");
 
                     b.Navigation("Reports");
 

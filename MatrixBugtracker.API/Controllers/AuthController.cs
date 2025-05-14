@@ -1,5 +1,4 @@
-﻿using MatrixBugtracker.API.Filters;
-using MatrixBugtracker.BL.DTOs.Auth;
+﻿using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 

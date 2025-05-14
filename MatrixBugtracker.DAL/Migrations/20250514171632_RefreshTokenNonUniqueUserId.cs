@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace MatrixBugtracker.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class RefreshTokenNonUniqueUserId : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -327,7 +326,7 @@ namespace MatrixBugtracker.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "users",
                 columns: new[] { "id", "deleted_by_user_id", "deletion_time", "email", "first_name", "is_deleted", "is_email_confirmed", "last_name", "moderator_name", "password", "photo_file_id", "role" },
-                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "Moderator", "AE+ViO0htfEL94phsl0Ty9KDA16TykAMUomz4lAxfVgXxfxuYVpWk1aq37km+bir", null, (byte)1 });
+                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@example.com", "John", false, true, "Doe", "Moderator", "0dOPb2bunG6uaFAZyUsHc4Esy1rLU9XbvzZu2Qrg47Na2cHJ0vsLnq8lJ7uI+p32", null, (byte)1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_comment_attachments_file_id",
@@ -397,15 +396,14 @@ namespace MatrixBugtracker.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_refresh_tokens_user_id",
+                table: "refresh_tokens",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "UQ_RefreshToken",
                 table: "refresh_tokens",
                 column: "token",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "UQ_RTUserId",
-                table: "refresh_tokens",
-                column: "user_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
