@@ -138,6 +138,9 @@
   <data name="InvalidFileFormat" xml:space="preserve">
     <value>The format of uploaded file is wrong</value>
   </data>
+  <data name="InvalidParameters" xml:space="preserve">
+    <value>One of the parameters specified was invalid</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>Not found</value>
   </data>

@@ -12,19 +12,13 @@ namespace MatrixBugtracker.API.Filters
         {
             if (!context.ModelState.IsValid)
             {
-                List<string> errors = new List<string>();
+                Dictionary<string, string> fields = new Dictionary<string, string>();
                 foreach (var state in context.ModelState)
                 {
-                    foreach (var err in state.Value.Errors)
-                    {
-                        if (!string.IsNullOrEmpty(err.ErrorMessage))
-                        {
-                            errors.Add(err.ErrorMessage);
-                        }
-                    }
+                    fields.Add(state.Key, string.Join("; ", state.Value.Errors.Select(e => e.ErrorMessage)));
                 }
 
-                context.Result = new BadRequestObjectResult(ResponseDTO<object>.Error(StatusCodes.Status400BadRequest, string.Join("; ", errors)));
+                context.Result = new BadRequestObjectResult(ResponseDTO<object>.BadRequest("One of the parameters specified was invalid", fields));
             }
         }
     }
