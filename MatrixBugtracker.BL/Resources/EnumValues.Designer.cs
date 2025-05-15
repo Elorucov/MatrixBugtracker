@@ -61,6 +61,69 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Closed.
+        /// </summary>
+        internal static string ProductAccessLevel_Closed {
+            get {
+                return ResourceManager.GetString("ProductAccessLevel_Closed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        internal static string ProductAccessLevel_Open {
+            get {
+                return ResourceManager.GetString("ProductAccessLevel_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Secret.
+        /// </summary>
+        internal static string ProductAccessLevel_Secret {
+            get {
+                return ResourceManager.GetString("ProductAccessLevel_Secret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App for phones/tablets.
+        /// </summary>
+        internal static string ProductType_MobileApp {
+            get {
+                return ResourceManager.GetString("ProductType_MobileApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string ProductType_Other {
+            get {
+                return ResourceManager.GetString("ProductType_Other", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App for desktop PCs.
+        /// </summary>
+        internal static string ProductType_PCApp {
+            get {
+                return ResourceManager.GetString("ProductType_PCApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web site.
+        /// </summary>
+        internal static string ProductType_WebSite {
+            get {
+                return ResourceManager.GetString("ProductType_WebSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Admin.
         /// </summary>
         internal static string Role_Admin {

@@ -1,4 +1,5 @@
-﻿using MatrixBugtracker.BL.DTOs.Infra;
+﻿using MatrixBugtracker.Abstractions;
+using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
@@ -14,15 +15,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
 {
     public class FileService : IFileService
     {
-        readonly IUnitOfWork _unitOfWork;
-        readonly IFileRepository _repo;
-        readonly ILogger<FileService> _logger;
-        readonly string _uploadedFilesPath;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IFileRepository _repo;
+        private readonly IUserIdProvider _userIdProvider;
+        private readonly ILogger<FileService> _logger;
+        private readonly string _uploadedFilesPath;
 
-        public FileService(IUnitOfWork unitOfWork, IConfiguration config, ILogger<FileService> logger)
+        public FileService(IUnitOfWork unitOfWork, IConfiguration config, IUserIdProvider userIdProvider, ILogger<FileService> logger)
         {
             _unitOfWork = unitOfWork;
             _repo = unitOfWork.GetRepository<IFileRepository>();
+            _userIdProvider = userIdProvider;
             _logger = logger;
             _uploadedFilesPath = config["PathForUploadedFiles"];
         }
@@ -63,6 +66,16 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return new ResponseDTO<int>(newFile.Id);
+        }
+
+        public async Task<ResponseDTO<UploadedFile>> GetFileEntityAsync(int fileId, bool isImage)
+        {
+            UploadedFile file = await _repo.GetByIdAsync(fileId);
+            if (file == null) return ResponseDTO<UploadedFile>.NotFound(Errors.NotFoundFile);
+            if (file.CreatorId != _userIdProvider.UserId) return ResponseDTO<UploadedFile>.Forbidden(Errors.ForbiddenFile);
+            if (isImage && !file.IsImage()) return ResponseDTO<UploadedFile>.BadRequest(Errors.FileIsNotImage);
+
+            return new ResponseDTO<UploadedFile>(file);
         }
 
         public async Task<(byte[], string)> GetFileContentByPathAsync(string path)

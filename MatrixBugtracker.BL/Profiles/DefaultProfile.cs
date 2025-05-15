@@ -2,6 +2,7 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.DAL.Entities;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,8 @@ namespace MatrixBugtracker.BL.Profiles
 
             CreateMap<RegisterRequestDTO, User>().ReverseMap();
             CreateMap<UserEditDTO, User>().ReverseMap();
+
+            CreateMap<ProductCreateDTO, Product>().ReverseMap();
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)

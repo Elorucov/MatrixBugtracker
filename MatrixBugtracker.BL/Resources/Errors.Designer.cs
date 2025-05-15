@@ -61,6 +61,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A producth with requested name already exist.
+        /// </summary>
+        internal static string AlreadyHaveProductWithName {
+            get {
+                return ResourceManager.GetString("AlreadyHaveProductWithName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authenticated user not found or deleted.
         /// </summary>
         internal static string AuthUserNotFound {
@@ -115,6 +124,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access to this file denied.
+        /// </summary>
+        internal static string ForbiddenFile {
+            get {
+                return ResourceManager.GetString("ForbiddenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The format of uploaded file is wrong.
         /// </summary>
         internal static string InvalidFileFormat {
@@ -138,6 +156,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string NotFound {
             get {
                 return ResourceManager.GetString("NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A requested file is not found.
+        /// </summary>
+        internal static string NotFoundFile {
+            get {
+                return ResourceManager.GetString("NotFoundFile", resourceCulture);
             }
         }
         
