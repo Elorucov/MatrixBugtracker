@@ -34,5 +34,19 @@ namespace MatrixBugtracker.API.Controllers
         {
             return APIResponse(await _service.EditAsync(request));
         }
+
+        [HttpPut]
+        [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
+        public async Task<IActionResult> FinishTesting([FromForm] int productId)
+        {
+            return APIResponse(await _service.SetIsOverFlag(productId, true));
+        }
+
+        [HttpPut]
+        [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
+        public async Task<IActionResult> ResumeTesting([FromForm] int productId)
+        {
+            return APIResponse(await _service.SetIsOverFlag(productId, false));
+        }
     }
 }

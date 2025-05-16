@@ -86,6 +86,25 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
+        public async Task<ResponseDTO<bool>> SetIsOverFlag(int productId, bool flag)
+        {
+            Product product = await _repo.GetByIdAsync(productId);
+            if (product == null) return ResponseDTO<bool>.NotFound();
+
+            // Admins can access to all products, employees can access to only own created products
+            int currentUserId = _userIdProvider.UserId;
+            var currentUserRole = await _userService.GetUserRoleAsync(currentUserId);
+
+            if (currentUserRole != UserRole.Admin && product.CreatorId != currentUserId)
+                return ResponseDTO<bool>.Forbidden();
+
+            product.IsOver = flag;
+
+            _repo.Update(product);
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
         public ResponseDTO<ProductEnumsDTO> GetEnumValues()
         {
             var accessLevels = Enum.GetValues<ProductAccessLevel>()
