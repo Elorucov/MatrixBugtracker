@@ -151,10 +151,19 @@
     <value>Not found</value>
   </data>
   <data name="NotFoundFile" xml:space="preserve">
-    <value>A requested file is not found</value>
+    <value>The requested file was not found</value>
+  </data>
+  <data name="NotFoundProduct" xml:space="preserve">
+    <value>The requested product was not found</value>
+  </data>
+  <data name="NotFoundUser" xml:space="preserve">
+    <value>The requested user was not found</value>
   </data>
   <data name="NotImplemented" xml:space="preserve">
     <value>Not implemented yet</value>
+  </data>
+  <data name="ProductInviteAlreadySent" xml:space="preserve">
+    <value>An invitation to test this product has already been sent to the requested user</value>
   </data>
   <data name="RefreshTokenExpired" xml:space="preserve">
     <value>Refresh token is expired</value>
@@ -164,6 +173,12 @@
   </data>
   <data name="Unauthorized" xml:space="preserve">
     <value>Unauthorized</value>
+  </data>
+  <data name="UserAlreadyMember" xml:space="preserve">
+    <value>The requested user is already a member of this product</value>
+  </data>
+  <data name="UserIsNotMember" xml:space="preserve">
+    <value>The requested user is not a member of this product</value>
   </data>
   <data name="WrongEmailOrPassword" xml:space="preserve">
     <value>E-mail or password is incorrect</value>

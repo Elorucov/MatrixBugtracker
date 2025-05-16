@@ -7,7 +7,11 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     {
         Task<ResponseDTO<int>> CreateAsync(ProductCreateDTO request);
         Task<ResponseDTO<bool>> EditAsync(ProductEditDTO request);
-        Task<ResponseDTO<bool>> SetIsOverFlag(int productId, bool flag);
+        Task<ResponseDTO<bool>> SetIsOverFlagAsync(int productId, bool flag);
+        Task<ResponseDTO<bool>> InviteUserAsync(int productId, int userId);
+        Task<ResponseDTO<bool>> KickUserAsync(int productId, int userId);
+        Task<ResponseDTO<bool>> JoinAsync(int productId);
+        Task<ResponseDTO<bool>> LeaveAsync(int productId);
         ResponseDTO<ProductEnumsDTO> GetEnumValues();
     }
 }

@@ -38,14 +38,14 @@ namespace MatrixBugtracker.API.Filters
                 return;
             }
 
-            var role = await userService.GetUserRoleAsync(userId);
-            if (role == null)
+            var userEntity = await userService.GetSingleUserAsync(userId);
+            if (userEntity == null)
             {
                 context.Result = new UnauthorizedObjectResult(ResponseDTO<object>.Unauthorized("Authenticated user not found or deleted"));
                 return;
             }
 
-            if (!_roles.Contains(role.Value))
+            if (!_roles.Contains(userEntity.Role))
             {
                 context.Result = new ObjectResult(ResponseDTO<object>.Forbidden())
                 {

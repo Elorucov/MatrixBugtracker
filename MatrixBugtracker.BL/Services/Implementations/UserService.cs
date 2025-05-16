@@ -46,7 +46,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         #region Private methods
 
-        private async Task<User> GetSingleUserAsync(int userId)
+        public async Task<User> GetSingleUserAsync(int userId)
         {
             if (!_cachedUsers.TryGetValue(userId, out User user))
             {
@@ -139,20 +139,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<UserDTO>> GetByIdAsync(int userId)
         {
             var user = await GetSingleUserAsync(userId);
-            if (user == null) return ResponseDTO<UserDTO>.NotFound();
+            if (user == null) return ResponseDTO<UserDTO>.NotFound(Errors.NotFoundUser);
 
             UserDTO dto = null;
             dto = _mapper.Map(user, dto);
 
             return new ResponseDTO<UserDTO>(dto);
-        }
-
-        public async Task<UserRole?> GetUserRoleAsync(int userId)
-        {
-            var user = await GetSingleUserAsync(userId);
-            if (user == null) return null;
-
-            return user.Role;
         }
 
         public async Task<ResponseDTO<bool>> SetUserRoleAsync(int userId, UserRole role)

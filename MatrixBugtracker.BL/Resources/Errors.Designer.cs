@@ -160,11 +160,29 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A requested file is not found.
+        ///   Looks up a localized string similar to The requested file was not found.
         /// </summary>
         internal static string NotFoundFile {
             get {
                 return ResourceManager.GetString("NotFoundFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The requested product was not found.
+        /// </summary>
+        internal static string NotFoundProduct {
+            get {
+                return ResourceManager.GetString("NotFoundProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The requested user was not found.
+        /// </summary>
+        internal static string NotFoundUser {
+            get {
+                return ResourceManager.GetString("NotFoundUser", resourceCulture);
             }
         }
         
@@ -174,6 +192,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string NotImplemented {
             get {
                 return ResourceManager.GetString("NotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An invitation to test this product has already been sent to the requested user.
+        /// </summary>
+        internal static string ProductInviteAlreadySent {
+            get {
+                return ResourceManager.GetString("ProductInviteAlreadySent", resourceCulture);
             }
         }
         
@@ -201,6 +228,24 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string Unauthorized {
             get {
                 return ResourceManager.GetString("Unauthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The requested user is already a member of this product.
+        /// </summary>
+        internal static string UserAlreadyMember {
+            get {
+                return ResourceManager.GetString("UserAlreadyMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The requested user is not a member of this product.
+        /// </summary>
+        internal static string UserIsNotMember {
+            get {
+                return ResourceManager.GetString("UserIsNotMember", resourceCulture);
             }
         }
         

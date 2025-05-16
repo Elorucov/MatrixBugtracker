@@ -39,14 +39,42 @@ namespace MatrixBugtracker.API.Controllers
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> FinishTesting([FromForm] int productId)
         {
-            return APIResponse(await _service.SetIsOverFlag(productId, true));
+            return APIResponse(await _service.SetIsOverFlagAsync(productId, true));
         }
 
         [HttpPut]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> ResumeTesting([FromForm] int productId)
         {
-            return APIResponse(await _service.SetIsOverFlag(productId, false));
+            return APIResponse(await _service.SetIsOverFlagAsync(productId, false));
+        }
+
+        [HttpPost]
+        [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
+        public async Task<IActionResult> InviteUser([FromForm] int productId, [FromForm] int userId)
+        {
+            return APIResponse(await _service.InviteUserAsync(productId, userId));
+        }
+
+        [HttpPost]
+        [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
+        public async Task<IActionResult> KickUser([FromForm] int productId, [FromForm] int userId)
+        {
+            return APIResponse(await _service.KickUserAsync(productId, userId));
+        }
+
+        [HttpPost]
+        [AuthorizeApi([UserRole.Tester])]
+        public async Task<IActionResult> Join([FromForm] int productId)
+        {
+            return APIResponse(await _service.JoinAsync(productId));
+        }
+
+        [HttpPost]
+        [AuthorizeApi([UserRole.Tester])]
+        public async Task<IActionResult> Leave([FromForm] int productId)
+        {
+            return APIResponse(await _service.LeaveAsync(productId));
         }
     }
 }

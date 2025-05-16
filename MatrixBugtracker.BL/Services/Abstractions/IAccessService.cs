@@ -1,0 +1,10 @@
+﻿using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.DAL.Entities.Base;
+
+namespace MatrixBugtracker.BL.Services.Abstractions
+{
+    public interface IAccessService
+    {
+        Task<ResponseDTO<bool>> CheckAccessAsync(ICreateEntity entity);
+    }
+}

@@ -14,6 +14,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAccessService _accessService;
         private readonly IFileService _fileService;
         private readonly IUserService _userService;
         private readonly IUserIdProvider _userIdProvider;
@@ -21,9 +22,10 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         private readonly IProductRepository _repo;
 
-        public ProductService(IUnitOfWork unitOfWork, IFileService fileService, IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
+        public ProductService(IUnitOfWork unitOfWork, IAccessService accessService, IFileService fileService, IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _accessService = accessService;
             _fileService = fileService;
             _userService = userService;
             _userIdProvider = userIdProvider;
@@ -62,11 +64,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (product == null) return ResponseDTO<bool>.NotFound();
 
             // Admins can edit all products, employees can edit only own created products
-            int currentUserId = _userIdProvider.UserId;
-            var currentUserRole = await _userService.GetUserRoleAsync(currentUserId);
-
-            if (currentUserRole != UserRole.Admin && product.CreatorId != currentUserId) 
-                return ResponseDTO<bool>.Forbidden();
+            var access = await _accessService.CheckAccessAsync(product);
+            if (!access.Success) return ResponseDTO<bool>.Error(access.HttpStatusCode, access.ErrorMessage);
 
             // Checking photo file
             UploadedFile imageFile = null;
@@ -86,22 +85,129 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
-        public async Task<ResponseDTO<bool>> SetIsOverFlag(int productId, bool flag)
+        public async Task<ResponseDTO<bool>> SetIsOverFlagAsync(int productId, bool flag)
         {
             Product product = await _repo.GetByIdAsync(productId);
             if (product == null) return ResponseDTO<bool>.NotFound();
 
             // Admins can access to all products, employees can access to only own created products
-            int currentUserId = _userIdProvider.UserId;
-            var currentUserRole = await _userService.GetUserRoleAsync(currentUserId);
-
-            if (currentUserRole != UserRole.Admin && product.CreatorId != currentUserId)
-                return ResponseDTO<bool>.Forbidden();
+            var access = await _accessService.CheckAccessAsync(product);
+            if (!access.Success) return ResponseDTO<bool>.Error(access.HttpStatusCode, access.ErrorMessage);
 
             product.IsOver = flag;
 
             _repo.Update(product);
             await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> InviteUserAsync(int productId, int userId)
+        {
+            Product product = await _repo.GetByIdAsync(productId);
+            if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
+
+            // Admins can access to all products, employees can access to only own created products
+            var access = await _accessService.CheckAccessAsync(product);
+            if (!access.Success) return ResponseDTO<bool>.Error(access.HttpStatusCode, access.ErrorMessage);
+
+            // Check if user already joined into product.
+            // If user itself sent a join request, he will be joined,
+            // otherwise we send an invite
+
+            var prodMem = await _repo.GetProductMemberAsync(productId, userId);
+            if (prodMem != null)
+            {
+                if (prodMem.Status != ProductMemberStatus.JoinRequested)
+                {
+                    string errorMessage = prodMem.Status switch
+                    {
+                        ProductMemberStatus.Joined => Errors.UserAlreadyMember,
+                        ProductMemberStatus.InviteReceived => Errors.ProductInviteAlreadySent,
+                        _ => string.Empty
+                    };
+                    return ResponseDTO<bool>.BadRequest(errorMessage);
+                }
+                else
+                {
+                    prodMem.Status = ProductMemberStatus.Joined;
+                    _repo.UpdateProductMember(prodMem);
+                }
+            }
+            else
+            {
+                User user = await _userService.GetSingleUserAsync(userId);
+                await _repo.AddUserToProductAsync(product, user, ProductMemberStatus.InviteReceived);
+            }
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> KickUserAsync(int productId, int userId)
+        {
+            Product product = await _repo.GetByIdAsync(productId);
+            if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
+
+            // Admins can access to all products, employees can access to only own created products
+            var access = await _accessService.CheckAccessAsync(product);
+            if (!access.Success) return ResponseDTO<bool>.Error(access.HttpStatusCode, access.ErrorMessage);
+
+            // Check if user already joined into product.
+
+            var prodMem = await _repo.GetProductMemberAsync(productId, userId);
+            if (prodMem == null) return ResponseDTO<bool>.BadRequest(Errors.UserIsNotMember);
+
+            _repo.RemoveUserFromProduct(prodMem);
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> JoinAsync(int productId)
+        {
+            Product product = await _repo.GetByIdAsync(productId);
+            if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
+
+            int currentUserId = _userIdProvider.UserId;
+
+            var prodMem = await _repo.GetProductMemberAsync(productId, currentUserId);
+            if (prodMem != null)
+            {
+                if (prodMem.Status != ProductMemberStatus.InviteReceived) return ResponseDTO<bool>.BadRequest();
+                prodMem.Status = ProductMemberStatus.Joined;
+
+                _repo.UpdateProductMember(prodMem);
+                await _unitOfWork.CommitAsync();
+                return new ResponseDTO<bool>(true);
+            }
+            else
+            {
+                if (product.AccessLevel == ProductAccessLevel.Secret) return ResponseDTO<bool>.Forbidden();
+
+                User user = await _userService.GetSingleUserAsync(currentUserId);
+                var status = product.AccessLevel == ProductAccessLevel.Closed
+                    ? ProductMemberStatus.JoinRequested : ProductMemberStatus.Joined;
+
+                await _repo.AddUserToProductAsync(product, user, status);
+                await _unitOfWork.CommitAsync();
+
+                return new ResponseDTO<bool>(true);
+            }
+        }
+
+        public async Task<ResponseDTO<bool>> LeaveAsync(int productId)
+        {
+            Product product = await _repo.GetByIdAsync(productId);
+            if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
+
+            int currentUserId = _userIdProvider.UserId;
+
+            var prodMem = await _repo.GetProductMemberAsync(productId, currentUserId);
+            if (prodMem == null) return ResponseDTO<bool>.BadRequest();
+
+            _repo.RemoveUserFromProduct(prodMem);
+            await _unitOfWork.CommitAsync();
+
             return new ResponseDTO<bool>(true);
         }
 

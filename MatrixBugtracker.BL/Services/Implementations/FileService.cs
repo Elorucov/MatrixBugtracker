@@ -77,8 +77,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Admins can get all files, others can get only own files
             int currentUserId = _userIdProvider.UserId;
-            var role = await _userService.GetUserRoleAsync(currentUserId);
-            if (role != DAL.Enums.UserRole.Admin && file.CreatorId != _userIdProvider.UserId) return ResponseDTO<UploadedFile>.Forbidden(Errors.ForbiddenFile);
+            var user = await _userService.GetSingleUserAsync(currentUserId);
+            if (user?.Role != DAL.Enums.UserRole.Admin && file.CreatorId != _userIdProvider.UserId) return ResponseDTO<UploadedFile>.Forbidden(Errors.ForbiddenFile);
             if (isImage && !file.IsImage()) return ResponseDTO<UploadedFile>.BadRequest(Errors.FileIsNotImage);
 
             return new ResponseDTO<UploadedFile>(file);
