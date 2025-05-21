@@ -12,6 +12,8 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<bool>> KickUserAsync(int productId, int userId);
         Task<ResponseDTO<bool>> JoinAsync(int productId);
         Task<ResponseDTO<bool>> LeaveAsync(int productId);
+        Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(PaginationRequestDTO request);
+        Task<PaginationResponseDTO<ProductDTO>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request);
         ResponseDTO<ProductEnumsDTO> GetEnumValues();
     }
 }

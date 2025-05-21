@@ -30,7 +30,7 @@ namespace MatrixBugtracker.DAL.Configs
                 .HasConversion<byte>()
                 .HasColumnName("type");
 
-            builder.HasOne(d => d.Creator).WithMany(p => p.Products)
+            builder.HasOne(d => d.Creator).WithMany(p => p.CreatedProducts)
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_Creator");

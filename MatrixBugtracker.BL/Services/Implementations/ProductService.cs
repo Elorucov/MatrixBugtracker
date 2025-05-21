@@ -6,6 +6,7 @@ using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 
@@ -209,6 +210,37 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return new ResponseDTO<bool>(true);
+        }
+
+        // Returns a list of all products in the bugtracker.
+        // Note: if user is tester, the list should NOT contain secret products that the tester is not a member of.
+        public async Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(PaginationRequestDTO request)
+        {
+            var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
+            PaginationResult<Product> result = null;
+
+            if (currentUser.Role == UserRole.Tester)
+            {
+                result = await _repo.GetWithoutSecretProductsAsync(currentUser.Id, request.Number, request.Size);
+            } else
+            {
+                result = await _repo.GetPageWithMembersAsync(request.Number, request.Size);
+            }
+
+            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(result.Items);
+            return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
+        }
+
+        // Returns a list of products that current user has an invite.
+        public async Task<PaginationResponseDTO<ProductDTO>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request)
+        {
+            int currentUserId = _userIdProvider.UserId;
+
+            var result = await _repo.GetProductsForUserByStatusAsync(ProductMemberStatus.InviteReceived, currentUserId, request.Number, request.Size);
+            var products = result.Items.Select(pm => pm.Product);
+
+            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
+            return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
         }
 
         public ResponseDTO<ProductEnumsDTO> GetEnumValues()

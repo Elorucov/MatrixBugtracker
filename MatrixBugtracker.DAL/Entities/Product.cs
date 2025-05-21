@@ -15,4 +15,6 @@ public class Product : BaseEntity
     public virtual User Creator { get; set; }
     public virtual UploadedFile PhotoFile { get; set; }
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
+
+    public virtual ICollection<ProductMember> ProductMembers { get; set; } = new List<ProductMember>();
 }

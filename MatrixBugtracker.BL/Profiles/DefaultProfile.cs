@@ -5,6 +5,7 @@ using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.DAL.Entities;
+using MatrixBugtracker.DAL.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +30,7 @@ namespace MatrixBugtracker.BL.Profiles
 
             CreateMap<ProductCreateDTO, Product>().ReverseMap();
             CreateMap<ProductEditDTO, Product>().ReverseMap();
+            CreateMap<Product, ProductDTO>().AfterMap(ToProductDTO);
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)
@@ -48,6 +50,24 @@ namespace MatrixBugtracker.BL.Profiles
             if (user.PhotoFile != null)
             {
                 dto.Photo = Mapper.Map<FileDTO>(user.PhotoFile);
+            }
+        }
+
+        private void ToProductDTO(Product product, ProductDTO dto)
+        {
+            if (product.ProductMembers != null)
+            {
+                int currentUserId = UserIdProvider.UserId;
+                ProductMemberStatus status = product.ProductMembers
+                    .Where(pm => pm.MemberId == currentUserId)
+                    .Select(pm => pm.Status).FirstOrDefault();
+
+                dto.MembershipStatus = status;
+            }
+
+            if (product.PhotoFile != null)
+            {
+                dto.Photo = Mapper.Map<FileDTO>(product.PhotoFile);
             }
         }
     }

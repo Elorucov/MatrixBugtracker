@@ -4,6 +4,7 @@ using MatrixBugtracker.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    partial class BugtrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20250521144530_FixProductMemberNav2")]
+    partial class FixProductMemberNav2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -646,7 +649,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsEmailConfirmed = true,
                             LastName = "Doe",
                             ModeratorName = "Moderator",
-                            Password = "YRmAYV699TIJGpBSGwjcG+qPXiNe8T2EjiE+VaV/U1OUHDusYtDQ3mSH2QpjiT2S",
+                            Password = "ri3zn9eayzMC3aaDQg3uKhdVZ3nfJdX3XIuFk82d5g3VqBKRLnlyJwlI40ht6MQw",
                             Role = (byte)1
                         });
                 });
@@ -713,7 +716,7 @@ namespace MatrixBugtracker.DAL.Migrations
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ProductMember", b =>
                 {
                     b.HasOne("MatrixBugtracker.DAL.Entities.User", "Member")
-                        .WithMany("JoinedProducts")
+                        .WithMany()
                         .HasForeignKey("MemberId")
                         .IsRequired()
                         .HasConstraintName("FK_PU_Member");
@@ -873,8 +876,6 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("CreatedProducts");
-
-                    b.Navigation("JoinedProducts");
 
                     b.Navigation("RefreshTokens");
 

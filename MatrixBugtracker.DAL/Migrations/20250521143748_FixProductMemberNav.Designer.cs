@@ -4,6 +4,7 @@ using MatrixBugtracker.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    partial class BugtrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20250521143748_FixProductMemberNav")]
+    partial class FixProductMemberNav
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,6 +247,9 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("member_id");
 
+                    b.Property<int?>("ProductId1")
+                        .HasColumnType("int");
+
                     b.Property<byte>("Status")
                         .HasColumnType("tinyint")
                         .HasColumnName("status");
@@ -252,6 +258,8 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasName("K_ProductMember");
 
                     b.HasIndex("MemberId");
+
+                    b.HasIndex("ProductId1");
 
                     b.HasIndex(new[] { "ProductId", "MemberId" }, "UQ_ProductMember")
                         .IsUnique();
@@ -646,7 +654,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsEmailConfirmed = true,
                             LastName = "Doe",
                             ModeratorName = "Moderator",
-                            Password = "YRmAYV699TIJGpBSGwjcG+qPXiNe8T2EjiE+VaV/U1OUHDusYtDQ3mSH2QpjiT2S",
+                            Password = "SzwC4sHWEOcLe0qzQf0WPKcvkLTRVia2jXV91pmeiwfmTWMBQfIubkwDIIA5plns",
                             Role = (byte)1
                         });
                 });
@@ -713,16 +721,20 @@ namespace MatrixBugtracker.DAL.Migrations
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ProductMember", b =>
                 {
                     b.HasOne("MatrixBugtracker.DAL.Entities.User", "Member")
-                        .WithMany("JoinedProducts")
+                        .WithMany()
                         .HasForeignKey("MemberId")
                         .IsRequired()
                         .HasConstraintName("FK_PU_Member");
 
                     b.HasOne("MatrixBugtracker.DAL.Entities.Product", "Product")
-                        .WithMany("ProductMembers")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .IsRequired()
                         .HasConstraintName("FK_PU_Product");
+
+                    b.HasOne("MatrixBugtracker.DAL.Entities.Product", null)
+                        .WithMany("ProductMembers")
+                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Member");
 
@@ -873,8 +885,6 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("CreatedProducts");
-
-                    b.Navigation("JoinedProducts");
 
                     b.Navigation("RefreshTokens");
 

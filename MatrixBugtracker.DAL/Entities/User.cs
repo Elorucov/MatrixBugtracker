@@ -22,7 +22,8 @@ public partial class User : IDeleteEntity
     public virtual ICollection<UploadedFile> UploadedFiles { get; set; } = new List<UploadedFile>();
     public virtual UploadedFile PhotoFile { get; set; }
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public virtual ICollection<Product> CreatedProducts { get; set; } = new List<Product>();
+    public virtual ICollection<ProductMember> JoinedProducts { get; set; } = new List<ProductMember>();
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }

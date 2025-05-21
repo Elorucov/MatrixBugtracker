@@ -8,6 +8,6 @@ public class ProductMember
     public int MemberId { get; set; }
     public ProductMemberStatus Status { get; set; }
 
-    public virtual User Member { get; set; }
     public virtual Product Product { get; set; }
+    public virtual User Member { get; set; }
 }

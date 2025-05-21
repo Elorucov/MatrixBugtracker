@@ -1,4 +1,5 @@
 ﻿using MatrixBugtracker.API.Filters;
+using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Enums;
@@ -75,6 +76,20 @@ namespace MatrixBugtracker.API.Controllers
         public async Task<IActionResult> Leave([FromForm] int productId)
         {
             return APIResponse(await _service.LeaveAsync(productId));
+        }
+
+        [HttpPost]
+        [AuthorizeApi()]
+        public async Task<IActionResult> Get([FromForm] PaginationRequestDTO request)
+        {
+            return APIResponse(await _service.GetAllAsync(request));
+        }
+
+        [HttpPost]
+        [AuthorizeApi([UserRole.Tester])]
+        public async Task<IActionResult> GetInvited([FromForm] PaginationRequestDTO request)
+        {
+            return APIResponse(await _service.GetProductsWithInviteRequestAsync(request));
         }
     }
 }

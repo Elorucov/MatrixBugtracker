@@ -17,12 +17,12 @@ namespace MatrixBugtracker.DAL.Configs
             builder.Property(e => e.ProductId).HasColumnName("product_id");
             builder.Property(e => e.Status).HasColumnName("status");
 
-            builder.HasOne(d => d.Member).WithMany()
+            builder.HasOne(d => d.Member).WithMany(u => u.JoinedProducts)
                 .HasForeignKey(d => d.MemberId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PU_Member");
 
-            builder.HasOne(d => d.Product).WithMany()
+            builder.HasOne(d => d.Product).WithMany(p => p.ProductMembers)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PU_Product");
