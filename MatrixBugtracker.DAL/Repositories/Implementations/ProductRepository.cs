@@ -6,6 +6,7 @@ using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations
 {
@@ -24,6 +25,13 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
                 .GetPageAsync(number, size);
         }
 
+        public async Task<PaginationResult<Product>> SearchAsync(string query, int number, int size)
+        {
+            return await _dbSet.Include(pm => pm.ProductMembers)
+                .Where(p => p.Name.ToLower().Contains(query.ToLower()))
+                .GetPageAsync(number, size);
+        }
+
         public async Task<PaginationResult<Product>> GetWithoutSecretProductsAsync(int authorizedUserId, int number, int size)
         {
             ProductMemberStatus[] statuses = { ProductMemberStatus.InviteReceived, ProductMemberStatus.Joined };
@@ -34,6 +42,19 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
             return await _dbSet.Include(pm => pm.ProductMembers)
                 .Where(p => p.AccessLevel != ProductAccessLevel.Secret || joinedSecretProducts.Contains(p))
+                .GetPageAsync(number, size);
+        }
+
+        public async Task<PaginationResult<Product>> SearchWithoutSecretProductsAsync(int authorizedUserId, string query, int number, int size)
+        {
+            ProductMemberStatus[] statuses = { ProductMemberStatus.InviteReceived, ProductMemberStatus.Joined };
+            var joinedSecretProducts = await _db.ProductMembers.Include(p => p.Product)
+                .Where(p => p.MemberId == authorizedUserId && p.Product.AccessLevel == ProductAccessLevel.Secret && statuses.Contains(p.Status))
+                .Select(p => p.Product)
+                .ToListAsync();
+
+            return await _dbSet.Include(pm => pm.ProductMembers)
+                .Where(p => p.Name.ToLower().Contains(query.ToLower()) && (p.AccessLevel != ProductAccessLevel.Secret || joinedSecretProducts.Contains(p)))
                 .GetPageAsync(number, size);
         }
 

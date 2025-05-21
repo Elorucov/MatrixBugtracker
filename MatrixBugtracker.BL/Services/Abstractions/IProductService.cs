@@ -14,6 +14,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<bool>> LeaveAsync(int productId);
         Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(PaginationRequestDTO request);
         Task<PaginationResponseDTO<ProductDTO>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request);
+        Task<PaginationResponseDTO<ProductDTO>> SearchAsync(PaginatedSearchRequestDTO request);
         ResponseDTO<ProductEnumsDTO> GetEnumValues();
     }
 }

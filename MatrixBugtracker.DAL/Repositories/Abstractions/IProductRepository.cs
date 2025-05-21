@@ -9,7 +9,9 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
     {
         Task<bool> HasEntityAsync(string name);
         Task<PaginationResult<Product>> GetPageWithMembersAsync(int number, int size);
+        Task<PaginationResult<Product>> SearchAsync(string query, int number, int size);
         Task<PaginationResult<Product>> GetWithoutSecretProductsAsync(int authorizedUserId, int number, int size);
+        Task<PaginationResult<Product>> SearchWithoutSecretProductsAsync(int authorizedUserId, string query, int number, int size);
         Task<ProductMember> GetProductMemberAsync(int productId, int userId);
         Task<PaginationResult<ProductMember>> GetProductsForUserByStatusAsync(ProductMemberStatus status, int userId, int number, int size);
         Task AddUserToProductAsync(Product product, User user, ProductMemberStatus status);

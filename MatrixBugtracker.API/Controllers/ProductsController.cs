@@ -78,18 +78,25 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.LeaveAsync(productId));
         }
 
-        [HttpPost]
+        [HttpGet]
         [AuthorizeApi()]
-        public async Task<IActionResult> Get([FromForm] PaginationRequestDTO request)
+        public async Task<IActionResult> Get([FromQuery] PaginationRequestDTO request)
         {
             return APIResponse(await _service.GetAllAsync(request));
         }
 
-        [HttpPost]
+        [HttpGet]
         [AuthorizeApi([UserRole.Tester])]
-        public async Task<IActionResult> GetInvited([FromForm] PaginationRequestDTO request)
+        public async Task<IActionResult> GetInvited([FromQuery] PaginationRequestDTO request)
         {
             return APIResponse(await _service.GetProductsWithInviteRequestAsync(request));
+        }
+
+        [HttpGet]
+        [AuthorizeApi()]
+        public async Task<IActionResult> Search([FromQuery] PaginatedSearchRequestDTO request)
+        {
+            return APIResponse(await _service.SearchAsync(request));
         }
     }
 }
