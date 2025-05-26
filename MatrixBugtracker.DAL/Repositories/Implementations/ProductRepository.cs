@@ -6,7 +6,6 @@ using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations
 {
@@ -63,10 +62,19 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             return await _db.ProductMembers.SingleOrDefaultAsync(e => e.ProductId == productId && e.MemberId == userId);
         }
 
-        public async Task<PaginationResult<ProductMember>> GetProductsForUserByStatusAsync(ProductMemberStatus status, int userId, int number, int size)
+        public async Task<PaginationResult<Product>> GetProductsForUserByStatusAsync(ProductMemberStatus status, int userId, int number, int size)
         {
             return await _db.ProductMembers.Include(pm => pm.Product)
                 .Where(e => e.Status == status && e.MemberId == userId)
+                .Select(e => e.Product)
+                .GetPageAsync(number, size);
+        }
+
+        public async Task<PaginationResult<User>> GetUsersForProductByStatusAsync(ProductMemberStatus status, int productId, int number, int size)
+        {
+            return await _db.ProductMembers.Include(pm => pm.Member)
+                .Where(e => e.Status == status && e.ProductId == productId)
+                .Select(e => e.Member)
                 .GetPageAsync(number, size);
         }
 

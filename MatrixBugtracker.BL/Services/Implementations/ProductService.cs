@@ -2,6 +2,7 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
+using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
@@ -233,7 +234,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             int currentUserId = _userIdProvider.UserId;
 
             var result = await _repo.GetProductsForUserByStatusAsync(ProductMemberStatus.InviteReceived, currentUserId, request.Number, request.Size);
-            var products = result.Items.Select(pm => pm.Product);
+            var products = result.Items;
 
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
             return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
@@ -252,6 +253,24 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(result.Items);
             return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
+        }
+
+        // For product creator and admins: get users that sent join request to product
+        public async Task<PaginationResponseDTO<UserDTO>> GetJoinRequestUsers(GetJoinRequestUsersReqDTO request)
+        {
+            Product product = await _repo.GetByIdAsync(request.ProductId);
+            if (product == null) return (PaginationResponseDTO<UserDTO>)PaginationResponseDTO<UserDTO>.NotFound();
+
+            // Admins can access to all products, employees can access to only own created products
+            var access = await _accessService.CheckAccessAsync(product);
+            if (!access.Success) return (PaginationResponseDTO<UserDTO>)PaginationResponseDTO<UserDTO>.Error(access.HttpStatusCode, access.ErrorMessage);
+
+            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.JoinRequested, request.ProductId, request.Number, request.Size);
+            var users = result.Items;
+
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);
+            return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
+
         }
 
         public ResponseDTO<ProductEnumsDTO> GetEnumValues()

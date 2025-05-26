@@ -79,7 +79,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpGet]
-        [AuthorizeApi()]
+        [AuthorizeApi]
         public async Task<IActionResult> Get([FromQuery] PaginationRequestDTO request)
         {
             return APIResponse(await _service.GetAllAsync(request));
@@ -93,7 +93,14 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpGet]
-        [AuthorizeApi()]
+        [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
+        public async Task<IActionResult> GetJoinRequests([FromQuery] GetJoinRequestUsersReqDTO request)
+        {
+            return APIResponse(await _service.GetJoinRequestUsers(request));
+        }
+
+        [HttpGet]
+        [AuthorizeApi]
         public async Task<IActionResult> Search([FromQuery] PaginatedSearchRequestDTO request)
         {
             return APIResponse(await _service.SearchAsync(request));

@@ -8,7 +8,7 @@ namespace MatrixBugtracker.BL.DTOs.Infra
 {
     public class PaginationResponseDTO<T> : ResponseDTO<List<T>>
     {
-        public int Count { get; private set; }
+        public int? Count { get; private set; }
 
         public PaginationResponseDTO(List<T> response, int count, int httpStatusCode = 200) : base(response, httpStatusCode)
         {
