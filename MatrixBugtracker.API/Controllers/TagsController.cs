@@ -3,7 +3,6 @@ using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Enums;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.API.Controllers
 {
@@ -17,7 +16,7 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet]
         [AuthorizeApi]
-        public async Task<IActionResult> Get([FromQuery]bool withArchived)
+        public async Task<IActionResult> Get([FromQuery] bool withArchived)
         {
             return APIResponse(await _service.GetAsync(withArchived));
         }

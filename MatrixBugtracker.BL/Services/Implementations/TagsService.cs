@@ -1,17 +1,11 @@
 ﻿using AutoMapper;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Tags;
-using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -38,10 +32,10 @@ namespace MatrixBugtracker.BL.Services.Implementations
             for (int i = 0; i < tags.Length; i++)
             {
                 string tag = tags[i];
-                if (string.IsNullOrWhiteSpace(tag)) 
+                if (string.IsNullOrWhiteSpace(tag))
                     return ResponseDTO<AddTagResultDTO>.BadRequest(string.Format(Errors.TagIsEmpty, i));
 
-                if (tag.Length > 64) 
+                if (tag.Length > 64)
                     return ResponseDTO<AddTagResultDTO>.BadRequest(string.Format(Errors.TagIsLong, i));
             }
 
