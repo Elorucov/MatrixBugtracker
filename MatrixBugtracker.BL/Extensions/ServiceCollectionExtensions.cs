@@ -31,6 +31,7 @@ namespace MatrixBugtracker.BL.Extensions
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ITagsService, TagsService>();
         }
     }
 }

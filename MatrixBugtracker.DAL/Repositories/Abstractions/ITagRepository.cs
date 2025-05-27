@@ -10,5 +10,7 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
 {
     public interface ITagRepository : IRepository<Tag>
     {
+        Task<List<Tag>> GetIntersectingAsync(string[] tags);
+        Task AddBatchAsync(string[] tags);
     }
 }

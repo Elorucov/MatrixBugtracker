@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Tags;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace MatrixBugtracker.BL.Services.Abstractions
 {
-    internal interface ITagsService
+    public interface ITagsService
     {
-
+        Task<ResponseDTO<AddTagResultDTO>> AddAsync(string tagstagsComma);
     }
 }

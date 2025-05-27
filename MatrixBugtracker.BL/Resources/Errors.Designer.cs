@@ -61,6 +61,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All submitted tags already exist.
+        /// </summary>
+        internal static string AllTagsAlreadyExist {
+            get {
+                return ResourceManager.GetString("AllTagsAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A producth with requested name already exist.
         /// </summary>
         internal static string AlreadyHaveProductWithName {
@@ -219,6 +228,24 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string RoleIsSame {
             get {
                 return ResourceManager.GetString("RoleIsSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag {0} is empty.
+        /// </summary>
+        internal static string TagIsEmpty {
+            get {
+                return ResourceManager.GetString("TagIsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag {0} is long.
+        /// </summary>
+        internal static string TagIsLong {
+            get {
+                return ResourceManager.GetString("TagIsLong", resourceCulture);
             }
         }
         

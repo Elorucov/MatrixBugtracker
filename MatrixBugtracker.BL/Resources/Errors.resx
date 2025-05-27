@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AllTagsAlreadyExist" xml:space="preserve">
+    <value>All submitted tags already exist</value>
+  </data>
   <data name="AlreadyHaveProductWithName" xml:space="preserve">
     <value>A producth with requested name already exist</value>
   </data>
@@ -170,6 +173,12 @@
   </data>
   <data name="RoleIsSame" xml:space="preserve">
     <value>This user already has this role</value>
+  </data>
+  <data name="TagIsEmpty" xml:space="preserve">
+    <value>Tag {0} is empty</value>
+  </data>
+  <data name="TagIsLong" xml:space="preserve">
+    <value>Tag {0} is long</value>
   </data>
   <data name="Unauthorized" xml:space="preserve">
     <value>Unauthorized</value>
