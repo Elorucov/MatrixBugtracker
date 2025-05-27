@@ -17,9 +17,9 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet]
         [AuthorizeApi]
-        public IActionResult Get([FromQuery]bool withArchived)
+        public async Task<IActionResult> Get([FromQuery]bool withArchived)
         {
-            return APIResponse(ResponseDTO<object>.NotImplemented());
+            return APIResponse(await _service.GetAsync(withArchived));
         }
 
         [HttpPost]

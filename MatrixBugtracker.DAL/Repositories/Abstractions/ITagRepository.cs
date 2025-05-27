@@ -11,6 +11,8 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
     public interface ITagRepository : IRepository<Tag>
     {
         Task<List<Tag>> GetIntersectingAsync(string[] tags);
+        Task<List<Tag>> GetAllAsync();
+        Task<List<Tag>> GetUnarchivedAsync();
         Task AddBatchAsync(string[] tags);
     }
 }

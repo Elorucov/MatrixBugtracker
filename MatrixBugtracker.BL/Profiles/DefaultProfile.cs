@@ -3,6 +3,7 @@ using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
+using MatrixBugtracker.BL.DTOs.Tags;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
@@ -31,6 +32,8 @@ namespace MatrixBugtracker.BL.Profiles
             CreateMap<ProductCreateDTO, Product>().ReverseMap();
             CreateMap<ProductEditDTO, Product>().ReverseMap();
             CreateMap<Product, ProductDTO>().AfterMap(ToProductDTO);
+
+            CreateMap<Tag, TagDTO>();
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)

@@ -4,6 +4,7 @@ using MatrixBugtracker.BL.DTOs.Tags;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
+using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using System;
@@ -58,6 +59,13 @@ namespace MatrixBugtracker.BL.Services.Implementations
             };
 
             return new ResponseDTO<AddTagResultDTO>(result);
+        }
+
+        public async Task<ResponseDTO<List<TagDTO>>> GetAsync(bool withArchived)
+        {
+            List<Tag> tags = withArchived ? await _repo.GetAllAsync() : await _repo.GetUnarchivedAsync();
+            List<TagDTO> tagDTOs = _mapper.Map<List<TagDTO>>(tags);
+            return new ResponseDTO<List<TagDTO>>(tagDTOs);
         }
     }
 }

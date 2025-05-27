@@ -18,7 +18,17 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
         public async Task<List<Tag>> GetIntersectingAsync(string[] tags)
         {
             return await _dbSet.Where(t => tags.Contains(t.Name)).ToListAsync();
-        } 
+        }
+
+        public async Task<List<Tag>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
+        public async Task<List<Tag>> GetUnarchivedAsync()
+        {
+            return await _dbSet.Where(t => !t.IsArchived).ToListAsync();
+        }
 
         public async Task AddBatchAsync(string[] tags)
         {
