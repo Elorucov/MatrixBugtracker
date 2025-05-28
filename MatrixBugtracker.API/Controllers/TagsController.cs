@@ -1,5 +1,4 @@
 ﻿using MatrixBugtracker.API.Filters;
-using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -28,18 +27,20 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.AddAsync(tagsComma));
         }
 
+        // TODO: multiple tags
         [HttpPut]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public IActionResult Archive([FromQuery] string tag)
+        public async Task<IActionResult> Archive([FromQuery] string tag)
         {
-            return APIResponse(ResponseDTO<object>.NotImplemented());
+            return APIResponse(await _service.SetArchiveFlag(tag, true));
         }
 
+        // TODO: multiple tags
         [HttpPut]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public IActionResult Unarchive([FromQuery] string tag)
+        public async Task<IActionResult> UnarchiveAsync([FromQuery] string tag)
         {
-            return APIResponse(ResponseDTO<object>.NotImplemented());
+            return APIResponse(await _service.SetArchiveFlag(tag, false));
         }
     }
 }

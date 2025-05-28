@@ -61,5 +61,18 @@ namespace MatrixBugtracker.BL.Services.Implementations
             List<TagDTO> tagDTOs = _mapper.Map<List<TagDTO>>(tags);
             return new ResponseDTO<List<TagDTO>>(tagDTOs);
         }
+
+        public async Task<ResponseDTO<bool>> SetArchiveFlag(string tagName, bool isArchived)
+        {
+            Tag tag = await _repo.GetByNameAsync(tagName);
+            if (tag == null) return ResponseDTO<bool>.NotFound();
+
+            tag.IsArchived = isArchived;
+
+            _repo.Update(tag);
+            await _unitOfWork.CommitAsync();
+
+            return new ResponseDTO<bool>(true);
+        }
     }
 }

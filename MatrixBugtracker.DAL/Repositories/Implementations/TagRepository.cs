@@ -15,6 +15,11 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             return await _dbSet.Where(t => tags.Contains(t.Name)).ToListAsync();
         }
 
+        public async Task<Tag> GetByNameAsync(string name)
+        {
+            return await _dbSet.FirstOrDefaultAsync(t => t.Name == name);
+        }
+
         public async Task<List<Tag>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
