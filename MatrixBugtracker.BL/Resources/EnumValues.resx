@@ -138,6 +138,90 @@
   <data name="ProductType_WebSite" xml:space="preserve">
     <value>Web site</value>
   </data>
+  <data name="ReportProblemType_AesteticDiscrepancies" xml:space="preserve">
+    <value>Aestetic discrepancies</value>
+  </data>
+  <data name="ReportProblemType_AppCrash" xml:space="preserve">
+    <value>App crash</value>
+  </data>
+  <data name="ReportProblemType_AppFroze" xml:space="preserve">
+    <value>App froze</value>
+  </data>
+  <data name="ReportProblemType_DataDamage" xml:space="preserve">
+    <value>Data damage</value>
+  </data>
+  <data name="ReportProblemType_FunctionNotWorking" xml:space="preserve">
+    <value>Function not working</value>
+  </data>
+  <data name="ReportProblemType_Performance" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="ReportProblemType_Suggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="ReportProblemType_Typo" xml:space="preserve">
+    <value>Typo</value>
+  </data>
+  <data name="ReportSeverity_Critical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="ReportSeverity_High" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="ReportSeverity_Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="ReportSeverity_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="ReportSeverity_Vulnerability" xml:space="preserve">
+    <value>Vulnerability</value>
+  </data>
+  <data name="ReportStatus_Blocked" xml:space="preserve">
+    <value>Blocked</value>
+  </data>
+  <data name="ReportStatus_CannotReproduce" xml:space="preserve">
+    <value>Cannot reproduce</value>
+  </data>
+  <data name="ReportStatus_Declined" xml:space="preserve">
+    <value>Declined</value>
+  </data>
+  <data name="ReportStatus_Deferred" xml:space="preserve">
+    <value>Deferred</value>
+  </data>
+  <data name="ReportStatus_Duplicate" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="ReportStatus_Fixed" xml:space="preserve">
+    <value>Fixed</value>
+  </data>
+  <data name="ReportStatus_InProgress" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="ReportStatus_NeedsCorrection" xml:space="preserve">
+    <value>Needs correction</value>
+  </data>
+  <data name="ReportStatus_Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="ReportStatus_Outdated" xml:space="preserve">
+    <value>Outdated</value>
+  </data>
+  <data name="ReportStatus_ReadyForTesting" xml:space="preserve">
+    <value>Ready for testing</value>
+  </data>
+  <data name="ReportStatus_Reopened" xml:space="preserve">
+    <value>Reopened</value>
+  </data>
+  <data name="ReportStatus_UnderReview" xml:space="preserve">
+    <value>Under review</value>
+  </data>
+  <data name="ReportStatus_Verified" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="ReportStatus_WontBeFixed" xml:space="preserve">
+    <value>Won't be fixed</value>
+  </data>
   <data name="Role_Admin" xml:space="preserve">
     <value>Admin</value>
   </data>

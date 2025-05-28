@@ -124,6 +124,258 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aestetic discrepancies.
+        /// </summary>
+        internal static string ReportProblemType_AesteticDiscrepancies {
+            get {
+                return ResourceManager.GetString("ReportProblemType_AesteticDiscrepancies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App crash.
+        /// </summary>
+        internal static string ReportProblemType_AppCrash {
+            get {
+                return ResourceManager.GetString("ReportProblemType_AppCrash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App froze.
+        /// </summary>
+        internal static string ReportProblemType_AppFroze {
+            get {
+                return ResourceManager.GetString("ReportProblemType_AppFroze", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data damage.
+        /// </summary>
+        internal static string ReportProblemType_DataDamage {
+            get {
+                return ResourceManager.GetString("ReportProblemType_DataDamage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function not working.
+        /// </summary>
+        internal static string ReportProblemType_FunctionNotWorking {
+            get {
+                return ResourceManager.GetString("ReportProblemType_FunctionNotWorking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Performance.
+        /// </summary>
+        internal static string ReportProblemType_Performance {
+            get {
+                return ResourceManager.GetString("ReportProblemType_Performance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestion.
+        /// </summary>
+        internal static string ReportProblemType_Suggestion {
+            get {
+                return ResourceManager.GetString("ReportProblemType_Suggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Typo.
+        /// </summary>
+        internal static string ReportProblemType_Typo {
+            get {
+                return ResourceManager.GetString("ReportProblemType_Typo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Critical.
+        /// </summary>
+        internal static string ReportSeverity_Critical {
+            get {
+                return ResourceManager.GetString("ReportSeverity_Critical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High.
+        /// </summary>
+        internal static string ReportSeverity_High {
+            get {
+                return ResourceManager.GetString("ReportSeverity_High", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low.
+        /// </summary>
+        internal static string ReportSeverity_Low {
+            get {
+                return ResourceManager.GetString("ReportSeverity_Low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        internal static string ReportSeverity_Medium {
+            get {
+                return ResourceManager.GetString("ReportSeverity_Medium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vulnerability.
+        /// </summary>
+        internal static string ReportSeverity_Vulnerability {
+            get {
+                return ResourceManager.GetString("ReportSeverity_Vulnerability", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked.
+        /// </summary>
+        internal static string ReportStatus_Blocked {
+            get {
+                return ResourceManager.GetString("ReportStatus_Blocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot reproduce.
+        /// </summary>
+        internal static string ReportStatus_CannotReproduce {
+            get {
+                return ResourceManager.GetString("ReportStatus_CannotReproduce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Declined.
+        /// </summary>
+        internal static string ReportStatus_Declined {
+            get {
+                return ResourceManager.GetString("ReportStatus_Declined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deferred.
+        /// </summary>
+        internal static string ReportStatus_Deferred {
+            get {
+                return ResourceManager.GetString("ReportStatus_Deferred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate.
+        /// </summary>
+        internal static string ReportStatus_Duplicate {
+            get {
+                return ResourceManager.GetString("ReportStatus_Duplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fixed.
+        /// </summary>
+        internal static string ReportStatus_Fixed {
+            get {
+                return ResourceManager.GetString("ReportStatus_Fixed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In progress.
+        /// </summary>
+        internal static string ReportStatus_InProgress {
+            get {
+                return ResourceManager.GetString("ReportStatus_InProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Needs correction.
+        /// </summary>
+        internal static string ReportStatus_NeedsCorrection {
+            get {
+                return ResourceManager.GetString("ReportStatus_NeedsCorrection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        internal static string ReportStatus_Open {
+            get {
+                return ResourceManager.GetString("ReportStatus_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outdated.
+        /// </summary>
+        internal static string ReportStatus_Outdated {
+            get {
+                return ResourceManager.GetString("ReportStatus_Outdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready for testing.
+        /// </summary>
+        internal static string ReportStatus_ReadyForTesting {
+            get {
+                return ResourceManager.GetString("ReportStatus_ReadyForTesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reopened.
+        /// </summary>
+        internal static string ReportStatus_Reopened {
+            get {
+                return ResourceManager.GetString("ReportStatus_Reopened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Under review.
+        /// </summary>
+        internal static string ReportStatus_UnderReview {
+            get {
+                return ResourceManager.GetString("ReportStatus_UnderReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verified.
+        /// </summary>
+        internal static string ReportStatus_Verified {
+            get {
+                return ResourceManager.GetString("ReportStatus_Verified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Won&apos;t be fixed.
+        /// </summary>
+        internal static string ReportStatus_WontBeFixed {
+            get {
+                return ResourceManager.GetString("ReportStatus_WontBeFixed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Admin.
         /// </summary>
         internal static string Role_Admin {
