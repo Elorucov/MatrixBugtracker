@@ -1,24 +1,51 @@
-﻿using MatrixBugtracker.BL.DTOs.Infra;
+﻿using AutoMapper;
+using MatrixBugtracker.Abstractions;
+using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Reports;
-using MatrixBugtracker.BL.Resources;
+using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.DAL.Repositories.Abstractions;
+using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
     public class ReportsService : IReportsService
     {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAccessService _accessService;
+        private readonly IFileService _fileService;
+        private readonly IUserService _userService;
+        private readonly IUserIdProvider _userIdProvider;
+        private readonly IMapper _mapper;
+
+        private readonly IReportRepository _repo;
+
+        public ReportsService(IUnitOfWork unitOfWork, IAccessService accessService, IFileService fileService, IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _accessService = accessService;
+            _fileService = fileService;
+            _userService = userService;
+            _userIdProvider = userIdProvider;
+            _mapper = mapper;
+
+            _repo = _unitOfWork.GetRepository<IReportRepository>();
+        }
+
+        //public async Task<ResponseDTO<int>> CreateAsync(ReportCreateDTO request)
+        //{
+
+        //}
+
         public ResponseDTO<ReportEnumsDTO> GetEnumValues()
         {
             // TODO: Extension?
-            var problemTypes = Enum.GetValues<ReportProblemType>()
-                .Select(e => new EnumValueDTO((byte)e, EnumValues.ResourceManager.GetString($"ReportProblemType_{e}"))).ToList();
+            var problemTypes = EnumExtensions.GetTranslatedEnums<ReportProblemType>();
 
-            var severities = Enum.GetValues<ReportSeverity>()
-                .Select(e => new EnumValueDTO((byte)e, EnumValues.ResourceManager.GetString($"ReportSeverity_{e}"))).ToList();
+            var severities = EnumExtensions.GetTranslatedEnums<ReportSeverity>();
 
-            var statuses = Enum.GetValues<ReportStatus>()
-                .Select(e => new EnumValueDTO((byte)e, EnumValues.ResourceManager.GetString($"ReportStatus_{e}"))).ToList();
+            var statuses = EnumExtensions.GetTranslatedEnums<ReportStatus>();
 
             ReportEnumsDTO response = new ReportEnumsDTO
             {

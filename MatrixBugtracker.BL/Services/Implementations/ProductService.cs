@@ -3,6 +3,7 @@ using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Users;
+using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
@@ -275,11 +276,9 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public ResponseDTO<ProductEnumsDTO> GetEnumValues()
         {
-            var accessLevels = Enum.GetValues<ProductAccessLevel>()
-                .Select(e => new EnumValueDTO((byte)e, EnumValues.ResourceManager.GetString($"ProductAccessLevel_{e}"))).ToList();
+            var accessLevels = EnumExtensions.GetTranslatedEnums<ProductAccessLevel>();
 
-            var types = Enum.GetValues<ProductType>()
-                .Select(e => new EnumValueDTO((byte)e, EnumValues.ResourceManager.GetString($"ProductType_{e}"))).ToList();
+            var types = EnumExtensions.GetTranslatedEnums<ProductType>();
 
             ProductEnumsDTO response = new ProductEnumsDTO
             {

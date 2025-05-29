@@ -142,6 +142,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid value, must be {0}.
+        /// </summary>
+        internal static string InvalidEnum {
+            get {
+                return ResourceManager.GetString("InvalidEnum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The format of uploaded file is wrong.
         /// </summary>
         internal static string InvalidFileFormat {
@@ -156,6 +165,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string InvalidParameters {
             get {
                 return ResourceManager.GetString("InvalidParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid product id.
+        /// </summary>
+        internal static string InvalidProductId {
+            get {
+                return ResourceManager.GetString("InvalidProductId", resourceCulture);
             }
         }
         
@@ -246,6 +264,24 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string TagIsLong {
             get {
                 return ResourceManager.GetString("TagIsLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value is too short.
+        /// </summary>
+        internal static string TooLong {
+            get {
+                return ResourceManager.GetString("TooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value is too long.
+        /// </summary>
+        internal static string TooShort {
+            get {
+                return ResourceManager.GetString("TooShort", resourceCulture);
             }
         }
         

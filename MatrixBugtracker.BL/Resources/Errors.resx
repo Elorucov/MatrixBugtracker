@@ -144,11 +144,17 @@
   <data name="ForbiddenFile" xml:space="preserve">
     <value>Access to this file denied</value>
   </data>
+  <data name="InvalidEnum" xml:space="preserve">
+    <value>Invalid value, must be {0}</value>
+  </data>
   <data name="InvalidFileFormat" xml:space="preserve">
     <value>The format of uploaded file is wrong</value>
   </data>
   <data name="InvalidParameters" xml:space="preserve">
     <value>One of the parameters specified was invalid</value>
+  </data>
+  <data name="InvalidProductId" xml:space="preserve">
+    <value>Invalid product id</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>Not found</value>
@@ -179,6 +185,12 @@
   </data>
   <data name="TagIsLong" xml:space="preserve">
     <value>Tag {0} is long</value>
+  </data>
+  <data name="TooLong" xml:space="preserve">
+    <value>Value is too short</value>
+  </data>
+  <data name="TooShort" xml:space="preserve">
+    <value>Value is too long</value>
   </data>
   <data name="Unauthorized" xml:space="preserve">
     <value>Unauthorized</value>
