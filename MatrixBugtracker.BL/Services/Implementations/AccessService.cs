@@ -23,11 +23,24 @@ namespace MatrixBugtracker.BL.Services.Implementations
             int currentUserId = _userIdProvider.UserId;
             var user = await _userService.GetSingleUserAsync(currentUserId);
 
-            if (user == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundUser);
+            if (user == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundUser); // а нужен ли?
             if (user.Role != UserRole.Admin && entity.CreatorId != currentUserId)
                 return ResponseDTO<bool>.Forbidden();
 
             return new ResponseDTO<bool>(true);
+        }
+
+        // Get entities that creator id is same with authorized user's id (if authorized user is tester),
+        // otherwise return entities.
+        public async Task<IEnumerable<T>> GetAccessibleEntitiesAsync<T>(IEnumerable<T> entities) where T : ICreateEntity
+        {
+            int currentUserId = _userIdProvider.UserId;
+            var user = await _userService.GetSingleUserAsync(currentUserId);
+
+            if (user.Role == UserRole.Admin) return entities;
+
+            var owned = entities.Where(e => e.CreatorId == currentUserId);
+            return owned;
         }
     }
 }

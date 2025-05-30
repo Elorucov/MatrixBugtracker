@@ -18,15 +18,18 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFileRepository _repo;
         private readonly IUserService _userService;
+        private readonly IAccessService _accessService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly ILogger<FileService> _logger;
         private readonly string _uploadedFilesPath;
 
-        public FileService(IUnitOfWork unitOfWork, IConfiguration config, IUserService userService, IUserIdProvider userIdProvider, ILogger<FileService> logger)
+        public FileService(IUnitOfWork unitOfWork, IConfiguration config, IUserService userService, IAccessService accessService,
+            IUserIdProvider userIdProvider, ILogger<FileService> logger)
         {
             _unitOfWork = unitOfWork;
             _repo = unitOfWork.GetRepository<IFileRepository>();
             _userService = userService;
+            _accessService = accessService;
             _userIdProvider = userIdProvider;
             _logger = logger;
             _uploadedFilesPath = config["PathForUploadedFiles"];
@@ -82,6 +85,26 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (isImage && !file.IsImage()) return ResponseDTO<UploadedFile>.BadRequest(Errors.FileIsNotImage);
 
             return new ResponseDTO<UploadedFile>(file);
+        }
+
+        public async Task<ResponseDTO<bool>> CheckFilesAccessAsync(int[] fileIds)
+        {
+            List<UploadedFile> files = await _repo.GetIntersectingAsync(fileIds);
+            if (files.Count < fileIds.Length)
+            {
+                var nonExistentFileIds = fileIds.Except(files.Select(f => f.Id));
+                return ResponseDTO<bool>.BadRequest(string.Format(Errors.NotFoundFiles, string.Join(", ", nonExistentFileIds)));
+            }
+            ;
+
+            var accessibleFiles = await _accessService.GetAccessibleEntitiesAsync(files);
+            if (accessibleFiles.Count() < files.Count)
+            {
+                var inAccessibleFileIds = fileIds.Except(accessibleFiles.Select(f => f.Id));
+                return ResponseDTO<bool>.BadRequest(string.Format(Errors.ForbiddenFiles, string.Join(", ", inAccessibleFileIds)));
+            }
+
+            return new ResponseDTO<bool>(true);
         }
 
         public async Task<(byte[], string)> GetFileContentByPathAsync(string path)

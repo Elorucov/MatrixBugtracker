@@ -144,6 +144,9 @@
   <data name="ForbiddenFile" xml:space="preserve">
     <value>Access to this file denied</value>
   </data>
+  <data name="ForbiddenFiles" xml:space="preserve">
+    <value>Access to these files ({0}) denied</value>
+  </data>
   <data name="ForbiddenProduct" xml:space="preserve">
     <value>Access to product denied</value>
   </data>
@@ -164,6 +167,9 @@
   </data>
   <data name="NotFoundFile" xml:space="preserve">
     <value>The requested file was not found</value>
+  </data>
+  <data name="NotFoundFiles" xml:space="preserve">
+    <value>Requested files ({0}) not found</value>
   </data>
   <data name="NotFoundProduct" xml:space="preserve">
     <value>The requested product was not found</value>

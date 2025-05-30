@@ -5,5 +5,6 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
 {
     public interface IFileRepository : IRepository<UploadedFile>
     {
+        Task<List<UploadedFile>> GetIntersectingAsync(int[] fileIds);
     }
 }

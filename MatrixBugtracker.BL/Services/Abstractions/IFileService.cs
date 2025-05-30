@@ -7,6 +7,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     {
         Task<ResponseDTO<int>> SaveFileAsync(FileUploadDTO request);
         Task<ResponseDTO<UploadedFile>> GetFileEntityAsync(int fileId, bool isImage);
+        Task<ResponseDTO<bool>> CheckFilesAccessAsync(int[] fileIds);
         Task<(byte[], string)> GetFileContentByPathAsync(string path);
     }
 }

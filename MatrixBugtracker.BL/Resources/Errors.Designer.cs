@@ -142,6 +142,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access to these files ({0}) denied.
+        /// </summary>
+        internal static string ForbiddenFiles {
+            get {
+                return ResourceManager.GetString("ForbiddenFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Access to product denied.
         /// </summary>
         internal static string ForbiddenProduct {
@@ -201,6 +210,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string NotFoundFile {
             get {
                 return ResourceManager.GetString("NotFoundFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested files ({0}) not found.
+        /// </summary>
+        internal static string NotFoundFiles {
+            get {
+                return ResourceManager.GetString("NotFoundFiles", resourceCulture);
             }
         }
         

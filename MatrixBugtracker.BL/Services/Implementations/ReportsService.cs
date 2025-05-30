@@ -50,6 +50,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 if (!tagsCheck.Success) return ResponseDTO<int?>.Error(tagsCheck);
             }
 
+            if (request.FileIds?.Length > 0)
+            {
+                var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
+                if (!filesCheck.Success) return ResponseDTO<int?>.Error(filesCheck);
+            }
+
             return ResponseDTO<int?>.NotImplemented();
         }
 

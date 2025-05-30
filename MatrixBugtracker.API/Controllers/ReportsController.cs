@@ -1,10 +1,8 @@
 ﻿using MatrixBugtracker.API.Filters;
-using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Enums;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.API.Controllers
 {
