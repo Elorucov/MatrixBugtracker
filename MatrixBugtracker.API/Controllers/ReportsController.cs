@@ -4,6 +4,7 @@ using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Enums;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace MatrixBugtracker.API.Controllers
 {
@@ -24,9 +25,9 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPost]
         [AuthorizeApi([UserRole.Tester])]
-        public IActionResult Create(ReportCreateDTO request)
+        public async Task<IActionResult> Create(ReportCreateDTO request)
         {
-            return APIResponse(ResponseDTO<object>.NotImplemented());
+            return APIResponse(await _service.CreateAsync(request));
         }
     }
 }

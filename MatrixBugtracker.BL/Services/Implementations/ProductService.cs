@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
@@ -37,17 +38,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _repo = _unitOfWork.GetRepository<IProductRepository>();
         }
 
-        public async Task<ResponseDTO<int>> CreateAsync(ProductCreateDTO request)
+        public async Task<ResponseDTO<int?>> CreateAsync(ProductCreateDTO request)
         {
             bool hasProductWithName = await _repo.HasEntityAsync(request.Name);
-            if (hasProductWithName) return ResponseDTO<int>.BadRequest(Errors.AlreadyHaveProductWithName);
+            if (hasProductWithName) return ResponseDTO<int?>.BadRequest(Errors.AlreadyHaveProductWithName);
 
             // Checking photo file
             UploadedFile imageFile = null;
             if (request.PhotoFileId != null)
             {
                 var fileResponse = await _fileService.GetFileEntityAsync(request.PhotoFileId.Value, true);
-                if (!fileResponse.Success) return ResponseDTO<int>.Error(fileResponse.HttpStatusCode, fileResponse.ErrorMessage);
+                if (!fileResponse.Success) return ResponseDTO<int?>.Error(fileResponse);
 
                 imageFile = fileResponse.Response;
             }
@@ -58,7 +59,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _repo.AddAsync(product);
             await _unitOfWork.CommitAsync();
 
-            return new ResponseDTO<int>(product.Id);
+            return new ResponseDTO<int?>(product.Id);
         }
 
         public async Task<ResponseDTO<bool>> EditAsync(ProductEditDTO request)
@@ -68,14 +69,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Admins can edit all products, employees can edit only own created products
             var access = await _accessService.CheckAccessAsync(product);
-            if (!access.Success) return ResponseDTO<bool>.Error(access.HttpStatusCode, access.ErrorMessage);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
 
             // Checking photo file
             UploadedFile imageFile = null;
             if (request.PhotoFileId != null)
             {
                 var fileResponse = await _fileService.GetFileEntityAsync(request.PhotoFileId.Value, true);
-                if (!fileResponse.Success) return ResponseDTO<bool>.Error(fileResponse.HttpStatusCode, fileResponse.ErrorMessage);
+                if (!fileResponse.Success) return ResponseDTO<bool>.Error(fileResponse);
 
                 imageFile = fileResponse.Response;
             }
@@ -95,7 +96,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Admins can access to all products, employees can access to only own created products
             var access = await _accessService.CheckAccessAsync(product);
-            if (!access.Success) return ResponseDTO<bool>.Error(access.HttpStatusCode, access.ErrorMessage);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
 
             product.IsOver = flag;
 
@@ -111,7 +112,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Admins can access to all products, employees can access to only own created products
             var access = await _accessService.CheckAccessAsync(product);
-            if (!access.Success) return ResponseDTO<bool>.Error(access.HttpStatusCode, access.ErrorMessage);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
 
             // Check if user already joined into product.
             // If user itself sent a join request, he will be joined,
@@ -153,7 +154,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Admins can access to all products, employees can access to only own created products
             var access = await _accessService.CheckAccessAsync(product);
-            if (!access.Success) return ResponseDTO<bool>.Error(access.HttpStatusCode, access.ErrorMessage);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
 
             // Check if user already joined into product.
 
@@ -264,7 +265,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Admins can access to all products, employees can access to only own created products
             var access = await _accessService.CheckAccessAsync(product);
-            if (!access.Success) return (PaginationResponseDTO<UserDTO>)PaginationResponseDTO<UserDTO>.Error(access.HttpStatusCode, access.ErrorMessage);
+            if (!access.Success) return (PaginationResponseDTO<UserDTO>)PaginationResponseDTO<UserDTO>.Error(access);
 
             var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.JoinRequested, request.ProductId, request.Number, request.Size);
             var users = result.Items;
@@ -272,6 +273,19 @@ namespace MatrixBugtracker.BL.Services.Implementations
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);
             return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
 
+        }
+
+        public async Task<ResponseDTO<bool>> CheckAccessAsync(int productId)
+        {
+            var product = await _repo.GetByIdAsync(productId);
+            if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
+
+            int currentUserId = _userIdProvider.UserId;
+            var membership = await _repo.GetProductMemberAsync(productId, currentUserId);
+            if (membership == null || membership.Status != ProductMemberStatus.Joined)
+                return ResponseDTO<bool>.Forbidden(Errors.ForbiddenProduct);
+
+            return new ResponseDTO<bool>(true);
         }
 
         public ResponseDTO<ProductEnumsDTO> GetEnumValues()

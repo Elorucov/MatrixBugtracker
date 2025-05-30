@@ -142,6 +142,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access to product denied.
+        /// </summary>
+        internal static string ForbiddenProduct {
+            get {
+                return ResourceManager.GetString("ForbiddenProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid value, must be {0}.
         /// </summary>
         internal static string InvalidEnum {

@@ -5,6 +5,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
 {
     public interface IReportsService
     {
+        Task<ResponseDTO<int?>> CreateAsync(ReportCreateDTO request);
         ResponseDTO<ReportEnumsDTO> GetEnumValues();
     }
 }

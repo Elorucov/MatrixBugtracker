@@ -30,6 +30,11 @@ namespace MatrixBugtracker.BL.DTOs.Infra
             };
         }
 
+        public static ResponseDTO<T> Error<T1>(ResponseDTO<T1> response)
+        {
+            return Error(response.HttpStatusCode, response.ErrorMessage);
+        }
+
         public static ResponseDTO<T> BadRequest(string message = null, Dictionary<string, string> fields = null)
             => Error(400, message ?? Errors.BadRequest, fields);
 

@@ -15,17 +15,21 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAccessService _accessService;
         private readonly IFileService _fileService;
+        private readonly IProductService _productService;
         private readonly IUserService _userService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IMapper _mapper;
 
         private readonly IReportRepository _repo;
 
-        public ReportsService(IUnitOfWork unitOfWork, IAccessService accessService, IFileService fileService, IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
+        public ReportsService(IUnitOfWork unitOfWork, IAccessService accessService,
+            IFileService fileService, IProductService productService,
+            IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _accessService = accessService;
             _fileService = fileService;
+            _productService = productService;
             _userService = userService;
             _userIdProvider = userIdProvider;
             _mapper = mapper;
@@ -33,18 +37,19 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _repo = _unitOfWork.GetRepository<IReportRepository>();
         }
 
-        //public async Task<ResponseDTO<int>> CreateAsync(ReportCreateDTO request)
-        //{
+        public async Task<ResponseDTO<int?>> CreateAsync(ReportCreateDTO request)
+        {
+            var access = await _productService.CheckAccessAsync(request.ProductId);
+            if (!access.Success) return ResponseDTO<int?>.Error(access);
 
-        //}
+            await Task.Delay(1);
+            return ResponseDTO<int?>.NotImplemented();
+        }
 
         public ResponseDTO<ReportEnumsDTO> GetEnumValues()
         {
-            // TODO: Extension?
             var problemTypes = EnumExtensions.GetTranslatedEnums<ReportProblemType>();
-
             var severities = EnumExtensions.GetTranslatedEnums<ReportSeverity>();
-
             var statuses = EnumExtensions.GetTranslatedEnums<ReportStatus>();
 
             ReportEnumsDTO response = new ReportEnumsDTO

@@ -144,6 +144,9 @@
   <data name="ForbiddenFile" xml:space="preserve">
     <value>Access to this file denied</value>
   </data>
+  <data name="ForbiddenProduct" xml:space="preserve">
+    <value>Access to product denied</value>
+  </data>
   <data name="InvalidEnum" xml:space="preserve">
     <value>Invalid value, must be {0}</value>
   </data>
