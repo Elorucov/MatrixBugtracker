@@ -214,6 +214,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Some of the specified tags are not found or archived.
+        /// </summary>
+        internal static string NotFoundSomeTags {
+            get {
+                return ResourceManager.GetString("NotFoundSomeTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The requested user was not found.
         /// </summary>
         internal static string NotFoundUser {

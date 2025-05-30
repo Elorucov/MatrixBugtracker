@@ -16,6 +16,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IAccessService _accessService;
         private readonly IFileService _fileService;
         private readonly IProductService _productService;
+        private readonly ITagsService _tagsService;
         private readonly IUserService _userService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IMapper _mapper;
@@ -23,13 +24,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IReportRepository _repo;
 
         public ReportsService(IUnitOfWork unitOfWork, IAccessService accessService,
-            IFileService fileService, IProductService productService,
+            IFileService fileService, IProductService productService, ITagsService tagsService,
             IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _accessService = accessService;
             _fileService = fileService;
             _productService = productService;
+            _tagsService = tagsService;
             _userService = userService;
             _userIdProvider = userIdProvider;
             _mapper = mapper;
@@ -42,7 +44,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var access = await _productService.CheckAccessAsync(request.ProductId);
             if (!access.Success) return ResponseDTO<int?>.Error(access);
 
-            await Task.Delay(1);
+            if (request.Tags?.Length > 0)
+            {
+                var tagsCheck = await _tagsService.CheckIsAllContainsAsync(request.Tags);
+                if (!tagsCheck.Success) return ResponseDTO<int?>.Error(tagsCheck);
+            }
+
             return ResponseDTO<int?>.NotImplemented();
         }
 

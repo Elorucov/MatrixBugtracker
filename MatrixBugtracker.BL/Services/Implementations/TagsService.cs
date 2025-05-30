@@ -62,6 +62,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<List<TagDTO>>(tagDTOs);
         }
 
+        // Checking if ALL tags contains in DB
+        // Returns tags that not found in DB to display in error response.
+        public async Task<ResponseDTO<bool>> CheckIsAllContainsAsync(string[] tags)
+        {
+            List<Tag> existTags = await _repo.GetIntersectingAsync(tags);
+            if (existTags.Count < tags.Length) return ResponseDTO<bool>.BadRequest(Errors.NotFoundSomeTags);
+            if (existTags.Any(t => t.IsArchived)) return ResponseDTO<bool>.BadRequest(Errors.NotFoundSomeTags);
+
+            return new ResponseDTO<bool>(true);
+        }
+
         public async Task<ResponseDTO<bool>> SetArchiveFlag(string tagName, bool isArchived)
         {
             Tag tag = await _repo.GetByNameAsync(tagName);

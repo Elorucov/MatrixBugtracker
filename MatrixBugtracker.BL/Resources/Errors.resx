@@ -168,6 +168,9 @@
   <data name="NotFoundProduct" xml:space="preserve">
     <value>The requested product was not found</value>
   </data>
+  <data name="NotFoundSomeTags" xml:space="preserve">
+    <value>Some of the specified tags are not found or archived</value>
+  </data>
   <data name="NotFoundUser" xml:space="preserve">
     <value>The requested user was not found</value>
   </data>

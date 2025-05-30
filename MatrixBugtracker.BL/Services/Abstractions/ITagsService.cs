@@ -7,6 +7,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     {
         Task<ResponseDTO<AddTagResultDTO>> AddAsync(string tagsComma);
         Task<ResponseDTO<List<TagDTO>>> GetAsync(bool withArchived);
+        Task<ResponseDTO<bool>> CheckIsAllContainsAsync(string[] tags);
         Task<ResponseDTO<bool>> SetArchiveFlag(string tagName, bool isArchived);
     }
 }
