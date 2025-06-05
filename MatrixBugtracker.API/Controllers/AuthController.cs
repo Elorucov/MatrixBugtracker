@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
+    [Route("api/v1/auth")]
     public class AuthController : BaseController
     {
         private readonly IUserService _userService;
@@ -13,19 +14,19 @@ namespace MatrixBugtracker.API.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm] LoginRequestDTO request)
         {
             return APIResponse(await _userService.LoginAsync(request));
         }
 
-        [HttpPost]
+        [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromForm] int userId, [FromForm] string refreshToken)
         {
             return APIResponse(await _userService.RefreshAsync(userId, refreshToken));
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterRequestDTO request)
         {
             return APIResponse(await _userService.CreateUserAsync(request));

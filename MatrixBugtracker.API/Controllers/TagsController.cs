@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
+    [Route("api/v1/tags")]
     public class TagsController : BaseController
     {
         private readonly ITagsService _service;
@@ -27,8 +28,8 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.AddAsync(tagsComma));
         }
 
-        // TODO: multiple tags
-        [HttpPut]
+        // TODO: multiple tags (patch with one method)
+        [HttpPatch("archive")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> Archive([FromQuery] string tag)
         {
@@ -36,7 +37,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         // TODO: multiple tags
-        [HttpPut]
+        [HttpPatch("unarchive")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> UnarchiveAsync([FromQuery] string tag)
         {

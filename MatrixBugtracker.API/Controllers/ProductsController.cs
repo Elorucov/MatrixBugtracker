@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
+    [Route("api/v1/products")]
     public class ProductsController : BaseController
     {
         private readonly IProductService _service;
@@ -15,7 +16,7 @@ namespace MatrixBugtracker.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("config")]
         [AuthorizeApi]
         public IActionResult GetEnumValues()
         {
@@ -36,46 +37,18 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.EditAsync(request));
         }
 
-        [HttpPut]
+        [HttpPatch("finish-testing")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> FinishTesting([FromForm] int productId)
         {
             return APIResponse(await _service.SetIsOverFlagAsync(productId, true));
         }
 
-        [HttpPut]
+        [HttpPatch("resume-testing")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> ResumeTesting([FromForm] int productId)
         {
             return APIResponse(await _service.SetIsOverFlagAsync(productId, false));
-        }
-
-        [HttpPost]
-        [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> InviteUser([FromForm] int productId, [FromForm] int userId)
-        {
-            return APIResponse(await _service.InviteUserAsync(productId, userId));
-        }
-
-        [HttpPost]
-        [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> KickUser([FromForm] int productId, [FromForm] int userId)
-        {
-            return APIResponse(await _service.KickUserAsync(productId, userId));
-        }
-
-        [HttpPost]
-        [AuthorizeApi([UserRole.Tester])]
-        public async Task<IActionResult> Join([FromForm] int productId)
-        {
-            return APIResponse(await _service.JoinAsync(productId));
-        }
-
-        [HttpPost]
-        [AuthorizeApi([UserRole.Tester])]
-        public async Task<IActionResult> Leave([FromForm] int productId)
-        {
-            return APIResponse(await _service.LeaveAsync(productId));
         }
 
         [HttpGet]
@@ -85,21 +58,7 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.GetAllAsync(request));
         }
 
-        [HttpGet]
-        [AuthorizeApi([UserRole.Tester])]
-        public async Task<IActionResult> GetInvited([FromQuery] PaginationRequestDTO request)
-        {
-            return APIResponse(await _service.GetProductsWithInviteRequestAsync(request));
-        }
-
-        [HttpGet]
-        [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> GetJoinRequests([FromQuery] GetJoinRequestUsersReqDTO request)
-        {
-            return APIResponse(await _service.GetJoinRequestUsers(request));
-        }
-
-        [HttpGet]
+        [HttpGet("search")]
         [AuthorizeApi]
         public async Task<IActionResult> Search([FromQuery] PaginatedSearchRequestDTO request)
         {

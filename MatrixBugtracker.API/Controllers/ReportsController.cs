@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
+    [Route("api/v1/reports")]
     public class ReportsController : BaseController
     {
         private readonly IReportsService _service;
@@ -14,7 +15,7 @@ namespace MatrixBugtracker.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("config")]
         [AuthorizeApi]
         public IActionResult GetEnumValues()
         {

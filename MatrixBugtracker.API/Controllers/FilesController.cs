@@ -2,10 +2,11 @@
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace MatrixBugtracker.API.Controllers
 {
-    [AuthorizeApi]
+    [Route("api/v1/files")]
     public class FilesController : BaseController
     {
         private readonly IFileService _service;
@@ -16,9 +17,17 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost]
+        [AuthorizeApi]
         public async Task<IActionResult> Upload([FromForm] FileUploadDTO request)
         {
             return APIResponse(await _service.SaveFileAsync(request));
+        }
+
+        [HttpGet("{path}")]
+        public async Task<IResult> Download(string path)
+        {
+            var (content, type) = await _service.GetFileContentByPathAsync(path);
+            return Results.File(content, type);
         }
     }
 }

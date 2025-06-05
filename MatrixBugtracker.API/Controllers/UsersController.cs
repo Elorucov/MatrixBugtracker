@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
+    [Route("api/v1/users")]
     [AuthorizeApi]
     public class UsersController : BaseController
     {
@@ -14,7 +15,7 @@ namespace MatrixBugtracker.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("{userId}")]
         public async Task<IActionResult> GetById(int userId)
         {
             return APIResponse(await _service.GetByIdAsync(userId));
@@ -26,7 +27,7 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.EditAsync(request));
         }
 
-        [HttpPut]
+        [HttpPatch("change-photo")]
         public async Task<IActionResult> ChangePhoto([FromForm] int photoFileId)
         {
             return APIResponse(await _service.ChangePhotoAsync(photoFileId));

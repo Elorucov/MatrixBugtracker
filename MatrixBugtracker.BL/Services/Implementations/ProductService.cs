@@ -276,9 +276,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public async Task<ResponseDTO<bool>> CheckAccessAsync(int productId)
         {
-            var product = await _repo.GetByIdAsync(productId);
-            if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
-
             int currentUserId = _userIdProvider.UserId;
             var membership = await _repo.GetProductMemberAsync(productId, currentUserId);
             if (membership == null || membership.Status != ProductMemberStatus.Joined)

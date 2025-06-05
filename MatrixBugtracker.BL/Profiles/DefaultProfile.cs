@@ -43,7 +43,7 @@ namespace MatrixBugtracker.BL.Profiles
             dto.FileId = currentUserId == file.CreatorId ? file.Id : 0;
 
             var uri = _contextAccessor.HttpContext.Request;
-            string link = $"{uri.Scheme}://{uri.Host}/file/{file.Path}";
+            string link = $"{uri.Scheme}://{uri.Host}/api/v1/files/{file.Path}";
             dto.Url = link;
         }
 

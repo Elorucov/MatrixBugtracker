@@ -95,7 +95,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 var nonExistentFileIds = fileIds.Except(files.Select(f => f.Id));
                 return ResponseDTO<bool>.BadRequest(string.Format(Errors.NotFoundFiles, string.Join(", ", nonExistentFileIds)));
             }
-            ;
 
             var accessibleFiles = await _accessService.GetAccessibleEntitiesAsync(files);
             if (accessibleFiles.Count() < files.Count)
