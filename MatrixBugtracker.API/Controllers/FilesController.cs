@@ -7,6 +7,7 @@ using System.IO;
 namespace MatrixBugtracker.API.Controllers
 {
     [Route("api/v1/files")]
+    [AuthorizeApi]
     public class FilesController : BaseController
     {
         private readonly IFileService _service;
@@ -17,7 +18,6 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost]
-        [AuthorizeApi]
         public async Task<IActionResult> Upload([FromForm] FileUploadDTO request)
         {
             return APIResponse(await _service.SaveFileAsync(request));

@@ -15,6 +15,7 @@ namespace MatrixBugtracker.API.Controllers
             _service = service;
         }
 
+        // TODO: user stats (how many reports created and reports count by product)
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetById(int userId)
         {

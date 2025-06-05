@@ -23,23 +23,23 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPost]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> Add([FromQuery] string tagsComma)
+        public async Task<IActionResult> Add([FromBody] string[] tags)
         {
-            return APIResponse(await _service.AddAsync(tagsComma));
+            return APIResponse(await _service.AddAsync(tags));
         }
 
-        // TODO: multiple tags (patch with one method)
+        // TODO: multiple tags?
         [HttpPatch("archive")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> Archive([FromQuery] string tag)
+        public async Task<IActionResult> Archive([FromForm] string tag)
         {
             return APIResponse(await _service.SetArchiveFlag(tag, true));
         }
 
-        // TODO: multiple tags
+        // TODO: multiple tags?
         [HttpPatch("unarchive")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> UnarchiveAsync([FromQuery] string tag)
+        public async Task<IActionResult> Unarchive([FromForm] string tag)
         {
             return APIResponse(await _service.SetArchiveFlag(tag, false));
         }

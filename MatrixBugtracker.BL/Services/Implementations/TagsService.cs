@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Tags;
+using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
@@ -24,11 +25,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _repo = _unitOfWork.GetRepository<ITagRepository>();
         }
 
-        public async Task<ResponseDTO<AddTagResultDTO>> AddAsync(string tagsComma)
+        public async Task<ResponseDTO<AddTagResultDTO>> AddAsync(string[] tags)
         {
-            tagsComma.ToLower();
-            string[] tags = tagsComma.Split(',');
+            if (tags.Length == 0) return ResponseDTO<AddTagResultDTO>.BadRequest();
 
+            tags.ToLower();
+            
             for (int i = 0; i < tags.Length; i++)
             {
                 string tag = tags[i];

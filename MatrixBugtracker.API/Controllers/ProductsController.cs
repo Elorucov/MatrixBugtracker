@@ -52,10 +52,18 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpGet]
-        [AuthorizeApi]
         public async Task<IActionResult> Get([FromQuery] PaginationRequestDTO request)
         {
             return APIResponse(await _service.GetAllAsync(request));
+        }
+
+        // TODO: product advanced info (how many reports created, top users)
+        [HttpGet("{productId}")]
+        [AuthorizeApi]
+        public IActionResult GetById(int productId)
+        {
+            // return APIResponse(await _service.GetByIdAsync(productId));
+            return APIResponse(ResponseDTO<object>.NotImplemented());
         }
 
         [HttpGet("search")]

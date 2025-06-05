@@ -1,5 +1,6 @@
 using MatrixBugtracker.API.Filters;
 using MatrixBugtracker.BL.DTOs;
+using MatrixBugtracker.BL.DTOs.Admin;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Enums;
@@ -27,9 +28,9 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost("set-role")]
-        public async Task<IActionResult> SetRole(int userId, UserRole role)
+        public async Task<IActionResult> SetRole(SetRoleRequestDTO request)
         {
-            return APIResponse(await _userService.SetUserRoleAsync(userId, role));
+            return APIResponse(await _userService.SetUserRoleAsync(request));
         }
 
         [HttpGet("test-error")]
