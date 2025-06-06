@@ -29,6 +29,8 @@ public partial class BugtrackerContext : DbContext
     public virtual DbSet<CommentAttachment> CommentAttachments { get; set; }
     public virtual DbSet<Confirmation> Confirmations { get; set; }
     public virtual DbSet<UploadedFile> Files { get; set; }
+    public virtual DbSet<PlatformNotification> PlatformNotifications { get; set; }
+    public virtual DbSet<PlatformNotificationUser> PlatformNotificationReadUsers { get; set; }
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<ProductMember> ProductMembers { get; set; }
     public virtual DbSet<Report> Reports { get; set; }
@@ -36,6 +38,7 @@ public partial class BugtrackerContext : DbContext
     public virtual DbSet<ReportReproduce> ReportReproduces { get; set; }
     public virtual DbSet<ReportTag> ReportTags { get; set; }
     public virtual DbSet<Tag> Tags { get; set; }
+    public virtual DbSet<UserNotification> UserNotifications { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

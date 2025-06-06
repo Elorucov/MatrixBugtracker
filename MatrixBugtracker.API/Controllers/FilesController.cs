@@ -2,7 +2,6 @@
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 
 namespace MatrixBugtracker.API.Controllers
 {

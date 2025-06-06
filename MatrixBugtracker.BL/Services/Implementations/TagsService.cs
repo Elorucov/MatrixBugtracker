@@ -30,7 +30,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (tags.Length == 0) return ResponseDTO<AddTagResultDTO>.BadRequest();
 
             tags.ToLower();
-            
+
             for (int i = 0; i < tags.Length; i++)
             {
                 string tag = tags[i];

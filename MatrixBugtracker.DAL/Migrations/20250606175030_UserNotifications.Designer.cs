@@ -4,6 +4,7 @@ using MatrixBugtracker.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    partial class BugtrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20250606175030_UserNotifications")]
+    partial class UserNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,71 +164,6 @@ namespace MatrixBugtracker.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("confirmations", (string)null);
-                });
-
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.PlatformNotification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("creation_time");
-
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int")
-                        .HasColumnName("creator_id");
-
-                    b.Property<int>("DeletedByUserId")
-                        .HasColumnType("int")
-                        .HasColumnName("deleted_by_user_id");
-
-                    b.Property<DateTime>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deletion_time");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<byte>("Kind")
-                        .HasColumnType("tinyint")
-                        .HasColumnName("kind");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)")
-                        .HasColumnName("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("platform_notifications", (string)null);
-                });
-
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.PlatformNotificationUser", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("NotificationId")
-                        .HasColumnType("int")
-                        .HasColumnName("notification_id");
-
-                    b.HasKey("UserId", "NotificationId")
-                        .HasName("K_PlatNotifUser");
-
-                    b.HasIndex("NotificationId");
-
-                    b.HasIndex(new[] { "UserId", "NotificationId" }, "UQ_PlatNotifUser")
-                        .IsUnique();
-
-                    b.ToTable("platform_notification_read_users", (string)null);
                 });
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
@@ -711,7 +649,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsEmailConfirmed = true,
                             LastName = "Doe",
                             ModeratorName = "Moderator",
-                            Password = "KH+NeBnIMREz3VnEsmqjddRu3wRqBYemhiCan1mmy6c5cTE6YMKaCMDtAx2vG0/b",
+                            Password = "pwYGDZsywAomLNVJWCQJMPGj2aw177pOHAoVtSivmK7uZAN428lRVopCB7fzQWPq",
                             Role = (byte)1
                         });
                 });
@@ -811,25 +749,6 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Comment");
 
                     b.Navigation("File");
-                });
-
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.PlatformNotificationUser", b =>
-                {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.PlatformNotification", "Notification")
-                        .WithMany("UsersThatRead")
-                        .HasForeignKey("NotificationId")
-                        .IsRequired()
-                        .HasConstraintName("FK_PNU_Notification");
-
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
-                        .WithMany("PlatformNotifications")
-                        .HasForeignKey("UserId")
-                        .IsRequired()
-                        .HasConstraintName("FK_PNU_User");
-
-                    b.Navigation("Notification");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
@@ -1000,11 +919,6 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("TargetUser");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.PlatformNotification", b =>
-                {
-                    b.Navigation("UsersThatRead");
-                });
-
             modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
                 {
                     b.Navigation("ProductMembers");
@@ -1033,8 +947,6 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("JoinedProducts");
 
                     b.Navigation("Notifications");
-
-                    b.Navigation("PlatformNotifications");
 
                     b.Navigation("RefreshTokens");
 

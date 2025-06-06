@@ -3,7 +3,6 @@ using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.DAL.Entities;
-using MatrixBugtracker.DAL.Enums;
 
 namespace MatrixBugtracker.BL.Services.Abstractions
 {
