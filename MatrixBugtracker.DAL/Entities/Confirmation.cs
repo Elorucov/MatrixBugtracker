@@ -5,8 +5,10 @@ namespace MatrixBugtracker.DAL.Entities
 {
     public class Confirmation : BaseEntity
     {
-        public string Email { get; set; }
+        public int UserId { get; set; }
         public string Code { get; set; }
         public EmailConfirmationKind Kind { get; set; }
+
+        public virtual User User { get; set; }
     }
 }

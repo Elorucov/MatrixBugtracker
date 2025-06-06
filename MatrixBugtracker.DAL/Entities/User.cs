@@ -26,6 +26,7 @@ public partial class User : IDeleteEntity
     public virtual ICollection<ProductMember> JoinedProducts { get; set; } = new List<ProductMember>();
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public virtual ICollection<Confirmation> Confirmations { get; set; } = new List<Confirmation>();
     public virtual ICollection<UserNotification> Notifications { get; set; } = new List<UserNotification>();
     public virtual ICollection<PlatformNotificationUser> PlatformNotifications { get; set; } = new List<PlatformNotificationUser>();
 }

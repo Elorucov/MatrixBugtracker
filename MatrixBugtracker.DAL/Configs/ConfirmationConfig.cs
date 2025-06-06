@@ -11,12 +11,9 @@ namespace MatrixBugtracker.DAL.Configs
         {
             builder.ToTable("confirmations");
 
-            builder.HasIndex(e => e.Email, "UQ_EmailConfirm").IsUnique();
-
-            builder.Property(e => e.Email)
+            builder.Property(e => e.UserId)
                 .IsRequired()
-                .HasMaxLength(255)
-                .HasColumnName("email");
+                .HasColumnName("user_id");
 
             builder.Property(e => e.Code)
                 .IsRequired()
@@ -27,6 +24,10 @@ namespace MatrixBugtracker.DAL.Configs
                 .IsRequired()
                 .HasConversion<byte>()
                 .HasColumnName("kind");
+
+            builder.HasOne(d => d.User).WithMany(p => p.Confirmations)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Confirmation_User");
 
             base.Configure(builder);
         }

@@ -2,7 +2,7 @@
 {
     public enum PlatformNotificationKind : byte
     {
-        Information,
-        Problem
+        Information = 1,
+        Problem = 2
     }
 }

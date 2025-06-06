@@ -1,11 +1,11 @@
 ﻿namespace MatrixBugtracker.DAL.Enums
 {
     // Required for user notifications
-    public enum LinkedEntityType
+    public enum LinkedEntityType : byte
     {
-        Role,
-        Product,
-        Report,
-        Comment
+        Role = 1,
+        Product = 2,
+        Report = 3,
+        Comment = 4
     }
 }
