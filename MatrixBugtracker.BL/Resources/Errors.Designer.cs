@@ -268,6 +268,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Testing of this product is over.
+        /// </summary>
+        internal static string ProductTestingIsOver {
+            get {
+                return ResourceManager.GetString("ProductTestingIsOver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh token is expired.
         /// </summary>
         internal static string RefreshTokenExpired {

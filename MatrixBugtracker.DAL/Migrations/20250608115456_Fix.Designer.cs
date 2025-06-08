@@ -4,6 +4,7 @@ using MatrixBugtracker.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    partial class BugtrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20250608115456_Fix")]
+    partial class Fix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -708,7 +711,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsEmailConfirmed = true,
                             LastName = "Doe",
                             ModeratorName = "Moderator",
-                            Password = "MictMqs835fPY4bkD4Q5ym+uamCUSKR0SA/lkp5v0/l5mCtwsWFcA/dPRpGwUFee",
+                            Password = "HjI3BtyEQuzp51C8qQt3O3T2bwm2ydjY5Xl2u5mmWgYJJltOwB9RIE3yr+GBFoL0",
                             Role = (byte)1
                         });
                 });
@@ -916,7 +919,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_RA_Attachment");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Report", "Report")
+                    b.HasOne("MatrixBugtracker.DAL.Entities.Product", "Report")
                         .WithMany()
                         .HasForeignKey("ReportId")
                         .IsRequired()

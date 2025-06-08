@@ -8,5 +8,5 @@ public class ReportAttachment
 
     public virtual UploadedFile File { get; set; }
 
-    public virtual Product Report { get; set; }
+    public virtual Report Report { get; set; }
 }

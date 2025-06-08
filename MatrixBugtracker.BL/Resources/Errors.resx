@@ -186,6 +186,9 @@
   <data name="ProductInviteAlreadySent" xml:space="preserve">
     <value>An invitation to test this product has already been sent to the requested user</value>
   </data>
+  <data name="ProductTestingIsOver" xml:space="preserve">
+    <value>Testing of this product is over</value>
+  </data>
   <data name="RefreshTokenExpired" xml:space="preserve">
     <value>Refresh token is expired</value>
   </data>

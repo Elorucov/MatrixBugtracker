@@ -274,14 +274,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         }
 
-        public async Task<ResponseDTO<bool>> CheckAccessAsync(int productId)
+        public async Task<ResponseDTO<Product>> CheckAccessAsync(int productId)
         {
             int currentUserId = _userIdProvider.UserId;
             var membership = await _repo.GetProductMemberAsync(productId, currentUserId);
             if (membership == null || membership.Status != ProductMemberStatus.Joined)
-                return ResponseDTO<bool>.Forbidden(Errors.ForbiddenProduct);
+                return ResponseDTO<Product>.Forbidden(Errors.ForbiddenProduct);
 
-            return new ResponseDTO<bool>(true);
+            return new ResponseDTO<Product>(membership.Product);
         }
 
         public ResponseDTO<ProductEnumsDTO> GetEnumValues()

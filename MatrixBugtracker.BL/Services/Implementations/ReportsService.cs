@@ -3,7 +3,9 @@ using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.Extensions;
+using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
+using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
@@ -41,22 +43,36 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public async Task<ResponseDTO<int?>> CreateAsync(ReportCreateDTO request)
         {
+            Product product = null;
             var access = await _productService.CheckAccessAsync(request.ProductId);
             if (!access.Success) return ResponseDTO<int?>.Error(access);
 
+            if (product.IsOver) return ResponseDTO<int?>.BadRequest(Errors.ProductTestingIsOver);
+
+            List<Tag> tags = null;
             if (request.Tags?.Length > 0)
             {
                 var tagsCheck = await _tagsService.CheckIsAllContainsAsync(request.Tags);
                 if (!tagsCheck.Success) return ResponseDTO<int?>.Error(tagsCheck);
+                tags = tagsCheck.Response;
             }
 
+            List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
             {
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<int?>.Error(filesCheck);
+                files = filesCheck.Response;
             }
 
-            return ResponseDTO<int?>.NotImplemented();
+            Report report = _mapper.Map<Report>(request);
+            await _repo.AddAsync(report);
+
+            if (tags?.Count > 0) await _repo.AddTagsAsync(report, tags);
+            if (files?.Count > 0) await _repo.AddAttachmentAsync(report, files);
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<int?>(report.Id);
         }
 
         public ResponseDTO<ReportEnumsDTO> GetEnumValues()

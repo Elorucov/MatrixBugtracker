@@ -87,23 +87,25 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<UploadedFile>(file);
         }
 
-        public async Task<ResponseDTO<bool>> CheckFilesAccessAsync(int[] fileIds)
+        // Check is files with those fileIds available and accessible
+        // Returns UploadedFile entities
+        public async Task<ResponseDTO<List<UploadedFile>>> CheckFilesAccessAsync(int[] fileIds)
         {
             List<UploadedFile> files = await _repo.GetIntersectingAsync(fileIds);
             if (files.Count < fileIds.Length)
             {
                 var nonExistentFileIds = fileIds.Except(files.Select(f => f.Id));
-                return ResponseDTO<bool>.BadRequest(string.Format(Errors.NotFoundFiles, string.Join(", ", nonExistentFileIds)));
+                return ResponseDTO<List<UploadedFile>>.BadRequest(string.Format(Errors.NotFoundFiles, string.Join(", ", nonExistentFileIds)));
             }
 
             var accessibleFiles = await _accessService.GetAccessibleEntitiesAsync(files);
             if (accessibleFiles.Count() < files.Count)
             {
                 var inAccessibleFileIds = fileIds.Except(accessibleFiles.Select(f => f.Id));
-                return ResponseDTO<bool>.BadRequest(string.Format(Errors.ForbiddenFiles, string.Join(", ", inAccessibleFileIds)));
+                return ResponseDTO<List<UploadedFile>>.BadRequest(string.Format(Errors.ForbiddenFiles, string.Join(", ", inAccessibleFileIds)));
             }
 
-            return new ResponseDTO<bool>(true);
+            return new ResponseDTO<List<UploadedFile>>(files);
         }
 
         public async Task<(byte[], string)> GetFileContentByPathAsync(string path)
