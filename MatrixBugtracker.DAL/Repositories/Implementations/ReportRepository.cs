@@ -23,7 +23,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
         {
             foreach (var tag in tags)
             {
-                await _db.ReportTags.AddAsync(new ReportTag { 
+                await _db.ReportTags.AddAsync(new ReportTag
+                {
                     Report = report,
                     Tag = tag
                 });

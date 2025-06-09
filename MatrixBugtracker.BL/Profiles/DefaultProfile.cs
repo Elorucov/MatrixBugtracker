@@ -11,7 +11,6 @@ using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Mail;
 
 namespace MatrixBugtracker.BL.Profiles
 {
