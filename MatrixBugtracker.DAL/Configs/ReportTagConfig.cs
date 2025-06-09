@@ -16,12 +16,12 @@ namespace MatrixBugtracker.DAL.Configs
             builder.Property(e => e.ReportId).HasColumnName("report_id");
             builder.Property(e => e.TagId).HasColumnName("tag_id");
 
-            builder.HasOne(d => d.Report).WithMany()
+            builder.HasOne(d => d.Report).WithMany(r => r.Tags)
                 .HasForeignKey(d => d.ReportId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RT_Report");
 
-            builder.HasOne(d => d.Tag).WithMany()
+            builder.HasOne(d => d.Tag).WithMany(t => t.Reports)
                 .HasForeignKey(d => d.TagId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RT_Tag");

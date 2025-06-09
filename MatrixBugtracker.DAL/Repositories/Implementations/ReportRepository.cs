@@ -2,12 +2,22 @@
 using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Implementations.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations
 {
     public class ReportRepository : Repository<Report>, IReportRepository
     {
         public ReportRepository(BugtrackerContext db) : base(db) { }
+
+        public async Task<Report> GetByIdWithIncludesAsync(int id)
+        {
+            return await _dbSet.Include(r => r.Product)
+                .Include(r => r.Tags).ThenInclude(rt => rt.Tag)
+                .Include(r => r.Attachments).ThenInclude(ra => ra.File)
+                .Include(r => r.Reproduces).ThenInclude(rp => rp.User)
+                .SingleOrDefaultAsync(r => r.Id == id);
+        }
 
         public async Task AddTagsAsync(Report report, List<Tag> tags)
         {

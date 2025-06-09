@@ -16,7 +16,7 @@ namespace MatrixBugtracker.DAL.Configs
             builder.Property(e => e.ReportId).HasColumnName("report_id");
             builder.Property(e => e.UserId).HasColumnName("user_id");
 
-            builder.HasOne(d => d.Report).WithMany()
+            builder.HasOne(d => d.Report).WithMany(d => d.Reproduces)
                 .HasForeignKey(d => d.ReportId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RR_Report");

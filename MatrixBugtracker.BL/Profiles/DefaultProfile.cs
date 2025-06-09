@@ -6,10 +6,12 @@ using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.DTOs.Tags;
 using MatrixBugtracker.BL.DTOs.Users;
+using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Mail;
 
 namespace MatrixBugtracker.BL.Profiles
 {
@@ -19,6 +21,8 @@ namespace MatrixBugtracker.BL.Profiles
 
         private IMapper Mapper => _contextAccessor.HttpContext.RequestServices.GetService<IMapper>();
         private IUserIdProvider UserIdProvider => _contextAccessor.HttpContext.RequestServices.GetService<IUserIdProvider>();
+
+        public EnumValueDTO GetTranslatedEnum { get; private set; }
 
         public DefaultProfile(IHttpContextAccessor contextAccessor)
         {
@@ -37,13 +41,22 @@ namespace MatrixBugtracker.BL.Profiles
             CreateMap<Tag, TagDTO>();
 
             CreateMap<ReportCreateDTO, Report>();
+
+            CreateMap<Report, ReportDTO>()
+                .ForMember(m => m.Severity, t => t.Ignore())
+                .ForMember(m => m.ProblemType, t => t.Ignore())
+                .ForMember(m => m.Status, t => t.Ignore())
+                .ForMember(m => m.Attachments, t => t.Ignore())
+                .ForMember(m => m.Tags, t => t.Ignore())
+                .ForMember(m => m.Reproduces, t => t.Ignore())
+                .AfterMap(ToReportDTO);
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)
         {
             // Only file owner/creator can know its id
             int currentUserId = UserIdProvider.UserId;
-            dto.FileId = currentUserId == file.CreatorId ? file.Id : 0;
+            dto.FileId = currentUserId == file.CreatorId ? file.Id : null;
 
             var uri = _contextAccessor.HttpContext.Request;
             string link = $"{uri.Scheme}://{uri.Host}/api/v1/files/{file.Path}";
@@ -75,6 +88,16 @@ namespace MatrixBugtracker.BL.Profiles
             {
                 dto.Photo = Mapper.Map<FileDTO>(product.PhotoFile);
             }
+        }
+
+        private void ToReportDTO(Report report, ReportDTO dto)
+        {
+            dto.Severity = report.Severity.GetTranslatedEnum();
+            dto.ProblemType = report.ProblemType.GetTranslatedEnum();
+            dto.Status = report.Status.GetTranslatedEnum();
+
+            dto.Attachments = Mapper.Map<List<FileDTO>>(report.Attachments.Select(a => a.File));
+            dto.Tags = report.Tags.Select(t => t.Tag.Name).ToList();
         }
     }
 }

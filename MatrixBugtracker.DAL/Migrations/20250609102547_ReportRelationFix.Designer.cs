@@ -4,6 +4,7 @@ using MatrixBugtracker.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatrixBugtracker.DAL.Migrations
 {
     [DbContext(typeof(BugtrackerContext))]
-    partial class BugtrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20250609102547_ReportRelationFix")]
+    partial class ReportRelationFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -397,17 +400,13 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("deletion_time");
 
-                    b.Property<bool>("IsAttachmentsPrivate")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_attachments_private");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
                         .HasColumnName("is_deleted");
 
-                    b.Property<bool>("IsSeveritySetByModerator")
+                    b.Property<bool>("IsFilesPrivate")
                         .HasColumnType("bit")
-                        .HasColumnName("is_severity_set_by_moderator");
+                        .HasColumnName("is_files_private");
 
                     b.Property<byte>("ProblemType")
                         .HasColumnType("tinyint")
@@ -712,7 +711,7 @@ namespace MatrixBugtracker.DAL.Migrations
                             IsEmailConfirmed = true,
                             LastName = "Doe",
                             ModeratorName = "Moderator",
-                            Password = "NJjEmoD2ezljTxFm61z1PmbVV3dwqN2XtqiTnpKrw6mb/YU+H1cyR42ZV65KFO8a",
+                            Password = "IGXbF4r5OSXSQgu98XmXgYqOMl4T1qt1WjR2scb/LHllmVEUxNF/hOidXGlSNLlD",
                             Role = (byte)1
                         });
                 });

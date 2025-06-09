@@ -12,7 +12,8 @@ namespace MatrixBugtracker.DAL.Configs
             builder.ToTable("reports");
 
             builder.Property(e => e.Actual).IsRequired().HasColumnType("text").HasColumnName("actual");
-            builder.Property(e => e.IsFilesPrivate).IsRequired().HasColumnName("is_files_private");
+            builder.Property(e => e.IsAttachmentsPrivate).IsRequired().HasColumnName("is_attachments_private");
+            builder.Property(e => e.IsSeveritySetByModerator).IsRequired().HasColumnName("is_severity_set_by_moderator");
 
             builder.Property(e => e.ProblemType)
                 .IsRequired()

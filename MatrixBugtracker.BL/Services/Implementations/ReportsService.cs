@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Reports;
@@ -73,6 +74,40 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<int?>(report.Id);
+        }
+
+        public async Task<ResponseDTO<ReportDTO>> GetByIdAsync(int reportId)
+        {
+            Report report = await _repo.GetByIdWithIncludesAsync(reportId);
+            if (report == null) return ResponseDTO<ReportDTO>.NotFound();
+
+            // To be optimized, if we include ProductMembers in _repo.GetByIdWithIncludesAsync
+            var access = await _productService.CheckAccessAsync(report.Product.Id);
+            if (!access.Success) return ResponseDTO<ReportDTO>.Error(access);
+
+            // Check if authorized user can access to vulnerability report
+            // If user is tester, he can view only vulnerabilities that created by own
+            User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
+            if (report.Severity == ReportSeverity.Vulnerability && currentUser.Role == UserRole.Tester)
+            {
+                if (report.CreatorId != currentUser.Id) return ResponseDTO<ReportDTO>.Forbidden();
+            }
+
+            ReportReproducesDTO reproDTO = new ReportReproducesDTO
+            {
+                Count = report.Reproduces.Count,
+                IsReproducedByMe = report.Reproduces.Any(rp => rp.UserId == currentUser.Id)
+            };
+
+            ReportDTO dto = _mapper.Map<ReportDTO>(report);
+            dto.Reproduces = reproDTO;
+
+            // Remove files from DTO if attachments is private.
+            // Only report creator and moderators (and higher) can see private attachments
+            if (report.IsAttachmentsPrivate && currentUser.Role == UserRole.Tester && report.CreatorId != currentUser.Id)
+                dto.Attachments = null;
+
+            return new ResponseDTO<ReportDTO>(dto);
         }
 
         public ResponseDTO<ReportEnumsDTO> GetEnumValues()

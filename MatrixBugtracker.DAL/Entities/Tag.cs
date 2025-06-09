@@ -9,4 +9,6 @@ public partial class Tag : BaseEntity
     public bool IsArchived { get; set; }
 
     public virtual User Creator { get; set; }
+
+    public virtual ICollection<ReportTag> Reports { get; set; } = new List<ReportTag>();
 }

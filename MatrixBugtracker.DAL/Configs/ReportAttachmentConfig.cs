@@ -21,7 +21,7 @@ namespace MatrixBugtracker.DAL.Configs
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RA_Attachment");
 
-            builder.HasOne(d => d.Report).WithMany()
+            builder.HasOne(d => d.Report).WithMany(r => r.Attachments)
                 .HasForeignKey(d => d.ReportId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RA_Report");

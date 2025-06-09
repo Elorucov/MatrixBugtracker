@@ -27,5 +27,10 @@ namespace MatrixBugtracker.BL.Extensions
             return Enum.GetValues<T>()
                 .Select(e => new EnumValueDTO(Convert.ToByte(e), EnumValues.ResourceManager.GetString($"{typeof(T).Name}_{e}"))).ToList();
         }
+
+        public static EnumValueDTO GetTranslatedEnum<T>(this T value) where T : struct, Enum
+        {
+            return new EnumValueDTO(Convert.ToByte(value), EnumValues.ResourceManager.GetString($"{typeof(T).Name}_{value}"));
+        }
     }
 }
