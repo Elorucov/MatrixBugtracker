@@ -24,7 +24,7 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet]
         [AuthorizeApi]
-        public async Task<IActionResult> Get([FromQuery]GetReportsRequestDTO request)
+        public async Task<IActionResult> Get([FromQuery] GetReportsRequestDTO request)
         {
             return APIResponse(await _service.GetAsync(request));
         }

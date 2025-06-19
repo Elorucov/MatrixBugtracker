@@ -6,7 +6,6 @@ using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations
 {
@@ -44,7 +43,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
                 var accessibleNonOpenProductIds = nonOpenProductsThatReportsCreated.Where(p => filteredProductIds.Contains(p.Id)).Select(p => p.Id);
 
                 query = query.Where(r => r.Product.AccessLevel == ProductAccessLevel.Open || accessibleNonOpenProductIds.Contains(r.ProductId));
-            } else
+            }
+            else
             {
                 query = query.Where(r => filteredProductIds.Contains(r.ProductId));
             }
@@ -65,7 +65,7 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
             query = query.WithFilter(filter);
             if (creatorId > 0) query = query.Where(r => r.CreatorId == creatorId);
-            query = query.Where(r => r.ProductId == productId && 
+            query = query.Where(r => r.ProductId == productId &&
                 (r.Severity != ReportSeverity.Vulnerability || (r.Severity == ReportSeverity.Vulnerability && r.CreatorId == currentUserId)));
 
             return await query.GetPageAsync(pageNumber, pageSize);
