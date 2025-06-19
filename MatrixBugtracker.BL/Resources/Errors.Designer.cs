@@ -160,6 +160,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid creator id.
+        /// </summary>
+        internal static string InvalidCreatorId {
+            get {
+                return ResourceManager.GetString("InvalidCreatorId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid value, must be {0}.
         /// </summary>
         internal static string InvalidEnum {

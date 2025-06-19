@@ -5,7 +5,7 @@
         public int Id { get; init; }
         public bool IsDeleted { get; set; }
         public int DeletedByUserId { get; set; }
-        public DateTime DeletionTime { get; set; }
+        public DateTime? DeletionTime { get; set; }
         public int CreatorId { get; set; }
         public DateTime CreationTime { get; set; }
     }

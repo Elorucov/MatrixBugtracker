@@ -2,6 +2,7 @@
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.DAL.Entities;
+using MatrixBugtracker.DAL.Enums;
 
 namespace MatrixBugtracker.BL.Services.Abstractions
 {
@@ -15,6 +16,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<bool>> JoinAsync(int productId);
         Task<ResponseDTO<bool>> LeaveAsync(int productId);
         Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(PaginationRequestDTO request);
+        Task<PaginationResponseDTO<ProductDTO>> GetProductsByUserMembershipAsync(int userId, ProductMemberStatus status, PaginationRequestDTO request);
         Task<PaginationResponseDTO<ProductDTO>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request);
         Task<PaginationResponseDTO<ProductDTO>> SearchAsync(PaginatedSearchRequestDTO request);
         Task<PaginationResponseDTO<UserDTO>> GetJoinRequestUsers(GetJoinRequestUsersReqDTO request);

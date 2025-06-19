@@ -10,7 +10,7 @@ namespace MatrixBugtracker.DAL.Configs.Base
         {
             builder.Property(x => x.IsDeleted).IsRequired().HasColumnName("is_deleted");
             builder.Property(x => x.DeletedByUserId).IsRequired().HasColumnName("deleted_by_user_id");
-            builder.Property(x => x.DeletionTime).IsRequired().HasColumnName("deletion_time");
+            builder.Property(x => x.DeletionTime).HasColumnName("deletion_time");
             builder.HasQueryFilter(x => x.IsDeleted == false);
 
             base.Configure(builder);

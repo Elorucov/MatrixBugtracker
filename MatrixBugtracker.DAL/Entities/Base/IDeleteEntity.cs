@@ -4,6 +4,6 @@
     {
         public bool IsDeleted { get; set; }
         public int DeletedByUserId { get; set; }
-        public DateTime DeletionTime { get; set; }
+        public DateTime? DeletionTime { get; set; }
     }
 }

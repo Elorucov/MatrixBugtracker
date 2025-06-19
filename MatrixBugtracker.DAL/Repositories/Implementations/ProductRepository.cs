@@ -59,7 +59,7 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<ProductMember> GetProductMemberAsync(int productId, int userId)
         {
-            return await _db.ProductMembers.SingleOrDefaultAsync(e => e.ProductId == productId && e.MemberId == userId);
+            return await _db.ProductMembers.Include(pm => pm.Product).SingleOrDefaultAsync(e => e.ProductId == productId && e.MemberId == userId);
         }
 
         public async Task<PaginationResult<Product>> GetProductsForUserByStatusAsync(ProductMemberStatus status, int userId, int number, int size)

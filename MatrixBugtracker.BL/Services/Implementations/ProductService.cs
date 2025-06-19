@@ -229,16 +229,23 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
         }
 
+        // Returns a list of products that user is joined to product, or have invite request, etc. (depends on status)
+        public async Task<PaginationResponseDTO<ProductDTO>> GetProductsByUserMembershipAsync(int userId, ProductMemberStatus status, PaginationRequestDTO request)
+        {
+            var result = await _repo.GetProductsForUserByStatusAsync(status, userId, request.Number, request.Size);
+            var products = result.Items;
+
+            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
+            return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
+        }
+
         // Returns a list of products that current user has an invite.
         public async Task<PaginationResponseDTO<ProductDTO>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request)
         {
             int currentUserId = _userIdProvider.UserId;
 
-            var result = await _repo.GetProductsForUserByStatusAsync(ProductMemberStatus.InviteReceived, currentUserId, request.Number, request.Size);
-            var products = result.Items;
-
-            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
-            return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
+            var result = await GetProductsByUserMembershipAsync(currentUserId, ProductMemberStatus.InviteReceived, request);
+            return result;
         }
 
         // Search products in the bugtracker.

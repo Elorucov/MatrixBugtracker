@@ -7,6 +7,7 @@ using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 
@@ -46,6 +47,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Product product = null;
             var access = await _productService.CheckAccessAsync(request.ProductId);
             if (!access.Success) return ResponseDTO<int?>.Error(access);
+            product = access.Response;
 
             if (product.IsOver) return ResponseDTO<int?>.BadRequest(Errors.ProductTestingIsOver);
 
@@ -95,7 +97,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             ReportReproducesDTO reproDTO = new ReportReproducesDTO
             {
                 Count = report.Reproduces.Count,
-                IsReproducedByMe = report.Reproduces.Any(rp => rp.UserId == currentUser.Id)
+                IsReproducedByMe = report.CreatorId == currentUser.Id ? true :
+                    report.Reproduces.Any(rp => rp.UserId == currentUser.Id)
             };
 
             ReportDTO dto = _mapper.Map<ReportDTO>(report);
@@ -107,6 +110,69 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 dto.Attachments = null;
 
             return new ResponseDTO<ReportDTO>(dto);
+        }
+
+        public async Task<PaginationResponseDTO<ReportDTO>> GetAsync(GetReportsRequestDTO request)
+        {
+            var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
+
+            // Return "bad request" if current user that is not moder (or higher)
+            // trying to access other user's vulnerability reports
+            if (request.CreatorId != currentUser.Id && currentUser.Role == UserRole.Tester
+                && request.Severities?.Count == 1 && request.Severities[0] == ReportSeverity.Vulnerability)
+                return (PaginationResponseDTO<ReportDTO>)PaginationResponseDTO<ReportDTO>.BadRequest();
+
+            // Get found tags entities
+            List<Tag> tags = null;
+            if (request.Tags?.Length > 0)
+            {
+                var tagsCheck = await _tagsService.CheckIsAllContainsAsync(request.Tags);
+                tags = tagsCheck.Response;
+            }
+
+            ReportFilter filter = new ReportFilter(request.Severities, request.ProblemTypes, request.Statuses, tags);
+
+            PaginationResult<Report> result = null;
+
+            // If current user (CU) is tester and not moderator (and higher):
+            // 1. do not return vulnerability reports NOT created by CU,
+            // 2. if ProductId and CreatorId is not defined, return reports for those products that the CU is a member of 
+            // 3. if ProductId is not defined and CreatorId > 0, return all reports created by CreatorId,..
+            // ...excluding those created for non-open products the CU is not a member of.
+            if (currentUser.Role == UserRole.Tester)
+            {
+                var joinedProductsResponse = await _productService.GetProductsByUserMembershipAsync(currentUser.Id, ProductMemberStatus.Joined, PaginationRequestDTO.Infinity);
+                if (!joinedProductsResponse.Success) return (PaginationResponseDTO<ReportDTO>)PaginationResponseDTO<ReportDTO>.Error(joinedProductsResponse);
+
+                var joinedProducts = joinedProductsResponse.Response;
+                var joinedProductIds = joinedProducts.Select(p => p.Id).ToList();
+                var joinedNonOpenedProductIds = joinedProducts.Where(p => p.AccessLevel != ProductAccessLevel.Open).Select(p => p.Id).ToList();
+
+                // TODO: to be optimized.
+                if (request.ProductId == 0 && request.CreatorId == 0)
+                {
+                    // Get reports that creatorId == CU && products is he joined.
+                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.Number, request.Size, request.CreatorId, joinedNonOpenedProductIds, filter);
+
+                } else if (request.ProductId == 0 && request.CreatorId > 0)
+                {
+                    // Get reports from creatorId's products that CU has access to 
+                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.Number, request.Size, request.CreatorId, joinedProductIds, filter);
+                } else 
+                {
+                    // Get by product id. Need check access to product.
+                    var productCheck = await _productService.CheckAccessAsync(request.ProductId);
+                    if (!productCheck.Success) return (PaginationResponseDTO<ReportDTO>)PaginationResponseDTO<ReportDTO>.Forbidden(Errors.ForbiddenProduct);
+
+                    result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id, request.Number, request.Size, request.ProductId, request.CreatorId, filter);
+                }
+            } else
+            {
+                result = await _repo.GetFilteredAsync(request.Number, request.Size, request.ProductId, request.CreatorId);   
+            }
+
+            List<ReportDTO> reportDTOs = _mapper.Map<List<ReportDTO>>(result.Items);
+            return new PaginationResponseDTO<ReportDTO>(reportDTOs, result.TotalCount);
         }
 
         public ResponseDTO<ReportEnumsDTO> GetEnumValues()

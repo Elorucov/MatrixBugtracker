@@ -6,6 +6,8 @@ namespace MatrixBugtracker.BL.DTOs.Reports
     {
         public int Id { get; set; }
         public int CreatorId { get; set; }
+        public DateTime CreationTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
         public int ProductId { get; set; }
         public string Title { get; set; }
         public string Steps { get; set; }
@@ -20,5 +22,6 @@ namespace MatrixBugtracker.BL.DTOs.Reports
         public int CommentsCount { get; set; }
         public ReportReproducesDTO Reproduces { get; set; } // only when getting single report
         public bool IsSeveritySetByModerator { get; set; }
+        public bool CanDelete { get; set; }
     }
 }

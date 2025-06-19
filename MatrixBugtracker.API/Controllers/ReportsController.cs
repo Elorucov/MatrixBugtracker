@@ -22,6 +22,13 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(_service.GetEnumValues());
         }
 
+        [HttpGet]
+        [AuthorizeApi]
+        public async Task<IActionResult> Get([FromQuery]GetReportsRequestDTO request)
+        {
+            return APIResponse(await _service.GetAsync(request));
+        }
+
         [HttpGet("{id}")]
         [AuthorizeApi]
         public async Task<IActionResult> GetById(int id)

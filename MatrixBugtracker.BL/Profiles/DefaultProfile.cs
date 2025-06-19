@@ -39,7 +39,9 @@ namespace MatrixBugtracker.BL.Profiles
 
             CreateMap<Tag, TagDTO>();
 
-            CreateMap<ReportCreateDTO, Report>();
+            CreateMap<ReportCreateDTO, Report>()
+                .ForMember(m => m.Tags, t => t.Ignore())
+                .ForMember(m => m.Attachments, t => t.Ignore());
 
             CreateMap<Report, ReportDTO>()
                 .ForMember(m => m.Severity, t => t.Ignore())
@@ -91,12 +93,17 @@ namespace MatrixBugtracker.BL.Profiles
 
         private void ToReportDTO(Report report, ReportDTO dto)
         {
+            int currentUserId = UserIdProvider.UserId;
+
             dto.Severity = report.Severity.GetTranslatedEnum();
             dto.ProblemType = report.ProblemType.GetTranslatedEnum();
             dto.Status = report.Status.GetTranslatedEnum();
 
             dto.Attachments = Mapper.Map<List<FileDTO>>(report.Attachments.Select(a => a.File));
             dto.Tags = report.Tags.Select(t => t.Tag.Name).ToList();
+
+            dto.CanDelete = report.CreatorId == currentUserId && report.Status == ReportStatus.Open;
+            // if (report.UpdateTime == null || report.UpdateTime?.Year == 1) dto.UpdateTime = null;
         }
     }
 }
