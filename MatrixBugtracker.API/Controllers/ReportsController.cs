@@ -66,10 +66,9 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPatch("set-reproduced")]
         [AuthorizeApi]
-        public async Task<IActionResult> SetReproducedAsync(int reportId, bool reproduced)
+        public async Task<IActionResult> SetReproducedAsync([FromForm] int reportId, [FromForm] bool reproduced)
         {
-            //return APIResponse(await _service.CreateAsync(request));
-            return APIResponse(BL.DTOs.Infra.ResponseDTO<bool>.NotImplemented());
+            return APIResponse(await _service.SetReproducedAsync(reportId, reproduced));
         }
 
         [HttpDelete]

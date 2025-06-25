@@ -10,6 +10,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<bool>> EditAsync(ReportEditDTO request);
         Task<ResponseDTO<bool>> SetSeverityAsync(ReportPatchEnumDTO<ReportSeverity> request);
         Task<ResponseDTO<bool>> SetStatusAsync(ReportPatchEnumDTO<ReportStatus> request);
+        Task<ResponseDTO<bool>> SetReproducedAsync(int reportId, bool reproduced);
         Task<PaginationResponseDTO<ReportDTO>> GetAsync(GetReportsRequestDTO request);
         Task<ResponseDTO<ReportDTO>> GetByIdAsync(int reportId);
         ResponseDTO<ReportEnumsDTO> GetEnumValues();

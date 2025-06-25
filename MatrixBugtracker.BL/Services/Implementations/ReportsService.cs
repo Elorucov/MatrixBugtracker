@@ -202,6 +202,33 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
+        public async Task<ResponseDTO<bool>> SetReproducedAsync(int reportId, bool reproduced)
+        {
+            Report report = await _repo.GetByIdWithIncludesAsync(reportId);
+            if (report == null) return ResponseDTO<bool>.NotFound();
+
+            // To be optimized, if we include ProductMembers in _repo.GetByIdWithIncludesAsync
+            var access = await _productService.CheckAccessAsync(report.Product.Id);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
+
+            var currentUserId = _userIdProvider.UserId;
+            if (report.CreatorId == currentUserId) return ResponseDTO<bool>.BadRequest();
+
+            ReportReproduce repro = await _repo.GetReproducedUserAsync(reportId, currentUserId);
+            if (reproduced)
+            {
+                if (repro != null) return ResponseDTO<bool>.BadRequest();
+                await _repo.AddReproducedUserAsync(reportId, currentUserId);
+            } else
+            {
+                if (repro == null) return ResponseDTO<bool>.BadRequest();
+                _repo.DeleteReproducedUser(repro);
+            }
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
         public async Task<ResponseDTO<ReportDTO>> GetByIdAsync(int reportId)
         {
             Report report = await _repo.GetByIdWithIncludesAsync(reportId);
