@@ -91,8 +91,9 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (!access.Success) return ResponseDTO<bool>.Error(access);
             product = access.Response;
 
-            // We don't allow to edit reports whose status already changed
-            if (report.Status != 0) return ResponseDTO<bool>.BadRequest(Errors.ReportEditForbidden);
+            // We don't allow to edit reports whose status already changed or if severity changed by moderator
+            // TODO: only tester (creator) can not edit, moders and higher can.
+            if (report.Status != 0 || report.IsSeveritySetByModerator) return ResponseDTO<bool>.BadRequest(Errors.ReportEditForbidden);
 
             List<Tag> tags = null;
             if (request.Tags?.Length > 0)
@@ -119,6 +120,83 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _repo.RemoveAllAttachmentsAsync(report.Id);
             if (files?.Count > 0) await _repo.AddAttachmentAsync(report, files);
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
+        // Moders and higher can change report's severity if creator set it wrong
+        public async Task<ResponseDTO<bool>> SetSeverityAsync(ReportPatchEnumDTO<ReportSeverity> request)
+        {
+            Report report = await _repo.GetByIdWithIncludesAsync(request.Id);
+            if (report == null) return ResponseDTO<bool>.NotFound();
+
+            var accessCheck = await _accessService.CheckAccessAsync(report);
+            if (!accessCheck.Success) return accessCheck;
+
+            // TODO: ThenInclude ProductMembers when getting a report to optimize
+            Product product = report.Product;
+            var access = await _productService.CheckAccessAsync(product.Id);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
+            product = access.Response;
+
+            report.Severity = request.NewValue;
+            report.UpdateTime = DateTime.Now;
+            report.IsSeveritySetByModerator = true;
+            _repo.Update(report);
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> SetStatusAsync(ReportPatchEnumDTO<ReportStatus> request)
+        {
+            Report report = await _repo.GetByIdWithIncludesAsync(request.Id);
+            if (report == null) return ResponseDTO<bool>.NotFound();
+
+            var accessCheck = await _accessService.CheckAccessAsync(report);
+            if (!accessCheck.Success) return accessCheck;
+
+            // TODO: ThenInclude ProductMembers when getting a report to optimize
+            Product product = report.Product;
+            var access = await _productService.CheckAccessAsync(product.Id);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
+            product = access.Response;
+
+            ReportStatus oldStatus = report.Status;
+            ReportStatus newStatus = request.NewValue;
+
+            if (oldStatus == newStatus) return ResponseDTO<bool>.BadRequest();
+
+            // Moders can change status to any, but cannot change:
+            // 1. from Open to Reopen
+            // 2. to NeedsCorrection or CannotReproduce without comment
+            // Tester (creator) can only change:
+            // 1. from NeedsCorrection or CannotReproduce to Reopened
+            // 2. from ReadyForTesting to Verified or Reopened
+
+            var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
+            if (currentUser.Role != UserRole.Tester)
+            {
+                if (oldStatus == ReportStatus.Open && newStatus == ReportStatus.Reopened)
+                    return ResponseDTO<bool>.BadRequest();
+
+                if ((oldStatus == ReportStatus.NeedsCorrection || oldStatus == ReportStatus.CannotReproduce) && string.IsNullOrEmpty(request.Comment))
+                    return ResponseDTO<bool>.BadRequest(Errors.StatusRequiredComment);
+            } else
+            {
+                var toReopenedFrom = new[] { ReportStatus.NeedsCorrection, ReportStatus.CannotReproduce };
+                var fromReadyTo = new[] { ReportStatus.Verified, ReportStatus.Reopened };
+
+                bool validConditions = (toReopenedFrom.Contains(oldStatus) && newStatus == ReportStatus.Reopened) ||
+                    (oldStatus == ReportStatus.ReadyForTesting && fromReadyTo.Contains(newStatus));
+
+                if (!validConditions) return ResponseDTO<bool>.BadRequest();
+            }
+
+            report.Status = newStatus;
+            report.UpdateTime = DateTime.Now;
+            _repo.Update(report);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);

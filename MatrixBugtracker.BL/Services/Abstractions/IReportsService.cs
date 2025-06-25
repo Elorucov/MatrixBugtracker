@@ -1,5 +1,6 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Reports;
+using MatrixBugtracker.DAL.Enums;
 
 namespace MatrixBugtracker.BL.Services.Abstractions
 {
@@ -7,6 +8,8 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     {
         Task<ResponseDTO<int?>> CreateAsync(ReportCreateDTO request);
         Task<ResponseDTO<bool>> EditAsync(ReportEditDTO request);
+        Task<ResponseDTO<bool>> SetSeverityAsync(ReportPatchEnumDTO<ReportSeverity> request);
+        Task<ResponseDTO<bool>> SetStatusAsync(ReportPatchEnumDTO<ReportStatus> request);
         Task<PaginationResponseDTO<ReportDTO>> GetAsync(GetReportsRequestDTO request);
         Task<ResponseDTO<ReportDTO>> GetByIdAsync(int reportId);
         ResponseDTO<ReportEnumsDTO> GetEnumValues();

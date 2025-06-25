@@ -322,6 +322,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A comment required for this status.
+        /// </summary>
+        internal static string StatusRequiredComment {
+            get {
+                return ResourceManager.GetString("StatusRequiredComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tag {0} is empty.
         /// </summary>
         internal static string TagIsEmpty {

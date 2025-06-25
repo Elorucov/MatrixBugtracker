@@ -52,18 +52,16 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPatch("set-severity")]
         [AuthorizeApi([UserRole.Moderator, UserRole.Employee, UserRole.Admin])]
-        public async Task<IActionResult> SetSeverityAsync(int reportId, ReportStatus status)
+        public async Task<IActionResult> SetSeverityAsync([FromForm] ReportPatchEnumDTO<ReportSeverity> request)
         {
-            //return APIResponse(await _service.CreateAsync(request));
-            return APIResponse(BL.DTOs.Infra.ResponseDTO<bool>.NotImplemented());
+            return APIResponse(await _service.SetSeverityAsync(request));
         }
 
         [HttpPatch("set-status")]
         [AuthorizeApi]
-        public async Task<IActionResult> SetStatusAsync(int reportId, ReportStatus status)
+        public async Task<IActionResult> SetStatusAsync([FromForm] ReportPatchEnumDTO<ReportStatus> request)
         {
-            //return APIResponse(await _service.CreateAsync(request));
-            return APIResponse(BL.DTOs.Infra.ResponseDTO<bool>.NotImplemented());
+            return APIResponse(await _service.SetStatusAsync(request));
         }
 
         [HttpPatch("set-reproduced")]

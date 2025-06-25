@@ -204,6 +204,9 @@
   <data name="RoleIsSame" xml:space="preserve">
     <value>This user already has this role</value>
   </data>
+  <data name="StatusRequiredComment" xml:space="preserve">
+    <value>A comment required for this status</value>
+  </data>
   <data name="TagIsEmpty" xml:space="preserve">
     <value>Tag {0} is empty</value>
   </data>
