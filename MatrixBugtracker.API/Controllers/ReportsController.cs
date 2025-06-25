@@ -24,23 +24,62 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet]
         [AuthorizeApi]
-        public async Task<IActionResult> Get([FromQuery] GetReportsRequestDTO request)
+        public async Task<IActionResult> GetAsync([FromQuery] GetReportsRequestDTO request)
         {
             return APIResponse(await _service.GetAsync(request));
         }
 
         [HttpGet("{id}")]
         [AuthorizeApi]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             return APIResponse(await _service.GetByIdAsync(id));
         }
 
         [HttpPost]
         [AuthorizeApi([UserRole.Tester])]
-        public async Task<IActionResult> Create(ReportCreateDTO request)
+        public async Task<IActionResult> CreateAsync([FromBody] ReportCreateDTO request)
         {
             return APIResponse(await _service.CreateAsync(request));
+        }
+
+        [HttpPatch]
+        [AuthorizeApi([UserRole.Tester])]
+        public async Task<IActionResult> EditAsync([FromBody] ReportEditDTO request)
+        {
+            return APIResponse(await _service.EditAsync(request));
+        }
+
+        [HttpPatch("set-severity")]
+        [AuthorizeApi([UserRole.Moderator, UserRole.Employee, UserRole.Admin])]
+        public async Task<IActionResult> SetSeverityAsync(int reportId, ReportStatus status)
+        {
+            //return APIResponse(await _service.CreateAsync(request));
+            return APIResponse(BL.DTOs.Infra.ResponseDTO<bool>.NotImplemented());
+        }
+
+        [HttpPatch("set-status")]
+        [AuthorizeApi]
+        public async Task<IActionResult> SetStatusAsync(int reportId, ReportStatus status)
+        {
+            //return APIResponse(await _service.CreateAsync(request));
+            return APIResponse(BL.DTOs.Infra.ResponseDTO<bool>.NotImplemented());
+        }
+
+        [HttpPatch("set-reproduced")]
+        [AuthorizeApi]
+        public async Task<IActionResult> SetReproducedAsync(int reportId, bool reproduced)
+        {
+            //return APIResponse(await _service.CreateAsync(request));
+            return APIResponse(BL.DTOs.Infra.ResponseDTO<bool>.NotImplemented());
+        }
+
+        [HttpDelete]
+        [AuthorizeApi]
+        public async Task<IActionResult> DeleteAsync(int reportId)
+        {
+            //return APIResponse(await _service.CreateAsync(request));
+            return APIResponse(BL.DTOs.Infra.ResponseDTO<bool>.NotImplemented());
         }
     }
 }

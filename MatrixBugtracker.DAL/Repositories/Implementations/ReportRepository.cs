@@ -94,6 +94,11 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             }
         }
 
+        public async Task RemoveAllTagsAsync(int reportId)
+        {
+            await _db.ReportTags.Where(rt => rt.ReportId == reportId).ExecuteDeleteAsync();
+        }
+
         public async Task AddAttachmentAsync(Report report, List<UploadedFile> files)
         {
             foreach (var file in files)
@@ -104,6 +109,11 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
                     File = file
                 });
             }
+        }
+
+        public async Task RemoveAllAttachmentsAsync(int reportId)
+        {
+            await _db.ReportAttachments.Where(rt => rt.ReportId == reportId).ExecuteDeleteAsync();
         }
     }
 }

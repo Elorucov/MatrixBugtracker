@@ -16,14 +16,14 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet]
         [AuthorizeApi]
-        public async Task<IActionResult> Get([FromQuery] bool withArchived)
+        public async Task<IActionResult> GetAsync([FromQuery] bool withArchived)
         {
             return APIResponse(await _service.GetAsync(withArchived));
         }
 
         [HttpPost]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> Add([FromBody] string[] tags)
+        public async Task<IActionResult> AddAsync([FromBody] string[] tags)
         {
             return APIResponse(await _service.AddAsync(tags));
         }
@@ -31,15 +31,15 @@ namespace MatrixBugtracker.API.Controllers
         // TODO: multiple tags?
         [HttpPatch("archive")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> Archive([FromForm] string tag)
+        public async Task<IActionResult> ArchiveAsync([FromForm] string tag)
         {
             return APIResponse(await _service.SetArchiveFlag(tag, true));
         }
 
-        // TODO: multiple tags?
+        // TODO: multiple tags? (and merge two methods into one)
         [HttpPatch("unarchive")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> Unarchive([FromForm] string tag)
+        public async Task<IActionResult> UnarchiveAsync([FromForm] string tag)
         {
             return APIResponse(await _service.SetArchiveFlag(tag, false));
         }

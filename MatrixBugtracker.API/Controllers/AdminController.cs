@@ -28,7 +28,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost("set-role")]
-        public async Task<IActionResult> SetRole(SetRoleRequestDTO request)
+        public async Task<IActionResult> SetRoleAsync(SetRoleRequestDTO request)
         {
             return APIResponse(await _userService.SetUserRoleAsync(request));
         }

@@ -17,19 +17,19 @@ namespace MatrixBugtracker.API.Controllers
 
         // TODO: user stats (how many reports created and reports count by product)
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetById(int userId)
+        public async Task<IActionResult> GetByIdAsync(int userId)
         {
             return APIResponse(await _service.GetByIdAsync(userId));
         }
 
         [HttpPut]
-        public async Task<IActionResult> Edit([FromForm] UserEditDTO request)
+        public async Task<IActionResult> EditAsync([FromForm] UserEditDTO request)
         {
             return APIResponse(await _service.EditAsync(request));
         }
 
         [HttpPatch("change-photo")]
-        public async Task<IActionResult> ChangePhoto([FromForm] int photoFileId)
+        public async Task<IActionResult> ChangePhotoAsync([FromForm] int photoFileId)
         {
             return APIResponse(await _service.ChangePhotoAsync(photoFileId));
         }

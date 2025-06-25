@@ -205,6 +205,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid report id.
+        /// </summary>
+        internal static string InvalidReportId {
+            get {
+                return ResourceManager.GetString("InvalidReportId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not found.
         /// </summary>
         internal static string NotFound {
@@ -291,6 +300,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string RefreshTokenExpired {
             get {
                 return ResourceManager.GetString("RefreshTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not allowed to edit report.
+        /// </summary>
+        internal static string ReportEditForbidden {
+            get {
+                return ResourceManager.GetString("ReportEditForbidden", resourceCulture);
             }
         }
         

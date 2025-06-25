@@ -17,13 +17,13 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload([FromForm] FileUploadDTO request)
+        public async Task<IActionResult> UploadAsync([FromForm] FileUploadDTO request)
         {
             return APIResponse(await _service.SaveFileAsync(request));
         }
 
         [HttpGet("{path}")]
-        public async Task<IResult> Download(string path)
+        public async Task<IResult> DownloadAsync(string path)
         {
             var (content, type) = await _service.GetFileContentByPathAsync(path);
             return Results.File(content, type);

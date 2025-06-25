@@ -17,6 +17,8 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
         Task<PaginationResult<Report>> GetFilteredAsync(int pageNumber, int pageSize, int productId = 0, int creatorId = 0, ReportFilter filter = null);
 
         Task AddTagsAsync(Report report, List<Tag> tags);
+        Task RemoveAllTagsAsync(int reportId);
         Task AddAttachmentAsync(Report report, List<UploadedFile> files);
+        Task RemoveAllAttachmentsAsync(int reportId);
     }
 }

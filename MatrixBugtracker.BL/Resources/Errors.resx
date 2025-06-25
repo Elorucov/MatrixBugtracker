@@ -165,6 +165,9 @@
   <data name="InvalidProductId" xml:space="preserve">
     <value>Invalid product id</value>
   </data>
+  <data name="InvalidReportId" xml:space="preserve">
+    <value>Invalid report id</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>Not found</value>
   </data>
@@ -194,6 +197,9 @@
   </data>
   <data name="RefreshTokenExpired" xml:space="preserve">
     <value>Refresh token is expired</value>
+  </data>
+  <data name="ReportEditForbidden" xml:space="preserve">
+    <value>Not allowed to edit report</value>
   </data>
   <data name="RoleIsSame" xml:space="preserve">
     <value>This user already has this role</value>

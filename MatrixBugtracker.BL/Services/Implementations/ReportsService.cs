@@ -77,6 +77,53 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<int?>(report.Id);
         }
 
+        public async Task<ResponseDTO<bool>> EditAsync(ReportEditDTO request)
+        {
+            Report report = await _repo.GetByIdWithIncludesAsync(request.Id);
+            if (report == null) return ResponseDTO<bool>.NotFound();
+
+            var accessCheck = await _accessService.CheckAccessAsync(report);
+            if (!accessCheck.Success) return accessCheck;
+
+            // TODO: ThenInclude ProductMembers when getting a report to optimize
+            Product product = report.Product;
+            var access = await _productService.CheckAccessAsync(product.Id);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
+            product = access.Response;
+
+            // We don't allow to edit reports whose status already changed
+            if (report.Status != 0) return ResponseDTO<bool>.BadRequest(Errors.ReportEditForbidden);
+
+            List<Tag> tags = null;
+            if (request.Tags?.Length > 0)
+            {
+                var tagsCheck = await _tagsService.CheckIsAllContainsAsync(request.Tags);
+                if (!tagsCheck.Success) return ResponseDTO<bool>.Error(tagsCheck);
+                tags = tagsCheck.Response;
+            }
+
+            List<UploadedFile> files = null;
+            if (request.FileIds?.Length > 0)
+            {
+                var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
+                if (!filesCheck.Success) return ResponseDTO<bool>.Error(filesCheck);
+                files = filesCheck.Response;
+            }
+
+            report = _mapper.Map(request, report);
+            report.UpdateTime = DateTime.Now;
+            _repo.Update(report);
+
+            await _repo.RemoveAllTagsAsync(report.Id);
+            if (tags?.Count > 0) await _repo.AddTagsAsync(report, tags);
+
+            await _repo.RemoveAllAttachmentsAsync(report.Id);
+            if (files?.Count > 0) await _repo.AddAttachmentAsync(report, files);
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
         public async Task<ResponseDTO<ReportDTO>> GetByIdAsync(int reportId)
         {
             Report report = await _repo.GetByIdWithIncludesAsync(reportId);

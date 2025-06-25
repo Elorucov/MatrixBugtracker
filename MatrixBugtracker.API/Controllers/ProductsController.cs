@@ -25,34 +25,34 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPost]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> Create([FromForm] ProductCreateDTO request)
+        public async Task<IActionResult> CreateAsync([FromForm] ProductCreateDTO request)
         {
             return APIResponse(await _service.CreateAsync(request));
         }
 
         [HttpPut]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> Edit([FromForm] ProductEditDTO request)
+        public async Task<IActionResult> EditAsync([FromForm] ProductEditDTO request)
         {
             return APIResponse(await _service.EditAsync(request));
         }
 
         [HttpPatch("finish-testing")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> FinishTesting([FromForm] int productId)
+        public async Task<IActionResult> FinishTestingAsync([FromForm] int productId)
         {
             return APIResponse(await _service.SetIsOverFlagAsync(productId, true));
         }
 
         [HttpPatch("resume-testing")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> ResumeTesting([FromForm] int productId)
+        public async Task<IActionResult> ResumeTestingAsync([FromForm] int productId)
         {
             return APIResponse(await _service.SetIsOverFlagAsync(productId, false));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] PaginationRequestDTO request)
+        public async Task<IActionResult> GetAsync([FromQuery] PaginationRequestDTO request)
         {
             return APIResponse(await _service.GetAllAsync(request));
         }
@@ -68,7 +68,7 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet("search")]
         [AuthorizeApi]
-        public async Task<IActionResult> Search([FromQuery] PaginatedSearchRequestDTO request)
+        public async Task<IActionResult> SearchAsync([FromQuery] PaginatedSearchRequestDTO request)
         {
             return APIResponse(await _service.SearchAsync(request));
         }

@@ -15,19 +15,19 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromForm] LoginRequestDTO request)
+        public async Task<IActionResult> LoginAsync([FromForm] LoginRequestDTO request)
         {
             return APIResponse(await _userService.LoginAsync(request));
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromForm] int userId, [FromForm] string refreshToken)
+        public async Task<IActionResult> RefreshAsync([FromForm] int userId, [FromForm] string refreshToken)
         {
             return APIResponse(await _userService.RefreshAsync(userId, refreshToken));
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromForm] RegisterRequestDTO request)
+        public async Task<IActionResult> RegisterAsync([FromForm] RegisterRequestDTO request)
         {
             return APIResponse(await _userService.CreateUserAsync(request));
         }
