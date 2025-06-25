@@ -85,11 +85,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var accessCheck = await _accessService.CheckAccessAsync(report);
             if (!accessCheck.Success) return accessCheck;
 
+            // If tester (creator) has been excluded from non-open product that this report created for,
+            // he can not edit that.
             // TODO: ThenInclude ProductMembers when getting a report to optimize
-            Product product = report.Product;
-            var access = await _productService.CheckAccessAsync(product.Id);
+            int productId = report.ProductId;
+            var access = await _productService.CheckAccessAsync(productId);
             if (!access.Success) return ResponseDTO<bool>.Error(access);
-            product = access.Response;
 
             // We don't allow to edit reports whose status already changed or if severity changed by moderator
             // TODO: only tester (creator) can not edit, moders and higher can.
@@ -134,11 +135,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var accessCheck = await _accessService.CheckAccessAsync(report);
             if (!accessCheck.Success) return accessCheck;
 
+            // If tester (creator) has been excluded from non-open product that this report created for,
+            // he can not edit that.
             // TODO: ThenInclude ProductMembers when getting a report to optimize
-            Product product = report.Product;
-            var access = await _productService.CheckAccessAsync(product.Id);
+            int productId = report.ProductId;
+            var access = await _productService.CheckAccessAsync(productId);
             if (!access.Success) return ResponseDTO<bool>.Error(access);
-            product = access.Response;
 
             report.Severity = request.NewValue;
             report.UpdateTime = DateTime.Now;
@@ -157,11 +159,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var accessCheck = await _accessService.CheckAccessAsync(report);
             if (!accessCheck.Success) return accessCheck;
 
+            // If tester (creator) has been excluded from non-open product that this report created for,
+            // he can not edit that.
             // TODO: ThenInclude ProductMembers when getting a report to optimize
-            Product product = report.Product;
-            var access = await _productService.CheckAccessAsync(product.Id);
+            int productId = report.ProductId;
+            var access = await _productService.CheckAccessAsync(productId);
             if (!access.Success) return ResponseDTO<bool>.Error(access);
-            product = access.Response;
 
             ReportStatus oldStatus = report.Status;
             ReportStatus newStatus = request.NewValue;
@@ -183,7 +186,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
                 if ((oldStatus == ReportStatus.NeedsCorrection || oldStatus == ReportStatus.CannotReproduce) && string.IsNullOrEmpty(request.Comment))
                     return ResponseDTO<bool>.BadRequest(Errors.StatusRequiredComment);
-            } else
+            }
+            else
             {
                 var toReopenedFrom = new[] { ReportStatus.NeedsCorrection, ReportStatus.CannotReproduce };
                 var fromReadyTo = new[] { ReportStatus.Verified, ReportStatus.Reopened };
@@ -207,8 +211,11 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = await _repo.GetByIdWithIncludesAsync(reportId);
             if (report == null) return ResponseDTO<bool>.NotFound();
 
-            // To be optimized, if we include ProductMembers in _repo.GetByIdWithIncludesAsync
-            var access = await _productService.CheckAccessAsync(report.Product.Id);
+            // If tester (creator) has been excluded from non-open product that this report created for,
+            // he can not edit that.
+            // TODO: ThenInclude ProductMembers when getting a report to optimize
+            int productId = report.ProductId;
+            var access = await _productService.CheckAccessAsync(productId);
             if (!access.Success) return ResponseDTO<bool>.Error(access);
 
             var currentUserId = _userIdProvider.UserId;
@@ -219,7 +226,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 if (repro != null) return ResponseDTO<bool>.BadRequest();
                 await _repo.AddReproducedUserAsync(reportId, currentUserId);
-            } else
+            }
+            else
             {
                 if (repro == null) return ResponseDTO<bool>.BadRequest();
                 _repo.DeleteReproducedUser(repro);
@@ -328,6 +336,27 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             List<ReportDTO> reportDTOs = _mapper.Map<List<ReportDTO>>(result.Items);
             return new PaginationResponseDTO<ReportDTO>(reportDTOs, result.TotalCount);
+        }
+
+        public async Task<ResponseDTO<bool>> DeleteAsync(int reportId)
+        {
+            Report report = await _repo.GetByIdAsync(reportId);
+            if (report == null) return ResponseDTO<bool>.NotFound();
+
+            var accessCheck = await _accessService.CheckAccessAsync(report);
+            if (!accessCheck.Success) return accessCheck;
+
+            // If tester (creator) has been excluded from non-open product that this report created for,
+            // he can not delete this report.
+            // TODO: ThenInclude ProductMembers when getting a report to optimize
+            int productId = report.ProductId;
+            var access = await _productService.CheckAccessAsync(productId);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
+
+            _repo.Delete(report);
+            await _unitOfWork.CommitAsync();
+
+            return new ResponseDTO<bool>(true);
         }
 
         public ResponseDTO<ReportEnumsDTO> GetEnumValues()

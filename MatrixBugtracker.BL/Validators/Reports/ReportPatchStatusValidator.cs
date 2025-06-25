@@ -3,11 +3,6 @@ using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.DAL.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.BL.Validators.Reports
 {

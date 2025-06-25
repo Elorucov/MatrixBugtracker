@@ -123,7 +123,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task AddReproducedUserAsync(int reportId, int userId)
         {
-            await _db.ReportReproduces.AddAsync(new ReportReproduce { 
+            await _db.ReportReproduces.AddAsync(new ReportReproduce
+            {
                 ReportId = reportId,
                 UserId = userId
             });

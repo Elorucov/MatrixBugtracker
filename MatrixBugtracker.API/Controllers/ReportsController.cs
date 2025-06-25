@@ -75,8 +75,7 @@ namespace MatrixBugtracker.API.Controllers
         [AuthorizeApi]
         public async Task<IActionResult> DeleteAsync(int reportId)
         {
-            //return APIResponse(await _service.CreateAsync(request));
-            return APIResponse(BL.DTOs.Infra.ResponseDTO<bool>.NotImplemented());
+            return APIResponse(await _service.DeleteAsync(reportId));
         }
     }
 }
