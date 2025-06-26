@@ -25,6 +25,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IMapper _mapper;
 
         private readonly IReportRepository _repo;
+        private readonly ICommentRepository _commentRepo;
 
         public ReportsService(IUnitOfWork unitOfWork, IAccessService accessService,
             IFileService fileService, IProductService productService, ITagsService tagsService,
@@ -40,6 +41,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _mapper = mapper;
 
             _repo = _unitOfWork.GetRepository<IReportRepository>();
+            _commentRepo = _unitOfWork.GetRepository<ICommentRepository>();
         }
 
         public async Task<ResponseDTO<Report>> CheckAccessAsync(int reportId)
@@ -146,6 +148,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         }
 
         // Moders and higher can change report's severity if creator set it wrong
+        // A comment about new severity has created for report as moderator's name
         public async Task<ResponseDTO<bool>> SetSeverityAsync(ReportPatchEnumDTO<ReportSeverity> request)
         {
             Report report = null;
@@ -158,10 +161,21 @@ namespace MatrixBugtracker.BL.Services.Implementations
             report.IsSeveritySetByModerator = true;
             _repo.Update(report);
 
+            Comment comment = new Comment
+            {
+                ReportId = report.Id,
+                Text = request.Comment,
+                AsModerator = true
+            };
+
+            await _commentRepo.AddAsync(comment);
+
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
         }
 
+        // A comment about new severity has created for report as moderator's name...
+        // ...if this method called by moder or higher
         public async Task<ResponseDTO<bool>> SetStatusAsync(ReportPatchEnumDTO<ReportStatus> request)
         {
             Report report = null;
@@ -205,6 +219,15 @@ namespace MatrixBugtracker.BL.Services.Implementations
             report.Status = newStatus;
             report.UpdateTime = DateTime.Now;
             _repo.Update(report);
+
+            Comment comment = new Comment
+            {
+                ReportId = report.Id,
+                Text = request.Comment,
+                AsModerator = currentUser.Role != UserRole.Tester
+            };
+
+            await _commentRepo.AddAsync(comment);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
