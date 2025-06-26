@@ -1,11 +1,13 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Reports;
+using MatrixBugtracker.DAL.Entities;
 using MatrixBugtracker.DAL.Enums;
 
 namespace MatrixBugtracker.BL.Services.Abstractions
 {
     public interface IReportsService
     {
+        Task<ResponseDTO<Report>> CheckAccessAsync(int reportId);
         Task<ResponseDTO<int?>> CreateAsync(ReportCreateDTO request);
         Task<ResponseDTO<bool>> EditAsync(ReportEditDTO request);
         Task<ResponseDTO<bool>> SetSeverityAsync(ReportPatchEnumDTO<ReportSeverity> request);
