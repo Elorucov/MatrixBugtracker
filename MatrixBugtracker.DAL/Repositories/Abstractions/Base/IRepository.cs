@@ -3,7 +3,7 @@ using MatrixBugtracker.DAL.Models;
 
 namespace MatrixBugtracker.DAL.Repositories.Abstractions.Base
 {
-    public interface IRepository<T> : IRepositoryBase where T : IEntity
+    public interface IRepository<T> : IRepositoryBase where T : BaseEntity
     {
         Task AddAsync(T entity);
         void Update(T entity);

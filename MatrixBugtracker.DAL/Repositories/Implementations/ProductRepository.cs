@@ -78,12 +78,12 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
                 .GetPageAsync(number, size);
         }
 
-        public async Task AddUserToProductAsync(Product product, User user, ProductMemberStatus status)
+        public async Task AddUserToProductAsync(int productId, int userId, ProductMemberStatus status)
         {
             await _db.ProductMembers.AddAsync(new ProductMember
             {
-                Product = product,
-                Member = user,
+                ProductId = productId,
+                MemberId = userId,
                 Status = status
             });
         }

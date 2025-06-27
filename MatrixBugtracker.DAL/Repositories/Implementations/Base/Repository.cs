@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations.Base
 {
-    public class Repository<T> : IRepository<T> where T : class, IEntity
+    public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         protected readonly BugtrackerContext _db;
         protected readonly DbSet<T> _dbSet;

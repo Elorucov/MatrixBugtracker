@@ -139,7 +139,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             else
             {
                 User user = await _userService.GetSingleUserAsync(userId);
-                await _repo.AddUserToProductAsync(product, user, ProductMemberStatus.InviteReceived);
+                await _repo.AddUserToProductAsync(product.Id, user.Id, ProductMemberStatus.InviteReceived);
             }
 
             await _unitOfWork.CommitAsync();
@@ -191,7 +191,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 var status = product.AccessLevel == ProductAccessLevel.Closed
                     ? ProductMemberStatus.JoinRequested : ProductMemberStatus.Joined;
 
-                await _repo.AddUserToProductAsync(product, user, status);
+                await _repo.AddUserToProductAsync(product.Id, user.Id, status);
                 await _unitOfWork.CommitAsync();
 
                 return new ResponseDTO<bool>(true);

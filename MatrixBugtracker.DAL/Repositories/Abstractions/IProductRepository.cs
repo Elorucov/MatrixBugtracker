@@ -15,7 +15,7 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
         Task<ProductMember> GetProductMemberAsync(int productId, int userId);
         Task<PaginationResult<Product>> GetProductsForUserByStatusAsync(ProductMemberStatus status, int userId, int number, int size);
         Task<PaginationResult<User>> GetUsersForProductByStatusAsync(ProductMemberStatus status, int productId, int number, int size);
-        Task AddUserToProductAsync(Product product, User user, ProductMemberStatus status);
+        Task AddUserToProductAsync(int productId, int userId, ProductMemberStatus status);
         void RemoveUserFromProduct(ProductMember prodMem);
         void UpdateProductMember(ProductMember prodMem);
     }
