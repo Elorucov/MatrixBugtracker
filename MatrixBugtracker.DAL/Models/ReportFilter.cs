@@ -1,5 +1,5 @@
-﻿using MatrixBugtracker.DAL.Entities;
-using MatrixBugtracker.DAL.Enums;
+﻿using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.DAL.Models
 {

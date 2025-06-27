@@ -4,7 +4,7 @@ using MatrixBugtracker.BL.DTOs.Tags;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.DAL.Entities;
+using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 

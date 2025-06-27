@@ -1,9 +1,10 @@
 ﻿using MatrixBugtracker.Abstractions;
-using MatrixBugtracker.DAL.Entities;
-using MatrixBugtracker.DAL.Entities.Base;
-using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Entities.Base;
+using MatrixBugtracker.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MatrixBugtracker.DAL.Data;
 
@@ -55,6 +56,12 @@ public partial class BugtrackerContext : DbContext
                     deletedEntity.DeletionTime = DateTime.Now;
                     deletedEntity.DeletedByUserId = userId;
                     entry.State = EntityState.Modified;
+                    break;
+                case EntityState.Modified:
+                    var updateEntity = entry.Entity as IUpdateEntity;
+                    if (updateEntity == null) break;
+                    updateEntity.UpdateTime = DateTime.Now;
+                    updateEntity.UpdateUserId = userId;
                     break;
                 case EntityState.Added:
                     var createdEntity = entry.Entity as ICreateEntity;

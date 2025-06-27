@@ -1,5 +1,5 @@
 ﻿using MatrixBugtracker.DAL.Configs.Base;
-using MatrixBugtracker.DAL.Entities;
+using MatrixBugtracker.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -34,7 +34,6 @@ namespace MatrixBugtracker.DAL.Configs
             builder.Property(e => e.Steps).IsRequired().HasColumnType("text").HasColumnName("steps");
             builder.Property(e => e.Supposed).IsRequired().HasColumnType("text").HasColumnName("supposed");
             builder.Property(e => e.Title).IsRequired().HasMaxLength(128).HasColumnName("title");
-            builder.Property(e => e.UpdateTime).HasColumnName("update_time");
 
             builder.HasOne(d => d.Creator).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.CreatorId)

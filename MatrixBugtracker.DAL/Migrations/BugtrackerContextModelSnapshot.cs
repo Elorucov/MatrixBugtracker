@@ -22,7 +22,7 @@ namespace MatrixBugtracker.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +43,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -80,6 +80,10 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("update_time");
 
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorId");
@@ -89,7 +93,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("comments", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.CommentAttachment", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.CommentAttachment", b =>
                 {
                     b.Property<int>("CommentId")
                         .HasColumnType("int")
@@ -110,7 +114,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("comment_attachments", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Confirmation", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Confirmation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -133,7 +137,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -149,6 +153,14 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("tinyint")
                         .HasColumnName("kind");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("update_time");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
@@ -160,7 +172,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("confirmations", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.PlatformNotification", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.PlatformNotification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -177,7 +189,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -199,12 +211,20 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("nvarchar(1024)")
                         .HasColumnName("text");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("update_time");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.HasKey("Id");
 
                     b.ToTable("platform_notifications", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.PlatformNotificationUser", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.PlatformNotificationUser", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int")
@@ -225,7 +245,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("platform_notification_read_users", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -246,7 +266,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -282,6 +302,14 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("tinyint")
                         .HasColumnName("type");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("update_time");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorId");
@@ -296,7 +324,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("products", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ProductMember", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.ProductMember", b =>
                 {
                     b.Property<int>("ProductId")
                         .HasColumnType("int")
@@ -321,7 +349,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("product_members", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.RefreshToken", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -335,7 +363,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeletionTime")
@@ -353,6 +381,12 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("token");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
@@ -367,7 +401,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("refresh_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Report", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Report", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -389,7 +423,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -445,6 +479,10 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("update_time");
 
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorId");
@@ -454,7 +492,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("reports", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ReportAttachment", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.ReportAttachment", b =>
                 {
                     b.Property<int>("ReportId")
                         .HasColumnType("int")
@@ -475,7 +513,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("report_attachments", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ReportReproduce", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.ReportReproduce", b =>
                 {
                     b.Property<int>("ReportId")
                         .HasColumnType("int")
@@ -496,7 +534,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("report_reproduces", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ReportTag", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.ReportTag", b =>
                 {
                     b.Property<int>("ReportId")
                         .HasColumnType("int")
@@ -517,7 +555,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("report_tags", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Tag", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -534,7 +572,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -556,6 +594,14 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("nvarchar(64)")
                         .HasColumnName("name");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("update_time");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorId");
@@ -566,7 +612,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("tags", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.UploadedFile", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.UploadedFile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -583,7 +629,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -617,6 +663,14 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("path");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("update_time");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorId");
@@ -627,7 +681,7 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("files", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.User", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -636,7 +690,15 @@ namespace MatrixBugtracker.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("creation_time");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int")
+                        .HasColumnName("creator_id");
+
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -689,6 +751,14 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("tinyint")
                         .HasColumnName("role");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("update_time");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PhotoFileId")
@@ -704,19 +774,20 @@ namespace MatrixBugtracker.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            DeletedByUserId = 0,
+                            CreationTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatorId = 0,
                             Email = "admin@example.com",
                             FirstName = "John",
                             IsDeleted = false,
                             IsEmailConfirmed = true,
                             LastName = "Doe",
                             ModeratorName = "Moderator",
-                            Password = "XhropSoXhYua3eVs77GcBvNJKd6P3MLOYp+/wz5TXGDfPK9wCZnNTdz2nvAGDuA/",
+                            Password = "shJkKIhFCyeGyIgk1YN0k7w7URfHifSLtAczZghiZXcZjigjPzEnEbXXaBwrM7A5",
                             Role = (byte)1
                         });
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.UserNotification", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.UserNotification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -733,7 +804,7 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.Property<int>("DeletedByUserId")
+                    b.Property<int?>("DeletedByUserId")
                         .HasColumnType("int")
                         .HasColumnName("deleted_by_user_id");
 
@@ -761,6 +832,14 @@ namespace MatrixBugtracker.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("target_user_id");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("update_time");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
                     b.Property<bool>("ViewedByTargetUser")
                         .HasColumnType("bit")
                         .HasColumnName("viewed");
@@ -772,15 +851,15 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.ToTable("user_notifications", (string)null);
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Comment", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "Creator")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "Creator")
                         .WithMany("Comments")
                         .HasForeignKey("CreatorId")
                         .IsRequired()
                         .HasConstraintName("FK_Comment_Creator");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Report", "Report")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.Report", "Report")
                         .WithMany("Comments")
                         .HasForeignKey("ReportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -792,16 +871,16 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.CommentAttachment", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.CommentAttachment", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Comment", "Comment")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.Comment", "Comment")
                         .WithMany()
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_CA_Comment");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.UploadedFile", "File")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.UploadedFile", "File")
                         .WithMany()
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -813,9 +892,9 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("File");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Confirmation", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Confirmation", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "User")
                         .WithMany("Confirmations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -825,15 +904,15 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.PlatformNotificationUser", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.PlatformNotificationUser", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.PlatformNotification", "Notification")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.PlatformNotification", "Notification")
                         .WithMany("UsersThatRead")
                         .HasForeignKey("NotificationId")
                         .IsRequired()
                         .HasConstraintName("FK_PNU_Notification");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "User")
                         .WithMany("PlatformNotifications")
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -844,17 +923,17 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "Creator")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "Creator")
                         .WithMany("CreatedProducts")
                         .HasForeignKey("CreatorId")
                         .IsRequired()
                         .HasConstraintName("FK_Product_Creator");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.UploadedFile", "PhotoFile")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.UploadedFile", "PhotoFile")
                         .WithOne("PhotoProduct")
-                        .HasForeignKey("MatrixBugtracker.DAL.Entities.Product", "PhotoFileId")
+                        .HasForeignKey("MatrixBugtracker.Domain.Entities.Product", "PhotoFileId")
                         .HasConstraintName("FK_ProductPhoto");
 
                     b.Navigation("Creator");
@@ -862,15 +941,15 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("PhotoFile");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ProductMember", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.ProductMember", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "Member")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "Member")
                         .WithMany("JoinedProducts")
                         .HasForeignKey("MemberId")
                         .IsRequired()
                         .HasConstraintName("FK_PU_Member");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Product", "Product")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.Product", "Product")
                         .WithMany("ProductMembers")
                         .HasForeignKey("ProductId")
                         .IsRequired()
@@ -881,9 +960,9 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.RefreshToken", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.RefreshToken", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -892,15 +971,15 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Report", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Report", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "Creator")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "Creator")
                         .WithMany("Reports")
                         .HasForeignKey("CreatorId")
                         .IsRequired()
                         .HasConstraintName("FK_Report_Creator");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Product", "Product")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.Product", "Product")
                         .WithMany("Reports")
                         .HasForeignKey("ProductId")
                         .IsRequired()
@@ -911,15 +990,15 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ReportAttachment", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.ReportAttachment", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.UploadedFile", "File")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.UploadedFile", "File")
                         .WithMany()
                         .HasForeignKey("FileId")
                         .IsRequired()
                         .HasConstraintName("FK_RA_Attachment");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Report", "Report")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.Report", "Report")
                         .WithMany("Attachments")
                         .HasForeignKey("ReportId")
                         .IsRequired()
@@ -930,15 +1009,15 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ReportReproduce", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.ReportReproduce", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Report", "Report")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.Report", "Report")
                         .WithMany("Reproduces")
                         .HasForeignKey("ReportId")
                         .IsRequired()
                         .HasConstraintName("FK_RR_Report");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "User")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -949,15 +1028,15 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.ReportTag", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.ReportTag", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Report", "Report")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.Report", "Report")
                         .WithMany("Tags")
                         .HasForeignKey("ReportId")
                         .IsRequired()
                         .HasConstraintName("FK_RT_Report");
 
-                    b.HasOne("MatrixBugtracker.DAL.Entities.Tag", "Tag")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.Tag", "Tag")
                         .WithMany("Reports")
                         .HasForeignKey("TagId")
                         .IsRequired()
@@ -968,9 +1047,9 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Tag", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Tag", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "Creator")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "Creator")
                         .WithMany("Tags")
                         .HasForeignKey("CreatorId")
                         .IsRequired()
@@ -979,9 +1058,9 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Creator");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.UploadedFile", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.UploadedFile", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "Creator")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "Creator")
                         .WithMany("UploadedFiles")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -991,19 +1070,19 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Creator");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.User", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.User", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.UploadedFile", "PhotoFile")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.UploadedFile", "PhotoFile")
                         .WithOne("PhotoUser")
-                        .HasForeignKey("MatrixBugtracker.DAL.Entities.User", "PhotoFileId")
+                        .HasForeignKey("MatrixBugtracker.Domain.Entities.User", "PhotoFileId")
                         .HasConstraintName("FK_UserPhoto");
 
                     b.Navigation("PhotoFile");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.UserNotification", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.UserNotification", b =>
                 {
-                    b.HasOne("MatrixBugtracker.DAL.Entities.User", "TargetUser")
+                    b.HasOne("MatrixBugtracker.Domain.Entities.User", "TargetUser")
                         .WithMany("Notifications")
                         .HasForeignKey("TargetUserId")
                         .IsRequired()
@@ -1012,19 +1091,19 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("TargetUser");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.PlatformNotification", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.PlatformNotification", b =>
                 {
                     b.Navigation("UsersThatRead");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Product", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Product", b =>
                 {
                     b.Navigation("ProductMembers");
 
                     b.Navigation("Reports");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Report", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Report", b =>
                 {
                     b.Navigation("Attachments");
 
@@ -1035,19 +1114,19 @@ namespace MatrixBugtracker.DAL.Migrations
                     b.Navigation("Tags");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.Tag", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.Tag", b =>
                 {
                     b.Navigation("Reports");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.UploadedFile", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.UploadedFile", b =>
                 {
                     b.Navigation("PhotoProduct");
 
                     b.Navigation("PhotoUser");
                 });
 
-            modelBuilder.Entity("MatrixBugtracker.DAL.Entities.User", b =>
+            modelBuilder.Entity("MatrixBugtracker.Domain.Entities.User", b =>
                 {
                     b.Navigation("Comments");
 

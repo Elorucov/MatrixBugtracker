@@ -2,8 +2,8 @@
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.DAL.Entities.Base;
-using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.Domain.Entities.Base;
+using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {

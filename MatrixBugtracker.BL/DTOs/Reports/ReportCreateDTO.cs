@@ -1,4 +1,4 @@
-﻿using MatrixBugtracker.DAL.Enums;
+﻿using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.DTOs.Reports
 {

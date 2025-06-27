@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MatrixBugtracker.Abstractions\MatrixBugtracker.Abstractions.csproj" />
+    <ProjectReference Include="..\MatrixBugtracker.Domain\MatrixBugtracker.Domain.csproj" />
   </ItemGroup>
 
 </Project>

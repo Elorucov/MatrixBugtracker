@@ -1,4 +1,4 @@
-﻿using MatrixBugtracker.DAL.Entities;
+﻿using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 

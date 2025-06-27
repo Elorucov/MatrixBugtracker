@@ -1,6 +1,6 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;

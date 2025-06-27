@@ -7,8 +7,8 @@ using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.DTOs.Tags;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Extensions;
-using MatrixBugtracker.DAL.Entities;
-using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

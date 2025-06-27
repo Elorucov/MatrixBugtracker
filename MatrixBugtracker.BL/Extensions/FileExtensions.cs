@@ -1,4 +1,4 @@
-﻿using MatrixBugtracker.DAL.Entities;
+﻿using MatrixBugtracker.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace MatrixBugtracker.BL.Extensions

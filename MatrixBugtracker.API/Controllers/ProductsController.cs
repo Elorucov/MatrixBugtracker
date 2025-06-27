@@ -2,7 +2,7 @@
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers

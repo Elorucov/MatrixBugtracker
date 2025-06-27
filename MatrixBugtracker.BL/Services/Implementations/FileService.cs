@@ -3,13 +3,14 @@ using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.DAL.Entities;
+using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -81,7 +82,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // Admins can get all files, others can get only own files
             int currentUserId = _userIdProvider.UserId;
             var user = await _userService.GetSingleUserAsync(currentUserId);
-            if (user?.Role != DAL.Enums.UserRole.Admin && file.CreatorId != _userIdProvider.UserId) return ResponseDTO<UploadedFile>.Forbidden(Errors.ForbiddenFile);
+            if (user?.Role != UserRole.Admin && file.CreatorId != _userIdProvider.UserId) return ResponseDTO<UploadedFile>.Forbidden(Errors.ForbiddenFile);
             if (isImage && !file.IsImage()) return ResponseDTO<UploadedFile>.BadRequest(Errors.FileIsNotImage);
 
             return new ResponseDTO<UploadedFile>(file);

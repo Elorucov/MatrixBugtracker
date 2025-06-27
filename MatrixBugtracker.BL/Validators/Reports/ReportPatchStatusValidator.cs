@@ -2,7 +2,7 @@
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
-using MatrixBugtracker.DAL.Enums;
+using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Validators.Reports
 {

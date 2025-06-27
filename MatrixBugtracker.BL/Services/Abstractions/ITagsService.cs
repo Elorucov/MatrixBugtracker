@@ -1,6 +1,6 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Tags;
-using MatrixBugtracker.DAL.Entities;
+using MatrixBugtracker.Domain.Entities;
 
 namespace MatrixBugtracker.BL.Services.Abstractions
 {
