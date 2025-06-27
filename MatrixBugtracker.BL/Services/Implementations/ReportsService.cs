@@ -164,6 +164,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Comment comment = new Comment
             {
                 ReportId = report.Id,
+                NewSeverity = request.NewValue,
                 Text = request.Comment,
                 AsModerator = true
             };
@@ -223,6 +224,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Comment comment = new Comment
             {
                 ReportId = report.Id,
+                NewStatus = newStatus,
                 Text = request.Comment,
                 AsModerator = currentUser.Role != UserRole.Tester
             };
