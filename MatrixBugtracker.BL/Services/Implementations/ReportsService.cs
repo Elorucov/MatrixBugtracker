@@ -9,6 +9,7 @@ using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Entities.Base;
 using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Services.Implementations
@@ -49,13 +50,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = await _repo.GetByIdAsync(reportId);
             if (report == null) return ResponseDTO<Report>.NotFound();
 
-            var creatorCheck = await _accessService.CheckAccessAsync(report);
-            if (!creatorCheck.Success) return ResponseDTO<Report>.Error(creatorCheck);
+            // We don't use AccessService.CheckAccess, because moders and employees can access every report.
+            User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
 
             // Check if authorized user can access to vulnerability report
             // If user is tester, he can access to only vulnerabilities that created by own
 
-            User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
             if (report.Severity == ReportSeverity.Vulnerability && currentUser.Role == UserRole.Tester)
             {
                 if (report.CreatorId != currentUser.Id) return ResponseDTO<Report>.Forbidden();
@@ -110,7 +110,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<bool>> EditAsync(ReportEditDTO request)
         {
             Report report = null;
-            var accessCheck = await CheckAccessAsync(report.Id);
+            var accessCheck = await CheckAccessAsync(request.Id);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
             report = accessCheck.Response;
 
@@ -153,9 +153,11 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<bool>> SetSeverityAsync(ReportPatchEnumDTO<ReportSeverity> request)
         {
             Report report = null;
-            var accessCheck = await CheckAccessAsync(report.Id);
+            var accessCheck = await CheckAccessAsync(request.Id);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
             report = accessCheck.Response;
+
+            if (report.Severity == request.NewValue) return ResponseDTO<bool>.BadRequest();
 
             report.Severity = request.NewValue;
             report.UpdateTime = DateTime.Now;
@@ -181,7 +183,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<bool>> SetStatusAsync(ReportPatchEnumDTO<ReportStatus> request)
         {
             Report report = null;
-            var accessCheck = await CheckAccessAsync(report.Id);
+            var accessCheck = await CheckAccessAsync(request.Id);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
             report = accessCheck.Response;
 
@@ -239,7 +241,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<bool>> SetReproducedAsync(int reportId, bool reproduced)
         {
             Report report = null;
-            var accessCheck = await CheckAccessAsync(report.Id);
+            var accessCheck = await CheckAccessAsync(reportId);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
             report = accessCheck.Response;
 
@@ -265,7 +267,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<ReportDTO>> GetByIdAsync(int reportId)
         {
             Report report = null;
-            var accessCheck = await CheckAccessAsync(report.Id);
+            var accessCheck = await CheckAccessAsync(reportId);
             if (!accessCheck.Success) return ResponseDTO<ReportDTO>.Error(accessCheck);
             report = accessCheck.Response;
 
