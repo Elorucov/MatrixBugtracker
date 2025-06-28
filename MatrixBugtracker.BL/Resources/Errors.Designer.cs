@@ -106,6 +106,24 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deletion not allowed after 24 hours.
+        /// </summary>
+        internal static string DeletionTimeRestriction {
+            get {
+                return ResourceManager.GetString("DeletionTimeRestriction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Editing not allowed after 24 hours.
+        /// </summary>
+        internal static string EditTimeRestriction {
+            get {
+                return ResourceManager.GetString("EditTimeRestriction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This e-mail is already in use.
         /// </summary>
         internal static string EmailInUse {
@@ -156,6 +174,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string ForbiddenProduct {
             get {
                 return ResourceManager.GetString("ForbiddenProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting a comment with severity or status update is not allowed.
+        /// </summary>
+        internal static string ForbiddenSeverityStatusCommentDeletion {
+            get {
+                return ResourceManager.GetString("ForbiddenSeverityStatusCommentDeletion", resourceCulture);
             }
         }
         

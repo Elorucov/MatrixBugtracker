@@ -2,6 +2,7 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
@@ -71,6 +72,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (!access.Success) return ResponseDTO<bool>.Error(access);
 
             // TODO: if this comment is not last, editing is not allowed
+            if (comment.CreationTime.AddHours(24) < DateTime.Now) return ResponseDTO<bool>.BadRequest(Errors.EditTimeRestriction);
 
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
@@ -85,6 +87,27 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _repo.RemoveAllAttachmentsAsync(comment.Id);
             if (files?.Count > 0) await _repo.AddAttachmentAsync(comment, files);
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> DeleteAsync(int commentId)
+        {
+            Comment comment = await _repo.GetByIdAsync(commentId);
+            if (comment == null) return ResponseDTO<bool>.NotFound();
+
+            // Admins can delete comments, others can delete only own created comment
+            var access = await _accessService.CheckAccessAsync(comment);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
+
+            // TODO: if this comment is not last, deleting is not allowed
+            if (comment.CreationTime.AddHours(24) < DateTime.Now) return ResponseDTO<bool>.BadRequest(Errors.DeletionTimeRestriction);
+
+            if (comment.NewSeverity.HasValue || comment.NewStatus.HasValue) 
+                return ResponseDTO<bool>.BadRequest(Errors.ForbiddenSeverityStatusCommentDeletion);
+
+            _repo.Delete(comment);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);

@@ -7,8 +7,8 @@ public class Comment : BaseEntity
 {
     public int ReportId { get; set; }
     public string Text { get; set; }
-    public ReportSeverity NewSeverity { get; set; }
-    public ReportStatus NewStatus { get; set; }
+    public ReportSeverity? NewSeverity { get; set; }
+    public ReportStatus? NewStatus { get; set; }
     public bool IsAttachmentsPrivate { get; set; }
     public bool AsModerator { get; set; }
 

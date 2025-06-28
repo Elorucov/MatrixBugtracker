@@ -132,6 +132,12 @@
   <data name="CannotRevokeAdminRoleFromCurrentUser" xml:space="preserve">
     <value>You cannot change your role</value>
   </data>
+  <data name="DeletionTimeRestriction" xml:space="preserve">
+    <value>Deletion not allowed after 24 hours</value>
+  </data>
+  <data name="EditTimeRestriction" xml:space="preserve">
+    <value>Editing not allowed after 24 hours</value>
+  </data>
   <data name="EmailInUse" xml:space="preserve">
     <value>This e-mail is already in use</value>
   </data>
@@ -149,6 +155,9 @@
   </data>
   <data name="ForbiddenProduct" xml:space="preserve">
     <value>Access to product denied</value>
+  </data>
+  <data name="ForbiddenSeverityStatusCommentDeletion" xml:space="preserve">
+    <value>Deleting a comment with severity or status update is not allowed</value>
   </data>
   <data name="InvalidCommentId" xml:space="preserve">
     <value>Invalid comment id</value>

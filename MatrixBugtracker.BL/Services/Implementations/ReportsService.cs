@@ -117,6 +117,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // TODO: only tester (creator) can not edit, moders and higher can.
             if (report.Status != 0 || report.IsSeveritySetByModerator) return ResponseDTO<bool>.BadRequest(Errors.ReportEditForbidden);
 
+            if (report.CreationTime.AddHours(24) < DateTime.Now) return ResponseDTO<bool>.BadRequest(Errors.EditTimeRestriction);
+
             List<Tag> tags = null;
             if (request.Tags?.Length > 0)
             {

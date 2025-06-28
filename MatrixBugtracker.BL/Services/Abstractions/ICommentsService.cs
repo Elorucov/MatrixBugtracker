@@ -7,5 +7,6 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     {
         Task<ResponseDTO<int?>> CreateAsync(CommentCreateDTO request);
         Task<ResponseDTO<bool>> EditAsync(CommentEditDTO request);
+        Task<ResponseDTO<bool>> DeleteAsync(int commentId);
     }
 }

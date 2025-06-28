@@ -42,8 +42,7 @@ namespace MatrixBugtracker.API.Controllers
         [AuthorizeApi]
         public async Task<IActionResult> DeleteAsync(int commentId)
         {
-            await Task.Delay(1);
-            return APIResponse(ResponseDTO<int?>.NotImplemented());
+            return APIResponse(await _service.DeleteAsync(commentId));
         }
     }
 }
