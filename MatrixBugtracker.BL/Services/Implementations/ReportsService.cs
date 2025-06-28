@@ -66,7 +66,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // TODO: ThenInclude ProductMembers when getting a report to optimize
 
             int productId = report.ProductId;
-            var access = await _productService.CheckAccessAsync(productId);
+            var access = await _productService.CheckAccessAsync(productId, false);
             if (!access.Success) return ResponseDTO<Report>.Error(access);
             return new ResponseDTO<Report>(report);
         }
@@ -74,7 +74,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<int?>> CreateAsync(ReportCreateDTO request)
         {
             Product product = null;
-            var access = await _productService.CheckAccessAsync(request.ProductId);
+            var access = await _productService.CheckAccessAsync(request.ProductId, true);
             if (!access.Success) return ResponseDTO<int?>.Error(access);
             product = access.Response;
 
@@ -97,6 +97,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             Report report = _mapper.Map<Report>(request);
+            report.IsAttachmentsPrivate = request.IsFilesPrivate; // TODO: mapper.
             await _repo.AddAsync(report);
 
             if (tags?.Count > 0) await _repo.AddTagsAsync(report, tags);
@@ -339,7 +340,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 else
                 {
                     // Get by product id. Need check access to product.
-                    var productCheck = await _productService.CheckAccessAsync(request.ProductId);
+                    var productCheck = await _productService.CheckAccessAsync(request.ProductId, false);
                     if (!productCheck.Success) return PaginationResponseDTO<ReportDTO>.Forbidden(Errors.ForbiddenProduct);
 
                     result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id, request.Number, request.Size, request.ProductId, request.CreatorId, filter);

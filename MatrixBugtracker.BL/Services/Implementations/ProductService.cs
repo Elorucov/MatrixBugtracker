@@ -281,14 +281,32 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         }
 
-        public async Task<ResponseDTO<Product>> CheckAccessAsync(int productId)
+        // Users that not member of the open product can access to it, but not create reports for this.
+        public async Task<ResponseDTO<Product>> CheckAccessAsync(int productId, bool toCreateReport)
         {
             int currentUserId = _userIdProvider.UserId;
-            var membership = await _repo.GetProductMemberAsync(productId, currentUserId);
-            if (membership == null || membership.Status != ProductMemberStatus.Joined)
-                return ResponseDTO<Product>.Forbidden(Errors.ForbiddenProduct);
+            if (toCreateReport)
+            {
+                var membership = await _repo.GetProductMemberAsync(productId, currentUserId);
+                if (membership == null || membership.Status != ProductMemberStatus.Joined)
+                    return ResponseDTO<Product>.Forbidden(Errors.ForbiddenProduct);
 
-            return new ResponseDTO<Product>(membership.Product);
+                return new ResponseDTO<Product>(membership.Product);
+            } else
+            {
+                User currentUser = await _userService.GetSingleUserAsync(currentUserId);
+                var product = await _repo.GetByIdAsync(productId);
+                if (product == null) return ResponseDTO<Product>.NotFound(Errors.NotFoundProduct);
+
+                if (currentUser.Role != UserRole.Tester || product.AccessLevel == ProductAccessLevel.Open) 
+                    return new ResponseDTO<Product>(product);
+
+                var membership = await _repo.GetProductMemberAsync(productId, currentUserId);
+                if (membership == null || membership.Status != ProductMemberStatus.Joined)
+                    return ResponseDTO<Product>.Forbidden(Errors.ForbiddenProduct);
+
+                return new ResponseDTO<Product>(membership.Product);
+            }
         }
 
         public ResponseDTO<ProductEnumsDTO> GetEnumValues()
