@@ -267,7 +267,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<PaginationResponseDTO<UserDTO>> GetJoinRequestUsers(GetJoinRequestUsersReqDTO request)
         {
             Product product = await _repo.GetByIdAsync(request.ProductId);
-            if (product == null) return (PaginationResponseDTO<UserDTO>)PaginationResponseDTO<UserDTO>.NotFound();
+            if (product == null) return PaginationResponseDTO<UserDTO>.NotFound();
 
             // Admins can access to all products, employees can access to only own created products
             var access = await _accessService.CheckAccessAsync(product);

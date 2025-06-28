@@ -296,7 +296,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // trying to access other user's vulnerability reports
             if (request.CreatorId != currentUser.Id && currentUser.Role == UserRole.Tester
                 && request.Severities?.Count == 1 && request.Severities[0] == ReportSeverity.Vulnerability)
-                return (PaginationResponseDTO<ReportDTO>)PaginationResponseDTO<ReportDTO>.BadRequest();
+                return PaginationResponseDTO<ReportDTO>.BadRequest();
 
             // Get found tags entities
             List<Tag> tags = null;
@@ -318,7 +318,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (currentUser.Role == UserRole.Tester)
             {
                 var joinedProductsResponse = await _productService.GetProductsByUserMembershipAsync(currentUser.Id, ProductMemberStatus.Joined, PaginationRequestDTO.Infinity);
-                if (!joinedProductsResponse.Success) return (PaginationResponseDTO<ReportDTO>)PaginationResponseDTO<ReportDTO>.Error(joinedProductsResponse);
+                if (!joinedProductsResponse.Success) return PaginationResponseDTO<ReportDTO>.Error(joinedProductsResponse);
 
                 var joinedProducts = joinedProductsResponse.Response;
                 var joinedProductIds = joinedProducts.Select(p => p.Id).ToList();
@@ -340,7 +340,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 {
                     // Get by product id. Need check access to product.
                     var productCheck = await _productService.CheckAccessAsync(request.ProductId);
-                    if (!productCheck.Success) return (PaginationResponseDTO<ReportDTO>)PaginationResponseDTO<ReportDTO>.Forbidden(Errors.ForbiddenProduct);
+                    if (!productCheck.Success) return PaginationResponseDTO<ReportDTO>.Forbidden(Errors.ForbiddenProduct);
 
                     result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id, request.Number, request.Size, request.ProductId, request.CreatorId, filter);
                 }
