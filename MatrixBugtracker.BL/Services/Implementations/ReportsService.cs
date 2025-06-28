@@ -360,7 +360,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<bool>> DeleteAsync(int reportId)
         {
             Report report = null;
-            var accessCheck = await CheckAccessAsync(report.Id);
+            var accessCheck = await CheckAccessAsync(reportId);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
             report = accessCheck.Response;
 
