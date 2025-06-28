@@ -5,6 +5,7 @@ using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
+using MatrixBugtracker.Domain.Entities;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -42,7 +43,22 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var accessCheck = await _reportsService.CheckAccessAsync(request.ReportId);
             if (!accessCheck.Success) return ResponseDTO<int?>.Error(accessCheck);
 
-            return ResponseDTO<int?>.NotImplemented();
+            List<UploadedFile> files = null;
+            if (request.FileIds?.Length > 0)
+            {
+                var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
+                if (!filesCheck.Success) return ResponseDTO<int?>.Error(filesCheck);
+                files = filesCheck.Response;
+            }
+
+            Comment comment = _mapper.Map<Comment>(request);
+            comment.IsAttachmentsPrivate = request.IsFilesPrivate; // TODO: mapper.
+            await _repo.AddAsync(comment);
+
+            if (files?.Count > 0) await _repo.AddAttachmentAsync(comment, files);
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<int?>(comment.Id);
         }
     }
 }

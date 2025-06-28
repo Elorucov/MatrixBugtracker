@@ -14,4 +14,5 @@ public class Comment : BaseEntity
 
     public virtual User Creator { get; set; }
     public virtual Report Report { get; set; }
+    public virtual ICollection<CommentAttachment> Attachments { get; set; } = new List<CommentAttachment>();
 }

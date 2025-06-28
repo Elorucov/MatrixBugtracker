@@ -16,7 +16,7 @@ namespace MatrixBugtracker.DAL.Configs
             builder.Property(e => e.CommentId).IsRequired().HasColumnName("comment_id");
             builder.Property(e => e.FileId).IsRequired().HasColumnName("file_id");
 
-            builder.HasOne(d => d.Comment).WithMany()
+            builder.HasOne(d => d.Comment).WithMany(c => c.Attachments)
                 .HasForeignKey(d => d.CommentId)
                 .HasConstraintName("FK_CA_Comment");
 

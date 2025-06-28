@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Auth;
+using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Reports;
@@ -55,6 +56,9 @@ namespace MatrixBugtracker.BL.Profiles
                 .ForMember(m => m.Tags, t => t.Ignore())
                 .ForMember(m => m.Reproduces, t => t.Ignore())
                 .AfterMap(ToReportDTO);
+
+            CreateMap<CommentCreateDTO, Comment>()
+                .ForMember(m => m.Attachments, t => t.Ignore());
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)

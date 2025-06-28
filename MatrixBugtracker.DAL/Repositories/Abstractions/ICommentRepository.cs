@@ -5,5 +5,6 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
 {
     public interface ICommentRepository : IRepository<Comment>
     {
+        Task AddAttachmentAsync(Comment comment, List<UploadedFile> files);
     }
 }

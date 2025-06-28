@@ -37,14 +37,14 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost]
-        [AuthorizeApi([UserRole.Tester])]
+        [AuthorizeApi]
         public async Task<IActionResult> CreateAsync([FromBody] ReportCreateDTO request)
         {
             return APIResponse(await _service.CreateAsync(request));
         }
 
         [HttpPatch]
-        [AuthorizeApi([UserRole.Tester])]
+        [AuthorizeApi]
         public async Task<IActionResult> EditAsync([FromBody] ReportEditDTO request)
         {
             return APIResponse(await _service.EditAsync(request));

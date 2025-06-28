@@ -1,6 +1,7 @@
 ﻿using MatrixBugtracker.API.Filters;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
@@ -9,6 +10,12 @@ namespace MatrixBugtracker.API.Controllers
     [AuthorizeApi]
     public class CommentsController : BaseController
     {
+        private readonly ICommentsService _service;
+        public CommentsController(ICommentsService service)
+        {
+            _service = service;
+        }
+
         [HttpGet]
         [AuthorizeApi]
         public async Task<IActionResult> GetAsync([FromQuery] GetCommentsRequestDTO request)
@@ -19,15 +26,15 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPost]
         [AuthorizeApi]
-        public async Task<IActionResult> CreateAsync([FromForm] CommentCreateDTO request)
+        public async Task<IActionResult> CreateAsync([FromBody] CommentCreateDTO request)
         {
             await Task.Delay(1);
-            return APIResponse(ResponseDTO<int?>.NotImplemented());
+            return APIResponse(await _service.CreateAsync(request));
         }
 
         [HttpPut]
         [AuthorizeApi]
-        public async Task<IActionResult> EditAsync([FromForm] CommentCreateDTO request)
+        public async Task<IActionResult> EditAsync([FromBody] CommentCreateDTO request)
         {
             await Task.Delay(1);
             return APIResponse(ResponseDTO<int?>.NotImplemented());
