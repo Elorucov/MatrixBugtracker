@@ -1,6 +1,4 @@
-﻿using MatrixBugtracker.Domain.Enums;
-
-namespace MatrixBugtracker.BL.DTOs.Reports
+﻿namespace MatrixBugtracker.BL.DTOs.Reports
 {
     public class ReportEditDTO
     {

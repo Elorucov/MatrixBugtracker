@@ -28,21 +28,19 @@ namespace MatrixBugtracker.API.Controllers
         [AuthorizeApi]
         public async Task<IActionResult> CreateAsync([FromBody] CommentCreateDTO request)
         {
-            await Task.Delay(1);
             return APIResponse(await _service.CreateAsync(request));
         }
 
         [HttpPut]
         [AuthorizeApi]
-        public async Task<IActionResult> EditAsync([FromBody] CommentCreateDTO request)
+        public async Task<IActionResult> EditAsync([FromBody] CommentEditDTO request)
         {
-            await Task.Delay(1);
-            return APIResponse(ResponseDTO<int?>.NotImplemented());
+            return APIResponse(await _service.EditAsync(request));
         }
 
-        [HttpDelete]
+        [HttpDelete("{commentId}")]
         [AuthorizeApi]
-        public async Task<IActionResult> DeleteAsync([FromQuery] int commentId)
+        public async Task<IActionResult> DeleteAsync(int commentId)
         {
             await Task.Delay(1);
             return APIResponse(ResponseDTO<int?>.NotImplemented());

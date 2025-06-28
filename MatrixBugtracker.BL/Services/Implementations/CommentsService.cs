@@ -60,5 +60,34 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<int?>(comment.Id);
         }
+
+        public async Task<ResponseDTO<bool>> EditAsync(CommentEditDTO request)
+        {
+            Comment comment = await _repo.GetByIdAsync(request.Id);
+            if (comment == null) return ResponseDTO<bool>.NotFound();
+
+            // Admins can edit all comments (but why?), others can edit only own created comment
+            var access = await _accessService.CheckAccessAsync(comment);
+            if (!access.Success) return ResponseDTO<bool>.Error(access);
+
+            // TODO: if this comment is not last, editing is not allowed
+
+            List<UploadedFile> files = null;
+            if (request.FileIds?.Length > 0)
+            {
+                var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
+                if (!filesCheck.Success) return ResponseDTO<bool>.Error(filesCheck);
+                files = filesCheck.Response;
+            }
+
+            comment = _mapper.Map(request, comment);
+            _repo.Update(comment);
+
+            await _repo.RemoveAllAttachmentsAsync(comment.Id);
+            if (files?.Count > 0) await _repo.AddAttachmentAsync(comment, files);
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<bool>(true);
+        }
     }
 }

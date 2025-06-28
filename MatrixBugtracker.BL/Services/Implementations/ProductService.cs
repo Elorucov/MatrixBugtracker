@@ -292,13 +292,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
                     return ResponseDTO<Product>.Forbidden(Errors.ForbiddenProduct);
 
                 return new ResponseDTO<Product>(membership.Product);
-            } else
+            }
+            else
             {
                 User currentUser = await _userService.GetSingleUserAsync(currentUserId);
                 var product = await _repo.GetByIdAsync(productId);
                 if (product == null) return ResponseDTO<Product>.NotFound(Errors.NotFoundProduct);
 
-                if (currentUser.Role != UserRole.Tester || product.AccessLevel == ProductAccessLevel.Open) 
+                if (currentUser.Role != UserRole.Tester || product.AccessLevel == ProductAccessLevel.Open)
                     return new ResponseDTO<Product>(product);
 
                 var membership = await _repo.GetProductMemberAsync(productId, currentUserId);

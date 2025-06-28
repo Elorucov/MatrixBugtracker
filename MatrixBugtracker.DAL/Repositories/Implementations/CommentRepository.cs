@@ -2,12 +2,18 @@
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using MatrixBugtracker.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations
 {
     public class CommentRepository : Repository<Comment>, ICommentRepository
     {
         public CommentRepository(BugtrackerContext db) : base(db) { }
+
+        public async Task RemoveAllAttachmentsAsync(int commentId)
+        {
+            await _db.CommentAttachments.Where(rt => rt.CommentId == commentId).ExecuteDeleteAsync();
+        }
 
         public async Task AddAttachmentAsync(Comment comment, List<UploadedFile> files)
         {

@@ -9,7 +9,6 @@ using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
-using MatrixBugtracker.Domain.Entities.Base;
 using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Services.Implementations
@@ -135,7 +134,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             report = _mapper.Map(request, report);
-            report.UpdateTime = DateTime.Now;
             _repo.Update(report);
 
             await _repo.RemoveAllTagsAsync(report.Id);
@@ -160,7 +158,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (report.Severity == request.NewValue) return ResponseDTO<bool>.BadRequest();
 
             report.Severity = request.NewValue;
-            report.UpdateTime = DateTime.Now;
             report.IsSeveritySetByModerator = true;
             _repo.Update(report);
 
@@ -221,7 +218,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             report.Status = newStatus;
-            report.UpdateTime = DateTime.Now;
             _repo.Update(report);
 
             Comment comment = new Comment

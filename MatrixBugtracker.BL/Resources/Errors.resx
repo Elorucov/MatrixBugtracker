@@ -150,6 +150,9 @@
   <data name="ForbiddenProduct" xml:space="preserve">
     <value>Access to product denied</value>
   </data>
+  <data name="InvalidCommentId" xml:space="preserve">
+    <value>Invalid comment id</value>
+  </data>
   <data name="InvalidCreatorId" xml:space="preserve">
     <value>Invalid creator id</value>
   </data>

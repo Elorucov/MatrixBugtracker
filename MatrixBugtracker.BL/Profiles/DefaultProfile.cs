@@ -59,6 +59,9 @@ namespace MatrixBugtracker.BL.Profiles
 
             CreateMap<CommentCreateDTO, Comment>()
                 .ForMember(m => m.Attachments, t => t.Ignore());
+
+            CreateMap<CommentEditDTO, Comment>()
+                .ForMember(m => m.Attachments, t => t.Ignore());
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)
@@ -108,10 +111,11 @@ namespace MatrixBugtracker.BL.Profiles
             dto.Status = report.Status.GetTranslatedEnum();
 
             dto.Attachments = Mapper.Map<List<FileDTO>>(report.Attachments.Select(a => a.File));
+            dto.IsAttachmentsPrivate = report.IsAttachmentsPrivate;
+
             dto.Tags = report.Tags.Select(t => t.Tag.Name).ToList();
 
             dto.CanDelete = report.CreatorId == currentUserId && report.Status == ReportStatus.Open;
-            // if (report.UpdateTime == null || report.UpdateTime?.Year == 1) dto.UpdateTime = null;
         }
     }
 }

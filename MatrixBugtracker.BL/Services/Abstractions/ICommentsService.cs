@@ -6,5 +6,6 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     public interface ICommentsService
     {
         Task<ResponseDTO<int?>> CreateAsync(CommentCreateDTO request);
+        Task<ResponseDTO<bool>> EditAsync(CommentEditDTO request);
     }
 }

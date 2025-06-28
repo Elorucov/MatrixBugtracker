@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using MatrixBugtracker.BL.DTOs.Reports;
-using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
-using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Validators.Reports
 {

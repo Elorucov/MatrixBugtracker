@@ -160,6 +160,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid comment id.
+        /// </summary>
+        internal static string InvalidCommentId {
+            get {
+                return ResourceManager.GetString("InvalidCommentId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid creator id.
         /// </summary>
         internal static string InvalidCreatorId {

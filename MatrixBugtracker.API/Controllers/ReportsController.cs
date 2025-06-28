@@ -29,11 +29,11 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.GetAsync(request));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{reportId}")]
         [AuthorizeApi]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public async Task<IActionResult> GetByIdAsync(int reportId)
         {
-            return APIResponse(await _service.GetByIdAsync(id));
+            return APIResponse(await _service.GetByIdAsync(reportId));
         }
 
         [HttpPost]
@@ -71,7 +71,7 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.SetReproducedAsync(reportId, reproduced));
         }
 
-        [HttpDelete]
+        [HttpDelete("{reportId}")]
         [AuthorizeApi]
         public async Task<IActionResult> DeleteAsync(int reportId)
         {

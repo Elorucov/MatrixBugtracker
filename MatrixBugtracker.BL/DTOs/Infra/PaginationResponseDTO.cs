@@ -1,5 +1,4 @@
 ﻿using MatrixBugtracker.BL.Resources;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MatrixBugtracker.BL.DTOs.Infra
 {
