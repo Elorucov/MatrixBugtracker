@@ -1,10 +1,10 @@
 ﻿using MatrixBugtracker.DAL.Data;
-using MatrixBugtracker.Domain.Entities;
-using MatrixBugtracker.Domain.Enums;
 using MatrixBugtracker.DAL.Extensions;
 using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Implementations.Base;
+using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations

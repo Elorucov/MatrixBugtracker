@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
+using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MatrixBugtracker.Abstractions;
+using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {

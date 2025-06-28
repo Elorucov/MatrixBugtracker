@@ -7,10 +7,10 @@ using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.Domain.Entities;
-using MatrixBugtracker.Domain.Enums;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
+using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Concurrent;
 

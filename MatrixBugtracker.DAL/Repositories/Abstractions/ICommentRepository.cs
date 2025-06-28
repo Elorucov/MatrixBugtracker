@@ -1,10 +1,5 @@
-﻿using MatrixBugtracker.Domain.Entities;
-using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
+using MatrixBugtracker.Domain.Entities;
 
 namespace MatrixBugtracker.DAL.Repositories.Abstractions
 {

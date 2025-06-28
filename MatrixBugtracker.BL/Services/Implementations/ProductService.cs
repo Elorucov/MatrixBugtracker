@@ -6,11 +6,11 @@ using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.Domain.Entities;
-using MatrixBugtracker.Domain.Enums;
 using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
+using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -271,7 +271,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Admins can access to all products, employees can access to only own created products
             var access = await _accessService.CheckAccessAsync(product);
-            if (!access.Success) return (PaginationResponseDTO<UserDTO>)PaginationResponseDTO<UserDTO>.Error(access);
+            if (!access.Success) return PaginationResponseDTO<UserDTO>.Error(access);
 
             var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.JoinRequested, request.ProductId, request.Number, request.Size);
             var users = result.Items;

@@ -44,14 +44,14 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.LeaveAsync(productId));
         }
 
-        [HttpGet("invited-products")]
+        [HttpGet("get-invited")]
         [AuthorizeApi([UserRole.Tester])]
         public async Task<IActionResult> GetInvitedProductsAsync([FromQuery] PaginationRequestDTO request)
         {
             return APIResponse(await _service.GetProductsWithInviteRequestAsync(request));
         }
 
-        [HttpGet("join-requests")]
+        [HttpGet("get-join-requests")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> GetJoinRequestsAsync([FromQuery] GetJoinRequestUsersReqDTO request)
         {

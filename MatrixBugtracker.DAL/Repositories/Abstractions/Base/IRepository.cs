@@ -1,5 +1,5 @@
-﻿using MatrixBugtracker.Domain.Entities.Base;
-using MatrixBugtracker.DAL.Models;
+﻿using MatrixBugtracker.DAL.Models;
+using MatrixBugtracker.Domain.Entities.Base;
 
 namespace MatrixBugtracker.DAL.Repositories.Abstractions.Base
 {

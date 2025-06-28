@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MatrixBugtracker.Domain.Entities.Base
+﻿namespace MatrixBugtracker.Domain.Entities.Base
 {
     public interface IUpdateEntity : ICreateEntity
     {

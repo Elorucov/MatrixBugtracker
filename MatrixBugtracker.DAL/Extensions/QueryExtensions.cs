@@ -1,5 +1,5 @@
-﻿using MatrixBugtracker.Domain.Entities;
-using MatrixBugtracker.DAL.Models;
+﻿using MatrixBugtracker.DAL.Models;
+using MatrixBugtracker.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatrixBugtracker.DAL.Extensions

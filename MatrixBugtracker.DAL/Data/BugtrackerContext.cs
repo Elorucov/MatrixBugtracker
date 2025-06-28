@@ -4,11 +4,10 @@ using MatrixBugtracker.Domain.Entities.Base;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MatrixBugtracker.DAL.Data;
 
-public partial class BugtrackerContext : DbContext
+public class BugtrackerContext : DbContext
 {
     private readonly IConfiguration _config;
     private readonly IPasswordHasher _passwordHasher;
