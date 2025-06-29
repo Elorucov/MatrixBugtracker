@@ -62,6 +62,13 @@ namespace MatrixBugtracker.BL.Profiles
 
             CreateMap<CommentEditDTO, Comment>()
                 .ForMember(m => m.Attachments, t => t.Ignore());
+
+            CreateMap<Comment, CommentDTO>()
+                .ForMember(m => m.NewSeverity, t => t.Ignore())
+                .ForMember(m => m.NewStatus, t => t.Ignore())
+                .ForMember(m => m.Attachments, t => t.Ignore())
+                .ForMember(m => m.Author, t => t.Ignore())
+                .AfterMap(ToCommentDTO);
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)
@@ -115,7 +122,22 @@ namespace MatrixBugtracker.BL.Profiles
 
             dto.Tags = report.Tags.Select(t => t.Tag.Name).ToList();
 
-            dto.CanDelete = report.CreatorId == currentUserId && report.Status == ReportStatus.Open;
+            dto.CanDelete = report.CreatorId == currentUserId && report.Status == ReportStatus.Open
+                && report.CreationTime.AddHours(24) >= DateTime.Now;
+        }
+
+        private void ToCommentDTO(Comment comment, CommentDTO dto)
+        {
+            int currentUserId = UserIdProvider.UserId;
+
+            if (comment.NewSeverity.HasValue) dto.NewSeverity = comment.NewSeverity.Value.GetTranslatedEnum();
+            if (comment.NewStatus.HasValue) dto.NewStatus = comment.NewStatus.Value.GetTranslatedEnum();
+
+            dto.Attachments = Mapper.Map<List<FileDTO>>(comment.Attachments.Select(a => a.File));
+            dto.IsAttachmentsPrivate = comment.IsAttachmentsPrivate;
+
+            dto.CanDelete = comment.CreatorId == currentUserId && !comment.NewStatus.HasValue
+                && comment.NewStatus.HasValue && comment.CreationTime.AddHours(24) >= DateTime.Now;
         }
     }
 }

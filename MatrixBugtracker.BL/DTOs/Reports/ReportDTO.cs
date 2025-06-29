@@ -19,7 +19,6 @@ namespace MatrixBugtracker.BL.DTOs.Reports
         public List<string> Tags { get; set; }
         public List<FileDTO> Attachments { get; set; } // only when getting single report
         public bool IsAttachmentsPrivate { get; set; }
-        public int CommentsCount { get; set; }
         public ReportReproducesDTO Reproduces { get; set; } // only when getting single report
         public bool IsSeveritySetByModerator { get; set; }
         public bool CanDelete { get; set; }

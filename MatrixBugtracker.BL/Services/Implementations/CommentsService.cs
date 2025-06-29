@@ -7,6 +7,7 @@ using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -16,7 +17,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IAccessService _accessService;
         private readonly IFileService _fileService;
         private readonly IReportsService _reportsService;
-        private readonly ITagsService _tagsService;
         private readonly IUserService _userService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IMapper _mapper;
@@ -24,14 +24,13 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly ICommentRepository _repo;
 
         public CommentsService(IUnitOfWork unitOfWork, IAccessService accessService,
-            IFileService fileService, IReportsService reportsService, ITagsService tagsService,
+            IFileService fileService, IReportsService reportsService,
             IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _accessService = accessService;
             _fileService = fileService;
             _reportsService = reportsService;
-            _tagsService = tagsService;
             _userService = userService;
             _userIdProvider = userIdProvider;
             _mapper = mapper;
@@ -90,6 +89,40 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<PaginationResponseDTO<CommentDTO>> GetAsync(GetCommentsRequestDTO request)
+        {
+            var accessCheck = await _reportsService.CheckAccessAsync(request.ReportId);
+            if (!accessCheck.Success) return PaginationResponseDTO<CommentDTO>.Error(accessCheck);
+
+            User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
+            var result = await _repo.GetForReportAsync(request.ReportId, request.Number, request.Size);
+
+            List<CommentDTO> commentDTOs = new List<CommentDTO>();
+
+            foreach (var comment in result.Items)
+            {
+                CommentDTO dto = _mapper.Map<CommentDTO>(comment);
+                var author = comment.Creator;
+                if (currentUser.Role != Domain.Enums.UserRole.Tester)
+                {
+                    dto.Author = new CommentAuthorDTO
+                    {
+                        UserId = comment.CreatorId,
+                        Name = !comment.AsModerator ? $"{author.FirstName} {author.LastName}" : $"{author.ModeratorName} ({author.FirstName} {author.LastName})"
+                    };
+                }
+                dto.Author = new CommentAuthorDTO
+                {
+                    UserId = !comment.AsModerator ? comment.CreatorId : null,
+                    Name = !comment.AsModerator ? $"{author.FirstName} {author.LastName}" : author.ModeratorName
+                };
+                commentDTOs.Add(dto);
+            }
+
+            // List<CommentDTO> commentDTOs = _mapper.Map<List<CommentDTO>>(result.Items);
+            return new PaginationResponseDTO<CommentDTO>(commentDTOs, result.TotalCount);
         }
 
         public async Task<ResponseDTO<bool>> DeleteAsync(int commentId)

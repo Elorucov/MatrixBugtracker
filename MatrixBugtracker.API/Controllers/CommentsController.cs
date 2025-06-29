@@ -20,8 +20,7 @@ namespace MatrixBugtracker.API.Controllers
         [AuthorizeApi]
         public async Task<IActionResult> GetAsync([FromQuery] GetCommentsRequestDTO request)
         {
-            await Task.Delay(1);
-            return APIResponse(ResponseDTO<int?>.NotImplemented());
+            return APIResponse(await _service.GetAsync(request));
         }
 
         [HttpPost]
