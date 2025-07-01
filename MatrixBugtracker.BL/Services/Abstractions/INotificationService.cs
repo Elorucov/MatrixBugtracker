@@ -1,0 +1,11 @@
+﻿using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.Domain.Enums;
+
+namespace MatrixBugtracker.BL.Services.Abstractions
+{
+    public interface INotificationService
+    {
+        Task<bool> SendToUserAsync(int targetUserId, bool sendEmail, UserNotificationKind kind, LinkedEntityType? entityType = null, int? entityId = null);
+        Task<ResponseDTO<int?>> SendToAllAsync(PlatformNotificationKind kind, string message);
+    }
+}

@@ -7,7 +7,6 @@ using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -121,7 +120,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 commentDTOs.Add(dto);
             }
 
-            // List<CommentDTO> commentDTOs = _mapper.Map<List<CommentDTO>>(result.Items);
             return new PaginationResponseDTO<CommentDTO>(commentDTOs, result.TotalCount);
         }
 
@@ -137,7 +135,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // TODO: if this comment is not last, deleting is not allowed
             if (comment.CreationTime.AddHours(24) < DateTime.Now) return ResponseDTO<bool>.BadRequest(Errors.DeletionTimeRestriction);
 
-            if (comment.NewSeverity.HasValue || comment.NewStatus.HasValue) 
+            if (comment.NewSeverity.HasValue || comment.NewStatus.HasValue)
                 return ResponseDTO<bool>.BadRequest(Errors.ForbiddenSeverityStatusCommentDeletion);
 
             _repo.Delete(comment);

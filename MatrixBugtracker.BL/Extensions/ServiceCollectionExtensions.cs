@@ -28,6 +28,7 @@ namespace MatrixBugtracker.BL.Extensions
             services.AddScoped<IPlatformService, PlatformService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAccessService, AccessService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();

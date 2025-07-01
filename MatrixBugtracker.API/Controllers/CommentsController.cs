@@ -1,6 +1,5 @@
 ﻿using MatrixBugtracker.API.Filters;
 using MatrixBugtracker.BL.DTOs.Comments;
-using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
