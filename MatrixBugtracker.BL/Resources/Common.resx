@@ -117,7 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CommentAddedNotification" xml:space="preserve">
+    <value>{0} added a comment to report "{1}": "{2}"</value>
+  </data>
   <data name="Moderator" xml:space="preserve">
     <value>Moderator</value>
+  </data>
+  <data name="ProductInviteRequest" xml:space="preserve">
+    <value>You have been invited to test product "{0}".</value>
+  </data>
+  <data name="ProductJoinRequestAccepted" xml:space="preserve">
+    <value>Your request to test product "{0}" has been accepted.</value>
+  </data>
+  <data name="ProductTestingFinished" xml:space="preserve">
+    <value>Testing of product "{0}" is finished.</value>
+  </data>
+  <data name="ReportSeverityChanged" xml:space="preserve">
+    <value>{0} changed the severity of report "{1}" to "{2}"</value>
+  </data>
+  <data name="ReportSeverityChangedWithComment" xml:space="preserve">
+    <value>{0} changed the severity of report "{1}" to "{2}": "{3}"</value>
+  </data>
+  <data name="ReportStatusChanged" xml:space="preserve">
+    <value>{0} changed the status of report "{1}" to "{2}"</value>
+  </data>
+  <data name="ReportStatusChangedWithComment" xml:space="preserve">
+    <value>{0} changed the status of report "{1}" to "{2}": "{3}"</value>
+  </data>
+  <data name="RoleChangedNotification" xml:space="preserve">
+    <value>Your role changed to {0}</value>
   </data>
 </root>

@@ -171,7 +171,9 @@ namespace MatrixBugtracker.BL.Services.Implementations
             user.Role = request.Role;
 
             _userRepo.Update(user);
-            await _notificationService.SendToUserAsync(user.Id, true, UserNotificationKind.RoleChanged, LinkedEntityType.Role, (int)request.Role);
+
+            string notificationText = string.Format(Common.RoleChangedNotification, request.Role.ToString());
+            await _notificationService.SendToUserAsync(user.Id, true, UserNotificationKind.RoleChanged, notificationText, LinkedEntityType.Role, (int)request.Role);
 
             await _unitOfWork.CommitAsync();
 

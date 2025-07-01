@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Notifications;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace MatrixBugtracker.BL.Services.Implementations
@@ -12,17 +16,20 @@ namespace MatrixBugtracker.BL.Services.Implementations
     public class NotificationService : INotificationService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserService _userService;
+        private readonly IUserIdProvider _userIdProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
         private readonly ILogger<NotificationService> _logger;
 
         private readonly IUserNotificationRepository _userNotificationRepo;
         private readonly IPlatformNotificationRepository _platformNotificationRepo;
 
-        public NotificationService(IUnitOfWork unitOfWork, IUserService userService, IMapper mapper, ILogger<NotificationService> logger)
+        public NotificationService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
+            IUserIdProvider userIdProvider, IMapper mapper, ILogger<NotificationService> logger)
         {
             _unitOfWork = unitOfWork;
-            _userService = userService;
+            _httpContextAccessor = httpContextAccessor;
+            _userIdProvider = userIdProvider;
             _mapper = mapper;
             _logger = logger;
 
@@ -30,9 +37,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _platformNotificationRepo = _unitOfWork.GetRepository<IPlatformNotificationRepository>();
         }
 
-        public async Task<bool> SendToUserAsync(int targetUserId, bool sendEmail, UserNotificationKind kind, LinkedEntityType? entityType = null, int? entityId = null)
+        public async Task<bool> SendToUserAsync(int targetUserId, bool sendEmail, UserNotificationKind kind, string text, 
+            LinkedEntityType? entityType = null, int? entityId = null)
         {
-            User target = await _userService.GetSingleUserAsync(targetUserId);
+            // DI via class constructor leads to a crash on startup!
+            var userService = _httpContextAccessor.HttpContext.RequestServices.GetService<IUserService>();
+            User target = await userService.GetSingleUserAsync(targetUserId);
             if (target == null)
             {
                 _logger.LogError($"Cannot send notification to user {targetUserId} because requested user not found!");
@@ -43,6 +53,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 Kind = kind,
                 TargetUserId = targetUserId,
+                Text = text,
                 LinkedEntityType = entityType,
                 LinkedEntityId = entityId
             };
@@ -57,7 +68,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return true;
         }
 
-        public async Task<bool> SendToUsersAsync(List<int> targetUserIds, bool sendEmail, UserNotificationKind kind, LinkedEntityType? entityType = null, int? entityId = null)
+        public async Task<bool> SendToUsersAsync(List<int> targetUserIds, bool sendEmail, UserNotificationKind kind, string text,
+            LinkedEntityType? entityType = null, int? entityId = null)
         {
             foreach (int userId in targetUserIds)
             {
@@ -65,6 +77,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 {
                     Kind = kind,
                     TargetUserId = userId,
+                    Text = text,
                     LinkedEntityType = entityType,
                     LinkedEntityId = entityId
                 };
@@ -95,10 +108,18 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<int?>(notification.Id);
         }
 
-        public async Task<bool> GetUserNotificationsAsync(int userId)
+        public async Task<PaginationResponseDTO<UserNotificationDTO>> GetUserNotificationsAsync(PaginationRequestDTO request)
         {
-            await Task.Delay(1);
-            throw new NotImplementedException();
+            // DI via class constructor leads to a crash on startup!
+            var userService = _httpContextAccessor.HttpContext.RequestServices.GetService<IUserService>();
+
+            int currentUserId = _userIdProvider.UserId;
+            User currentUser = await userService.GetSingleUserAsync(currentUserId);
+
+            var result = await _userNotificationRepo.GetForUserAsync(currentUserId, request.Number, request.Size);
+
+            List<UserNotificationDTO> notificationDTOs = _mapper.Map<List<UserNotificationDTO>>(result.Items);
+            return new PaginationResponseDTO<UserNotificationDTO>(notificationDTOs, result.TotalCount);
         }
 
         public async Task<bool> GetPlatformNotificationsAsync(int userId)

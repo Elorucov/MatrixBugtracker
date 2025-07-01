@@ -16,6 +16,7 @@ namespace MatrixBugtracker.DAL.Configs
                 .HasConversion<byte>().HasColumnName("kind");
 
             builder.Property(e => e.TargetUserId).IsRequired().HasColumnName("target_user_id");
+            builder.Property(e => e.Text).HasMaxLength(256).HasColumnName("text");
 
             builder.Property(e => e.LinkedEntityType)
                 .HasConversion<byte>().HasColumnName("linked_entity_type");

@@ -2,6 +2,7 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
@@ -44,8 +45,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
         {
             var accessCheck = await _reportsService.CheckAccessAsync(request.ReportId);
             if (!accessCheck.Success) return ResponseDTO<int?>.Error(accessCheck);
+            var report = accessCheck.Response;
 
             int reportCreatorId = accessCheck.Response.CreatorId;
+            var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
+
+            if (request.AsModerator && currentUser.Role == UserRole.Tester) return ResponseDTO<int?>.BadRequest();
 
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
@@ -61,7 +66,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (files?.Count > 0) await _repo.AddAttachmentAsync(comment, files);
 
-            await _notificationService.SendToUserAsync(reportCreatorId, true, UserNotificationKind.ReportCommentAdded, LinkedEntityType.Comment, comment.Id);
+            if (currentUser.Id != reportCreatorId)
+            {
+                string userName = request.AsModerator ? currentUser.ModeratorName : $"{currentUser.FirstName} {currentUser.LastName}";
+                var notificationText = string.Format(Common.CommentAddedNotification, userName, report.Title.Truncate(64), request.Text.Truncate(128));
+                await _notificationService.SendToUserAsync(reportCreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, request.ReportId);
+            }
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<int?>(comment.Id);
@@ -88,6 +98,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             comment = _mapper.Map(request, comment);
+            comment.IsAttachmentsPrivate = request.IsFilesPrivate; // TODO: mapper
             _repo.Update(comment);
 
             await _repo.RemoveAllAttachmentsAsync(comment.Id);

@@ -34,10 +34,9 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet("user")]
         [AuthorizeApi]
-        public async Task<IActionResult> GetUserNotificationsAsync()
+        public async Task<IActionResult> GetUserNotificationsAsync([FromQuery] PaginationRequestDTO request)
         {
-            await Task.Delay(1);
-            return APIResponse(ResponseDTO<bool>.NotImplemented());
+            return APIResponse(await _service.GetUserNotificationsAsync(request));
         }
 
         [HttpGet("platform")]

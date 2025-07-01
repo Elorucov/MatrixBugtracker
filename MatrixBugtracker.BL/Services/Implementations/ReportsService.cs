@@ -136,6 +136,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             report = _mapper.Map(request, report);
+            report.IsAttachmentsPrivate = request.IsFilesPrivate; // TODO: mapper.
             _repo.Update(report);
 
             await _repo.RemoveAllTagsAsync(report.Id);
@@ -159,6 +160,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (report.Severity == request.NewValue) return ResponseDTO<bool>.BadRequest();
 
+            var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
+
             report.Severity = request.NewValue;
             report.IsSeveritySetByModerator = true;
             _repo.Update(report);
@@ -172,7 +175,11 @@ namespace MatrixBugtracker.BL.Services.Implementations
             };
 
             await _commentRepo.AddAsync(comment);
-            await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, LinkedEntityType.Comment, comment.Id);
+
+            string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportSeverityChanged : Common.ReportSeverityChangedWithComment;
+            string severityStr = EnumValues.ResourceManager.GetString($"{nameof(ReportSeverity)}_{request.NewValue}");
+            var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), severityStr, request.Comment.Truncate(128));
+            await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
@@ -233,8 +240,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _commentRepo.AddAsync(comment);
 
-            if (currentUser.Id != report.CreatorId) 
-                await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, LinkedEntityType.Comment, comment.Id);
+            if (currentUser.Id != report.CreatorId) {
+                string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportStatusChanged : Common.ReportStatusChangedWithComment;
+                string statusStr = EnumValues.ResourceManager.GetString($"{nameof(ReportStatus)}_{request.NewValue}");
+                var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), statusStr, request.Comment.Truncate(128));
+                await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
+            }
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);

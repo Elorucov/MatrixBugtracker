@@ -3,6 +3,7 @@ using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Notifications;
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.DTOs.Tags;
@@ -69,6 +70,9 @@ namespace MatrixBugtracker.BL.Profiles
                 .ForMember(m => m.Attachments, t => t.Ignore())
                 .ForMember(m => m.Author, t => t.Ignore())
                 .AfterMap(ToCommentDTO);
+
+            CreateMap<UserNotification, UserNotificationDTO>().ForMember(n => n.IsRead, (a) => a.MapFrom(b => b.ViewedByTargetUser));
+            CreateMap<PlatformNotification, PlatformNotificationDTO>();
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)

@@ -106,8 +106,10 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (flag)
             {
+                string notificationText = string.Format(Common.ProductTestingFinished, product.Name);
                 var memberUserIds = product.ProductMembers.Select(pm => pm.MemberId).ToList();
-                await _notificationService.SendToUsersAsync(memberUserIds, false, UserNotificationKind.ProductTestingFinished, LinkedEntityType.Product, product.Id);
+                await _notificationService.SendToUsersAsync(memberUserIds, false, UserNotificationKind.ProductTestingFinished, 
+                    notificationText, LinkedEntityType.Product, product.Id);
             }
 
             await _unitOfWork.CommitAsync();
@@ -145,14 +147,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
                     prodMem.Status = ProductMemberStatus.Joined;
                     _repo.UpdateProductMember(prodMem);
 
-                    await _notificationService.SendToUserAsync(userId, true, UserNotificationKind.ProductJoinAccepted, LinkedEntityType.Product, productId);
+                    string notificationText = string.Format(Common.ProductJoinRequestAccepted, product.Name);
+                    await _notificationService.SendToUserAsync(userId, true, UserNotificationKind.ProductJoinAccepted, notificationText, LinkedEntityType.Product, productId);
                 }
             }
             else
             {
                 User user = await _userService.GetSingleUserAsync(userId);
                 await _repo.AddUserToProductAsync(product.Id, user.Id, ProductMemberStatus.InviteReceived);
-                await _notificationService.SendToUserAsync(userId, true, UserNotificationKind.ProductInvitation, LinkedEntityType.Product, productId);
+
+                string notificationText = string.Format(Common.ProductInviteRequest, product.Name);
+                await _notificationService.SendToUserAsync(userId, true, UserNotificationKind.ProductInvitation, notificationText, LinkedEntityType.Product, productId);
             }
 
             await _unitOfWork.CommitAsync();

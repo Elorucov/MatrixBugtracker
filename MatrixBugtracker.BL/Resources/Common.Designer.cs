@@ -61,11 +61,92 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} added a comment to report &quot;{1}&quot;: &quot;{2}&quot;.
+        /// </summary>
+        internal static string CommentAddedNotification {
+            get {
+                return ResourceManager.GetString("CommentAddedNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Moderator.
         /// </summary>
         internal static string Moderator {
             get {
                 return ResourceManager.GetString("Moderator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have been invited to test product &quot;{0}&quot;..
+        /// </summary>
+        internal static string ProductInviteRequest {
+            get {
+                return ResourceManager.GetString("ProductInviteRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your request to test product &quot;{0}&quot; has been accepted..
+        /// </summary>
+        internal static string ProductJoinRequestAccepted {
+            get {
+                return ResourceManager.GetString("ProductJoinRequestAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Testing of product &quot;{0}&quot; is finished..
+        /// </summary>
+        internal static string ProductTestingFinished {
+            get {
+                return ResourceManager.GetString("ProductTestingFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} changed the severity of report &quot;{1}&quot; to &quot;{2}&quot;.
+        /// </summary>
+        internal static string ReportSeverityChanged {
+            get {
+                return ResourceManager.GetString("ReportSeverityChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} changed the severity of report &quot;{1}&quot; to &quot;{2}&quot;: &quot;{3}&quot;.
+        /// </summary>
+        internal static string ReportSeverityChangedWithComment {
+            get {
+                return ResourceManager.GetString("ReportSeverityChangedWithComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} changed the status of report &quot;{1}&quot; to &quot;{2}&quot;.
+        /// </summary>
+        internal static string ReportStatusChanged {
+            get {
+                return ResourceManager.GetString("ReportStatusChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} changed the status of report &quot;{1}&quot; to &quot;{2}&quot;: &quot;{3}&quot;.
+        /// </summary>
+        internal static string ReportStatusChangedWithComment {
+            get {
+                return ResourceManager.GetString("ReportStatusChangedWithComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your role changed to {0}.
+        /// </summary>
+        internal static string RoleChangedNotification {
+            get {
+                return ResourceManager.GetString("RoleChangedNotification", resourceCulture);
             }
         }
     }
