@@ -30,7 +30,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task MarkAsReadAsync(int userId, int notificationId)
         {
-            await _db.PlatformNotificationReadUsers.AddAsync(new PlatformNotificationUser { 
+            await _db.PlatformNotificationReadUsers.AddAsync(new PlatformNotificationUser
+            {
                 UserId = userId,
                 NotificationId = notificationId
             });

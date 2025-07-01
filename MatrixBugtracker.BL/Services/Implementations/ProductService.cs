@@ -108,7 +108,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 string notificationText = string.Format(Common.ProductTestingFinished, product.Name);
                 var memberUserIds = product.ProductMembers.Select(pm => pm.MemberId).ToList();
-                await _notificationService.SendToUsersAsync(memberUserIds, false, UserNotificationKind.ProductTestingFinished, 
+                await _notificationService.SendToUsersAsync(memberUserIds, false, UserNotificationKind.ProductTestingFinished,
                     notificationText, LinkedEntityType.Product, product.Id);
             }
 

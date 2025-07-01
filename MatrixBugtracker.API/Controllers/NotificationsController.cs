@@ -1,5 +1,4 @@
 ﻿using MatrixBugtracker.API.Filters;
-using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.Domain.Enums;
@@ -19,7 +18,7 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPost("platform")]
         [AuthorizeApi([UserRole.Admin])]
-        public async Task<IActionResult> SendPlatformNotificationAsync([FromForm] PlatformNotificationKind kind, [FromForm]string message)
+        public async Task<IActionResult> SendPlatformNotificationAsync([FromForm] PlatformNotificationKind kind, [FromForm] string message)
         {
             return APIResponse(await _service.SendToAllAsync(kind, message));
         }

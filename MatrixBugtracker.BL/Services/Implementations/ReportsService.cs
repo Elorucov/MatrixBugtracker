@@ -240,7 +240,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _commentRepo.AddAsync(comment);
 
-            if (currentUser.Id != report.CreatorId) {
+            if (currentUser.Id != report.CreatorId)
+            {
                 string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportStatusChanged : Common.ReportStatusChangedWithComment;
                 string statusStr = EnumValues.ResourceManager.GetString($"{nameof(ReportStatus)}_{request.NewValue}");
                 var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), statusStr, request.Comment.Truncate(128));

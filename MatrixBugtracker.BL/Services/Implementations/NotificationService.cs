@@ -11,7 +11,6 @@ using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -39,7 +38,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _platformNotificationRepo = _unitOfWork.GetRepository<IPlatformNotificationRepository>();
         }
 
-        public async Task<bool> SendToUserAsync(int targetUserId, bool sendEmail, UserNotificationKind kind, string text, 
+        public async Task<bool> SendToUserAsync(int targetUserId, bool sendEmail, UserNotificationKind kind, string text,
             LinkedEntityType? entityType = null, int? entityId = null)
         {
             // DI via class constructor leads to a crash on startup!
