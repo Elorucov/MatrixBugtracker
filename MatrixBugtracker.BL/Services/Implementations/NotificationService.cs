@@ -57,6 +57,29 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return true;
         }
 
+        public async Task<bool> SendToUsersAsync(List<int> targetUserIds, bool sendEmail, UserNotificationKind kind, LinkedEntityType? entityType = null, int? entityId = null)
+        {
+            foreach (int userId in targetUserIds)
+            {
+                UserNotification notification = new UserNotification
+                {
+                    Kind = kind,
+                    TargetUserId = userId,
+                    LinkedEntityType = entityType,
+                    LinkedEntityId = entityId
+                };
+
+                await _userNotificationRepo.AddAsync(notification);
+            }
+
+            if (sendEmail)
+            {
+                // TODO: email (as parallel/concurrent task)
+            }
+
+            return true;
+        }
+
         // Note: we don't send email to all users!
         public async Task<ResponseDTO<int?>> SendToAllAsync(PlatformNotificationKind kind, string message)
         {

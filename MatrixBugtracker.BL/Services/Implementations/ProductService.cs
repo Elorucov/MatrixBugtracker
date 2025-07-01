@@ -20,17 +20,20 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IAccessService _accessService;
         private readonly IFileService _fileService;
         private readonly IUserService _userService;
+        private readonly INotificationService _notificationService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IMapper _mapper;
 
         private readonly IProductRepository _repo;
 
-        public ProductService(IUnitOfWork unitOfWork, IAccessService accessService, IFileService fileService, IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
+        public ProductService(IUnitOfWork unitOfWork, IAccessService accessService, IFileService fileService,
+            IUserService userService, INotificationService notificationService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _accessService = accessService;
             _fileService = fileService;
             _userService = userService;
+            _notificationService = notificationService;
             _userIdProvider = userIdProvider;
             _mapper = mapper;
 
@@ -90,7 +93,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public async Task<ResponseDTO<bool>> SetIsOverFlagAsync(int productId, bool flag)
         {
-            Product product = await _repo.GetByIdAsync(productId);
+            Product product = await _repo.GetByIdWithMembersAsync(productId);
             if (product == null) return ResponseDTO<bool>.NotFound();
 
             // Admins can access to all products, employees can access to only own created products
@@ -100,6 +103,13 @@ namespace MatrixBugtracker.BL.Services.Implementations
             product.IsOver = flag;
 
             _repo.Update(product);
+
+            if (flag)
+            {
+                var memberUserIds = product.ProductMembers.Select(pm => pm.MemberId).ToList();
+                await _notificationService.SendToUsersAsync(memberUserIds, false, UserNotificationKind.ProductTestingFinished, LinkedEntityType.Product, product.Id);
+            }
+
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
         }

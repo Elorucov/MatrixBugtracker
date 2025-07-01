@@ -57,6 +57,11 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
                 .GetPageAsync(number, size);
         }
 
+        public async Task<Product> GetByIdWithMembersAsync(int productId)
+        {
+            return await _dbSet.Include(p => p.ProductMembers).SingleOrDefaultAsync(p => p.Id == productId);
+        }
+
         public async Task<ProductMember> GetProductMemberAsync(int productId, int userId)
         {
             return await _db.ProductMembers.Include(pm => pm.Product).SingleOrDefaultAsync(e => e.ProductId == productId && e.MemberId == userId);
