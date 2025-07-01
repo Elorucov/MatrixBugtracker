@@ -7,5 +7,6 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
     public interface IUserNotificationRepository : IRepository<UserNotification>
     {
         Task<PaginationResult<UserNotification>> GetForUserAsync(int userId, int number, int size);
+        Task<List<UserNotification>> GetForUserUnreadAsync(int userId);
     }
 }

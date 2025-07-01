@@ -198,6 +198,9 @@
   <data name="NotFoundUser" xml:space="preserve">
     <value>The requested user was not found</value>
   </data>
+  <data name="NotificationAlreadyRead" xml:space="preserve">
+    <value>You already read all notifications</value>
+  </data>
   <data name="NotImplemented" xml:space="preserve">
     <value>Not implemented yet</value>
   </data>

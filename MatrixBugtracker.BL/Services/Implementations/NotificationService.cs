@@ -2,6 +2,7 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Notifications;
+using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
@@ -10,6 +11,7 @@ using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -110,11 +112,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public async Task<PaginationResponseDTO<UserNotificationDTO>> GetUserNotificationsAsync(PaginationRequestDTO request)
         {
-            // DI via class constructor leads to a crash on startup!
-            var userService = _httpContextAccessor.HttpContext.RequestServices.GetService<IUserService>();
-
             int currentUserId = _userIdProvider.UserId;
-            User currentUser = await userService.GetSingleUserAsync(currentUserId);
 
             var result = await _userNotificationRepo.GetForUserAsync(currentUserId, request.Number, request.Size);
 
@@ -122,10 +120,55 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new PaginationResponseDTO<UserNotificationDTO>(notificationDTOs, result.TotalCount);
         }
 
-        public async Task<bool> GetPlatformNotificationsAsync(int userId)
+        public async Task<PaginationResponseDTO<PlatformNotificationDTO>> GetPlatformNotificationsAsync(PaginationRequestDTO request)
         {
-            await Task.Delay(1);
-            throw new NotImplementedException();
+            int currentUserId = _userIdProvider.UserId;
+
+            var result = await _platformNotificationRepo.GetWithReadUsersAsync(request.Number, request.Size);
+
+            List<PlatformNotificationDTO> notificationDTOs = new List<PlatformNotificationDTO>();
+            foreach (var notification in result.Items)
+            {
+                PlatformNotificationDTO dto = _mapper.Map<PlatformNotificationDTO>(notification);
+                dto.IsRead = notification.UsersThatRead.Any(n => n.UserId == currentUserId);
+                notificationDTOs.Add(dto);
+            }
+
+            return new PaginationResponseDTO<PlatformNotificationDTO>(notificationDTOs, result.TotalCount);
+        }
+
+        public async Task<ResponseDTO<int?>> MarkAllUserNotificationsAsReadAsync()
+        {
+            int currentUserId = _userIdProvider.UserId;
+
+            var notifications = await _userNotificationRepo.GetForUserUnreadAsync(currentUserId);
+            if (notifications.Count == 0) return ResponseDTO<int?>.BadRequest(Errors.NotificationAlreadyRead);
+
+            foreach (var notification in notifications)
+            {
+                notification.ViewedByTargetUser = true;
+                _userNotificationRepo.Update(notification);
+            }
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<int?>(notifications.Count);
+        }
+
+        public async Task<ResponseDTO<int?>> MarkAllPlatformNotificationsAsReadAsync()
+        {
+            int currentUserId = _userIdProvider.UserId;
+
+            var readNotificationIds = await _platformNotificationRepo.GetReadNotificationIdsForUserAsync(currentUserId);
+            var allNotificationIds = await _platformNotificationRepo.GetAllNotificationIdsAsync();
+            var unreadNotificationIds = allNotificationIds.Except(readNotificationIds);
+
+            foreach (var id in unreadNotificationIds)
+            {
+                await _platformNotificationRepo.MarkAsReadAsync(currentUserId, id);
+            }
+
+            await _unitOfWork.CommitAsync();
+            return new ResponseDTO<int?>(unreadNotificationIds.Count());
         }
     }
 }

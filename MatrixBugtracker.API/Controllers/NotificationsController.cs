@@ -24,14 +24,6 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.SendToAllAsync(kind, message));
         }
 
-        [HttpDelete("platform")]
-        [AuthorizeApi([UserRole.Admin])]
-        public async Task<IActionResult> DeletePlatformNotificationAsync([FromForm]int id)
-        {
-            await Task.Delay(1);
-            return APIResponse(ResponseDTO<bool>.NotImplemented());
-        }
-
         [HttpGet("user")]
         [AuthorizeApi]
         public async Task<IActionResult> GetUserNotificationsAsync([FromQuery] PaginationRequestDTO request)
@@ -41,26 +33,23 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet("platform")]
         [AuthorizeApi]
-        public async Task<IActionResult> GetPlatformNotificationsAsync()
+        public async Task<IActionResult> GetPlatformNotificationsAsync([FromQuery] PaginationRequestDTO request)
         {
-            await Task.Delay(1);
-            return APIResponse(ResponseDTO<bool>.NotImplemented());
+            return APIResponse(await _service.GetPlatformNotificationsAsync(request));
         }
 
-        [HttpPatch("mark-as-read")]
+        [HttpPatch("mark-all-user-as-read")]
         [AuthorizeApi]
         public async Task<IActionResult> MarkUserNotificationAsReadAsync()
         {
-            await Task.Delay(1);
-            return APIResponse(ResponseDTO<bool>.NotImplemented());
+            return APIResponse(await _service.MarkAllUserNotificationsAsReadAsync());
         }
 
-        [HttpPatch("mark-platform-as-read")]
+        [HttpPatch("mark-all-platform-as-read")]
         [AuthorizeApi]
         public async Task<IActionResult> MarkPlatformNotificationAsReadAsync()
         {
-            await Task.Delay(1);
-            return APIResponse(ResponseDTO<bool>.NotImplemented());
+            return APIResponse(await _service.MarkAllPlatformNotificationsAsReadAsync());
         }
     }
 }

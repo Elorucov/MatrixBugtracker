@@ -304,6 +304,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You already read all notifications.
+        /// </summary>
+        internal static string NotificationAlreadyRead {
+            get {
+                return ResourceManager.GetString("NotificationAlreadyRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not implemented yet.
         /// </summary>
         internal static string NotImplemented {
