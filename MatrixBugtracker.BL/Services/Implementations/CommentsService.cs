@@ -7,6 +7,7 @@ using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -16,6 +17,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IAccessService _accessService;
         private readonly IFileService _fileService;
         private readonly IReportsService _reportsService;
+        private readonly INotificationService _notificationService;
         private readonly IUserService _userService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IMapper _mapper;
@@ -23,13 +25,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly ICommentRepository _repo;
 
         public CommentsService(IUnitOfWork unitOfWork, IAccessService accessService,
-            IFileService fileService, IReportsService reportsService,
-            IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
+            IFileService fileService, IReportsService reportsService, INotificationService notificationService,
+        IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _accessService = accessService;
             _fileService = fileService;
             _reportsService = reportsService;
+            _notificationService = notificationService;
             _userService = userService;
             _userIdProvider = userIdProvider;
             _mapper = mapper;
@@ -41,6 +44,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
         {
             var accessCheck = await _reportsService.CheckAccessAsync(request.ReportId);
             if (!accessCheck.Success) return ResponseDTO<int?>.Error(accessCheck);
+
+            int reportCreatorId = accessCheck.Response.CreatorId;
 
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
@@ -55,6 +60,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _repo.AddAsync(comment);
 
             if (files?.Count > 0) await _repo.AddAttachmentAsync(comment, files);
+
+            await _notificationService.SendToUserAsync(reportCreatorId, true, UserNotificationKind.ReportCommentAdded, LinkedEntityType.Comment, comment.Id);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<int?>(comment.Id);

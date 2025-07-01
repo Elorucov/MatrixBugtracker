@@ -19,6 +19,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IFileService _fileService;
         private readonly IProductService _productService;
         private readonly ITagsService _tagsService;
+        private readonly INotificationService _notificationService;
         private readonly IUserService _userService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IMapper _mapper;
@@ -27,13 +28,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly ICommentRepository _commentRepo;
 
         public ReportsService(IUnitOfWork unitOfWork, IFileService fileService,
-            IProductService productService, ITagsService tagsService,
+            IProductService productService, ITagsService tagsService, INotificationService notificationService,
             IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _fileService = fileService;
             _productService = productService;
             _tagsService = tagsService;
+            _notificationService = notificationService;
             _userService = userService;
             _userIdProvider = userIdProvider;
             _mapper = mapper;
@@ -170,6 +172,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             };
 
             await _commentRepo.AddAsync(comment);
+            await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, LinkedEntityType.Comment, comment.Id);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
@@ -229,6 +232,9 @@ namespace MatrixBugtracker.BL.Services.Implementations
             };
 
             await _commentRepo.AddAsync(comment);
+
+            if (currentUser.Id != report.CreatorId) 
+                await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, LinkedEntityType.Comment, comment.Id);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);

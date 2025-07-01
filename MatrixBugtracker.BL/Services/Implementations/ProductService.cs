@@ -144,12 +144,15 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 {
                     prodMem.Status = ProductMemberStatus.Joined;
                     _repo.UpdateProductMember(prodMem);
+
+                    await _notificationService.SendToUserAsync(userId, true, UserNotificationKind.ProductJoinAccepted, LinkedEntityType.Product, productId);
                 }
             }
             else
             {
                 User user = await _userService.GetSingleUserAsync(userId);
                 await _repo.AddUserToProductAsync(product.Id, user.Id, ProductMemberStatus.InviteReceived);
+                await _notificationService.SendToUserAsync(userId, true, UserNotificationKind.ProductInvitation, LinkedEntityType.Product, productId);
             }
 
             await _unitOfWork.CommitAsync();

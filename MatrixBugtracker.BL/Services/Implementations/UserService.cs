@@ -24,22 +24,26 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUserRepository _userRepo;
         private readonly IFileRepository _fileRepo;
         private readonly IRefreshTokenRepository _refreshTokenRepo;
+
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
+        private readonly INotificationService _notificationService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
         public UserService(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher,
-            ITokenService tokenService, IUserIdProvider userIdProvider,
+            ITokenService tokenService, INotificationService notificationService, IUserIdProvider userIdProvider,
             IConfiguration config, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
             _fileRepo = unitOfWork.GetRepository<IFileRepository>();
             _refreshTokenRepo = unitOfWork.GetRepository<IRefreshTokenRepository>();
+
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
+            _notificationService = notificationService;
             _userIdProvider = userIdProvider;
             _config = config;
             _mapper = mapper;
@@ -167,6 +171,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             user.Role = request.Role;
 
             _userRepo.Update(user);
+            await _notificationService.SendToUserAsync(user.Id, true, UserNotificationKind.RoleChanged, LinkedEntityType.Role, (int)request.Role);
+
             await _unitOfWork.CommitAsync();
 
             return new ResponseDTO<bool>(true);
