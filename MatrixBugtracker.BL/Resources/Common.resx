@@ -127,7 +127,13 @@
     <value>Notification from bugtracker</value>
   </data>
   <data name="Email_PasswordReset" xml:space="preserve">
+    <value>Password changed</value>
+  </data>
+  <data name="Email_PasswordResetSubject" xml:space="preserve">
     <value>Reset password</value>
+  </data>
+  <data name="Email_PasswordResetText" xml:space="preserve">
+    <value>Hello, {0}!&lt;br&gt;Your confirmation code to reset password: {1}</value>
   </data>
   <data name="Email_ProductInvitation" xml:space="preserve">
     <value>An invite to test a product</value>
@@ -152,6 +158,9 @@
   </data>
   <data name="Moderator" xml:space="preserve">
     <value>Moderator</value>
+  </data>
+  <data name="PasswordResetNotification" xml:space="preserve">
+    <value>Your password has benn reset successfully.</value>
   </data>
   <data name="ProductInviteRequest" xml:space="preserve">
     <value>You have been invited to test product "{0}".</value>

@@ -31,5 +31,17 @@ namespace MatrixBugtracker.API.Controllers
         {
             return APIResponse(await _userService.CreateUserAsync(request));
         }
+
+        [HttpPost("reset-password-request")]
+        public async Task<IActionResult> RequestPasswordAsync([FromForm] string email)
+        {
+            return APIResponse(await _userService.SendPasswordResetConfirmationAsync(email));
+        }
+
+        [HttpPost("reset-password-confirm")]
+        public async Task<IActionResult> ResetPasswordAsync([FromForm] PasswordResetRequestDTO request)
+        {
+            return APIResponse(await _userService.ResetPasswordAsync(request));
+        }
     }
 }

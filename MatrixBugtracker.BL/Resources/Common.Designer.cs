@@ -79,11 +79,29 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset password.
+        ///   Looks up a localized string similar to Password changed.
         /// </summary>
         internal static string Email_PasswordReset {
             get {
                 return ResourceManager.GetString("Email_PasswordReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset password.
+        /// </summary>
+        internal static string Email_PasswordResetSubject {
+            get {
+                return ResourceManager.GetString("Email_PasswordResetSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, {0}!&lt;br&gt;Your confirmation code to reset password: {1}.
+        /// </summary>
+        internal static string Email_PasswordResetText {
+            get {
+                return ResourceManager.GetString("Email_PasswordResetText", resourceCulture);
             }
         }
         
@@ -165,6 +183,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string Moderator {
             get {
                 return ResourceManager.GetString("Moderator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your password has benn reset successfully..
+        /// </summary>
+        internal static string PasswordResetNotification {
+            get {
+                return ResourceManager.GetString("PasswordResetNotification", resourceCulture);
             }
         }
         

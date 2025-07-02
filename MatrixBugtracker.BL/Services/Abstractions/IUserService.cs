@@ -13,6 +13,8 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<TokenDTO>> LoginAsync(LoginRequestDTO request);
         Task<ResponseDTO<TokenDTO>> RefreshAsync(int userId, string refreshToken);
         Task<ResponseDTO<bool>> CreateUserAsync(RegisterRequestDTO request);
+        Task<ResponseDTO<bool>> SendPasswordResetConfirmationAsync(string email);
+        Task<ResponseDTO<bool>> ResetPasswordAsync(PasswordResetRequestDTO request);
         Task<ResponseDTO<UserDTO>> GetByIdAsync(int userId);
         Task<ResponseDTO<bool>> SetUserRoleAsync(SetRoleRequestDTO request);
         Task<ResponseDTO<bool>> EditAsync(UserEditDTO request);

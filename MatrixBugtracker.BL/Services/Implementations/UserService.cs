@@ -11,10 +11,11 @@ using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Net;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -34,12 +35,13 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IEmailService _emailService;
         private readonly INotificationService _notificationService;
         private readonly IUserIdProvider _userIdProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly ILogger<UserService> _logger;
 
         public UserService(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, IGenerator generator, IEmailService emailService,
-            ITokenService tokenService, INotificationService notificationService, IUserIdProvider userIdProvider,
+            ITokenService tokenService, INotificationService notificationService, IUserIdProvider userIdProvider, IHttpContextAccessor httpContextAccessor,
             IConfiguration config, IMapper mapper, ILogger<UserService> logger)
         {
             _unitOfWork = unitOfWork;
@@ -54,6 +56,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _tokenService = tokenService;
             _notificationService = notificationService;
             _userIdProvider = userIdProvider;
+            _httpContextAccessor = httpContextAccessor;
             _config = config;
             _mapper = mapper;
             _logger = logger;
@@ -89,7 +92,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (!user.IsEmailConfirmed)
             {
-                if (string.IsNullOrEmpty(request.ConfirmationCode)) 
+                if (string.IsNullOrEmpty(request.ConfirmationCode))
                     return ResponseDTO<TokenDTO>.Unauthorized(Errors.AccountNotConfirmed);
 
                 var confirmation = await _confirmsRepo.GetByUserIdAsync(user.Id, EmailConfirmationKind.Registration);
@@ -100,10 +103,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 }
 
                 if (confirmation.Code != request.ConfirmationCode)
-                    return ResponseDTO<TokenDTO>.Unauthorized(Errors.InvalidConfirmationCode);
+                    return ResponseDTO<TokenDTO>.BadRequest(Errors.InvalidConfirmationCode);
 
                 user.IsEmailConfirmed = true;
                 _userRepo.Update(user);
+
+                _confirmsRepo.Delete(confirmation);
             }
 
             // Create refresh token
@@ -168,7 +173,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _userRepo.AddAsync(newUser);
 
             string code = _generator.GenerateDigitsCode();
-            await _confirmsRepo.AddAsync(new Confirmation { 
+            await _confirmsRepo.AddAsync(new Confirmation
+            {
                 User = newUser,
                 Kind = EmailConfirmationKind.Registration,
                 Code = code
@@ -176,6 +182,61 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _unitOfWork.CommitAsync();
             await _emailService.SendMailAsync(newUser.Email, Common.Email_UserRegistrationSubject, string.Format(Common.Email_UserRegistrationText, newUser.FirstName, code));
+
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> SendPasswordResetConfirmationAsync(string email)
+        {
+            if (string.IsNullOrEmpty(email)) return ResponseDTO<bool>.BadRequest();
+
+            var user = await _userRepo.GetByEmailAsync(email);
+            if (user == null) return ResponseDTO<bool>.NotFound();
+
+            string code = _generator.GenerateDigitsCode();
+
+            // If DB has a confirmation, we change code and send mail again with new code.
+            var confirmation = await _confirmsRepo.GetByUserIdAsync(user.Id, EmailConfirmationKind.PasswordReset);
+            if (confirmation == null)
+            {
+                confirmation = new Confirmation
+                {
+                    User = user,
+                    Kind = EmailConfirmationKind.PasswordReset,
+                    Code = code
+                };
+                await _confirmsRepo.AddAsync(confirmation);
+            }
+            else
+            {
+                confirmation.Code = code;
+                _confirmsRepo.Update(confirmation);
+            }
+
+            await _unitOfWork.CommitAsync();
+            await _emailService.SendMailAsync(user.Email, Common.Email_PasswordResetSubject, string.Format(Common.Email_PasswordResetText, user.FirstName, code));
+
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> ResetPasswordAsync(PasswordResetRequestDTO request)
+        {
+            var user = await _userRepo.GetByEmailAsync(request.Email);
+            if (user == null) return ResponseDTO<bool>.NotFound();
+
+            var confirmation = await _confirmsRepo.GetByUserIdAsync(user.Id, EmailConfirmationKind.PasswordReset);
+            if (confirmation == null) return ResponseDTO<bool>.BadRequest();
+            if (confirmation.Code != request.Code) return ResponseDTO<bool>.BadRequest(Errors.InvalidConfirmationCode);
+
+            user.Password = _passwordHasher.HashPassword(request.Password);
+            _userRepo.Update(user);
+
+            _confirmsRepo.Delete(confirmation);
+            await _unitOfWork.CommitAsync();
+
+            // DI via class constructor leads to a crash on startup!
+            var notificationService = _httpContextAccessor.HttpContext.RequestServices.GetService<INotificationService>();
+            await notificationService.SendToUserAsync(user.Id, true, UserNotificationKind.PasswordReset, Common.PasswordResetNotification);
 
             return new ResponseDTO<bool>(true);
         }

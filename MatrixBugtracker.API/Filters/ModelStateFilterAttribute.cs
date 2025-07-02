@@ -15,7 +15,7 @@ namespace MatrixBugtracker.API.Filters
                 Dictionary<string, string> fields = new Dictionary<string, string>();
                 foreach (var state in context.ModelState)
                 {
-                    fields.Add(state.Key, string.Join("; ", state.Value.Errors.Select(e => e.ErrorMessage)));
+                    if (state.Value.Errors.Count > 0) fields.Add(state.Key, string.Join("; ", state.Value.Errors.Select(e => e.ErrorMessage)));
                 }
 
                 context.Result = new BadRequestObjectResult(ResponseDTO<object>.BadRequest("One of the parameters specified was invalid", fields));

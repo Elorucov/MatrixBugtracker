@@ -4,11 +4,6 @@ using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations
 {
