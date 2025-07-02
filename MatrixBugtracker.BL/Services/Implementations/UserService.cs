@@ -49,7 +49,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _mapper = mapper;
         }
 
-        #region Private methods
+        #region Non-controller methods
 
         public async Task<User> GetSingleUserAsync(int userId)
         {
@@ -60,6 +60,11 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             return user;
+        }
+
+        public async Task<List<KeyValuePair<string, string>>> GetNamesAndEmailsAsync(IEnumerable<int> userIds)
+        {
+            return await _userRepo.GetEmailsAsync(userIds);
         }
 
         #endregion

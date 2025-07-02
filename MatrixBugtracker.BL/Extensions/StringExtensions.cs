@@ -10,7 +10,7 @@ namespace MatrixBugtracker.BL.Extensions
 
             StringBuilder sb = new StringBuilder();
             sb.Append(source.AsSpan().Slice(0, length));
-            sb.Append("...");
+            sb.Append("…");
             return sb.ToString();
         }
     }

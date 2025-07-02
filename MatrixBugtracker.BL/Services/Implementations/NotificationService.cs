@@ -19,6 +19,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly ILogger<NotificationService> _logger;
 
@@ -26,16 +27,31 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IPlatformNotificationRepository _platformNotificationRepo;
 
         public NotificationService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
-            IUserIdProvider userIdProvider, IMapper mapper, ILogger<NotificationService> logger)
+            IEmailService emailService, IUserIdProvider userIdProvider, IMapper mapper, ILogger<NotificationService> logger)
         {
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _emailService = emailService;
             _userIdProvider = userIdProvider;
             _mapper = mapper;
             _logger = logger;
 
             _userNotificationRepo = _unitOfWork.GetRepository<IUserNotificationRepository>();
             _platformNotificationRepo = _unitOfWork.GetRepository<IPlatformNotificationRepository>();
+        }
+
+        private string GetSubjectForNotificationKind(UserNotificationKind kind)
+        {
+            return kind switch
+            {
+                UserNotificationKind.ProductInvitation => Common.Email_ProductInvitation,
+                UserNotificationKind.ProductJoinAccepted => Common.Email_ProductJoinAccepted,
+                UserNotificationKind.ProductTestingFinished => Common.Email_ProductTestingFinished,
+                UserNotificationKind.ReportCommentAdded => Common.Email_ReportCommentAdded,
+                UserNotificationKind.RoleChanged => Common.Email_RoleChanged,
+                UserNotificationKind.PasswordReset => Common.Email_PasswordReset,
+                _ => Common.Email_DefaultSubject,
+            };
         }
 
         public async Task<bool> SendToUserAsync(int targetUserId, bool sendEmail, UserNotificationKind kind, string text,
@@ -63,7 +79,11 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (sendEmail)
             {
-                // TODO: email
+                _ = Task.Factory.StartNew(async () =>
+                {
+                    string subject = GetSubjectForNotificationKind(kind);
+                    await _emailService.SendMailAsync(target.Email, subject, string.Format(Common.EmailContent, target.FirstName, text));
+                });
             }
 
             return true;
@@ -88,7 +108,19 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (sendEmail)
             {
-                // TODO: email (as parallel/concurrent task)
+                // DI via class constructor leads to a crash on startup!
+                var userService = _httpContextAccessor.HttpContext.RequestServices.GetService<IUserService>();
+                var users = await userService.GetNamesAndEmailsAsync(targetUserIds);
+
+                _ = Task.Factory.StartNew(async () =>
+                {
+                    string subject = GetSubjectForNotificationKind(kind);
+
+                    foreach (var user in users)
+                    {
+                        await _emailService.SendMailAsync(user.Key, subject, string.Format(Common.EmailContent, user.Value, text));
+                    }
+                });
             }
 
             return true;

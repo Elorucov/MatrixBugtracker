@@ -7,6 +7,7 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
     {
         Task<User> GetByIdWithIncludeAsync(int id);
         Task<User> GetByEmailAsync(string email);
+        Task<List<KeyValuePair<string, string>>> GetEmailsAsync(IEnumerable<int> ids);
         Task<int> GetUsersCountWithModeratorNamesAsync();
     }
 }

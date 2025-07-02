@@ -70,6 +70,78 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notification from bugtracker.
+        /// </summary>
+        internal static string Email_DefaultSubject {
+            get {
+                return ResourceManager.GetString("Email_DefaultSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset password.
+        /// </summary>
+        internal static string Email_PasswordReset {
+            get {
+                return ResourceManager.GetString("Email_PasswordReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An invite to test a product.
+        /// </summary>
+        internal static string Email_ProductInvitation {
+            get {
+                return ResourceManager.GetString("Email_ProductInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your request to test product accepted.
+        /// </summary>
+        internal static string Email_ProductJoinAccepted {
+            get {
+                return ResourceManager.GetString("Email_ProductJoinAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Testing the product finished.
+        /// </summary>
+        internal static string Email_ProductTestingFinished {
+            get {
+                return ResourceManager.GetString("Email_ProductTestingFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New comment to your report.
+        /// </summary>
+        internal static string Email_ReportCommentAdded {
+            get {
+                return ResourceManager.GetString("Email_ReportCommentAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your role changed.
+        /// </summary>
+        internal static string Email_RoleChanged {
+            get {
+                return ResourceManager.GetString("Email_RoleChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, {0}!&lt;br&gt;&lt;br&gt;{1}.
+        /// </summary>
+        internal static string EmailContent {
+            get {
+                return ResourceManager.GetString("EmailContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Moderator.
         /// </summary>
         internal static string Moderator {

@@ -5,6 +5,7 @@ using MatrixBugtracker.API.ProviderImpls;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Extensions;
+using MatrixBugtracker.Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -23,6 +24,7 @@ namespace MatrixBugtracker.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("EmailConfig"));
             builder.Services.AddTransient<ExceptionHandlerMiddleware>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IUserIdProvider, UserIdProvider>();

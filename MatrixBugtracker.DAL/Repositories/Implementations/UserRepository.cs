@@ -20,6 +20,11 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             return await _dbSet.Include(e => e.PhotoFile).SingleOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<List<KeyValuePair<string, string>>> GetEmailsAsync(IEnumerable<int> ids)
+        {
+            return await _dbSet.Where(u => ids.Contains(u.Id)).Select(u => new KeyValuePair<string, string>(u.Email, u.FirstName)).ToListAsync();
+        }
+
         public async Task<int> GetUsersCountWithModeratorNamesAsync()
         {
             return await _dbSet.Where(e => e.ModeratorName != null).CountAsync();

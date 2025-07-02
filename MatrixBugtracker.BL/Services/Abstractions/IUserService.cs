@@ -9,6 +9,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     public interface IUserService
     {
         Task<User> GetSingleUserAsync(int userId);
+        Task<List<KeyValuePair<string, string>>> GetNamesAndEmailsAsync(IEnumerable<int> userIds);
         Task<ResponseDTO<TokenDTO>> LoginAsync(LoginRequestDTO request);
         Task<ResponseDTO<TokenDTO>> RefreshAsync(int userId, string refreshToken);
         Task<ResponseDTO<bool>> CreateUserAsync(RegisterRequestDTO request);

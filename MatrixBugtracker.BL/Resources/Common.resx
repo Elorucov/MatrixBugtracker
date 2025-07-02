@@ -120,6 +120,30 @@
   <data name="CommentAddedNotification" xml:space="preserve">
     <value>{0} added a comment to report "{1}": "{2}"</value>
   </data>
+  <data name="EmailContent" xml:space="preserve">
+    <value>Hello, {0}!&lt;br&gt;&lt;br&gt;{1}</value>
+  </data>
+  <data name="Email_DefaultSubject" xml:space="preserve">
+    <value>Notification from bugtracker</value>
+  </data>
+  <data name="Email_PasswordReset" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="Email_ProductInvitation" xml:space="preserve">
+    <value>An invite to test a product</value>
+  </data>
+  <data name="Email_ProductJoinAccepted" xml:space="preserve">
+    <value>Your request to test product accepted</value>
+  </data>
+  <data name="Email_ProductTestingFinished" xml:space="preserve">
+    <value>Testing the product finished</value>
+  </data>
+  <data name="Email_ReportCommentAdded" xml:space="preserve">
+    <value>New comment to your report</value>
+  </data>
+  <data name="Email_RoleChanged" xml:space="preserve">
+    <value>Your role changed</value>
+  </data>
   <data name="Moderator" xml:space="preserve">
     <value>Moderator</value>
   </data>
