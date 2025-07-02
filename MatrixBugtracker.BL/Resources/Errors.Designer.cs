@@ -61,6 +61,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account not confirmed.
+        /// </summary>
+        internal static string AccountNotConfirmed {
+            get {
+                return ResourceManager.GetString("AccountNotConfirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All submitted tags already exist.
         /// </summary>
         internal static string AllTagsAlreadyExist {
@@ -187,11 +196,29 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Internal server error.
+        /// </summary>
+        internal static string InternalServerError {
+            get {
+                return ResourceManager.GetString("InternalServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid comment id.
         /// </summary>
         internal static string InvalidCommentId {
             get {
                 return ResourceManager.GetString("InvalidCommentId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong confirmation code.
+        /// </summary>
+        internal static string InvalidConfirmationCode {
+            get {
+                return ResourceManager.GetString("InvalidConfirmationCode", resourceCulture);
             }
         }
         

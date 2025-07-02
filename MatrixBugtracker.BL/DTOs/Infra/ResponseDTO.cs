@@ -42,5 +42,6 @@ namespace MatrixBugtracker.BL.DTOs.Infra
         public static ResponseDTO<T> Forbidden(string message = null) => Error(403, message ?? Errors.Forbidden);
         public static ResponseDTO<T> NotFound(string message = null) => Error(404, message ?? Errors.NotFound);
         public static ResponseDTO<T> NotImplemented() => Error(500, Errors.NotImplemented);
+        public static ResponseDTO<T> InternalServerError() => Error(500, Errors.InternalServerError);
     }
 }

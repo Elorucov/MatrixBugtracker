@@ -144,6 +144,12 @@
   <data name="Email_RoleChanged" xml:space="preserve">
     <value>Your role changed</value>
   </data>
+  <data name="Email_UserRegistrationSubject" xml:space="preserve">
+    <value>Confirm registration</value>
+  </data>
+  <data name="Email_UserRegistrationText" xml:space="preserve">
+    <value>Hello, {0}!&lt;br&gt;Your confirmation code for registration on bugtracker: {1}</value>
+  </data>
   <data name="Moderator" xml:space="preserve">
     <value>Moderator</value>
   </data>

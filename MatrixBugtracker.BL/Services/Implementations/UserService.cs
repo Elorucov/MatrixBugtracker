@@ -12,7 +12,9 @@ using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
+using System.Net;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -22,31 +24,39 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepo;
+        private readonly IConfirmationRepository _confirmsRepo;
         private readonly IFileRepository _fileRepo;
         private readonly IRefreshTokenRepository _refreshTokenRepo;
 
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
+        private readonly IGenerator _generator;
+        private readonly IEmailService _emailService;
         private readonly INotificationService _notificationService;
         private readonly IUserIdProvider _userIdProvider;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher,
+        public UserService(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, IGenerator generator, IEmailService emailService,
             ITokenService tokenService, INotificationService notificationService, IUserIdProvider userIdProvider,
-            IConfiguration config, IMapper mapper)
+            IConfiguration config, IMapper mapper, ILogger<UserService> logger)
         {
             _unitOfWork = unitOfWork;
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
+            _confirmsRepo = unitOfWork.GetRepository<IConfirmationRepository>();
             _fileRepo = unitOfWork.GetRepository<IFileRepository>();
             _refreshTokenRepo = unitOfWork.GetRepository<IRefreshTokenRepository>();
 
             _passwordHasher = passwordHasher;
+            _generator = generator;
+            _emailService = emailService;
             _tokenService = tokenService;
             _notificationService = notificationService;
             _userIdProvider = userIdProvider;
             _config = config;
             _mapper = mapper;
+            _logger = logger;
         }
 
         #region Non-controller methods
@@ -76,6 +86,25 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             bool isPasswordValid = _passwordHasher.VerifyPassword(request.Password, user.Password);
             if (!isPasswordValid) return ResponseDTO<TokenDTO>.Unauthorized(Errors.WrongEmailOrPassword);
+
+            if (!user.IsEmailConfirmed)
+            {
+                if (string.IsNullOrEmpty(request.ConfirmationCode)) 
+                    return ResponseDTO<TokenDTO>.Unauthorized(Errors.AccountNotConfirmed);
+
+                var confirmation = await _confirmsRepo.GetByUserIdAsync(user.Id, EmailConfirmationKind.Registration);
+                if (confirmation == null)
+                {
+                    _logger.LogError("User {0}'s email ({1}) is not confirmed, but confirmation code is not found in DB!", user.Id, user.Email);
+                    return ResponseDTO<TokenDTO>.InternalServerError();
+                }
+
+                if (confirmation.Code != request.ConfirmationCode)
+                    return ResponseDTO<TokenDTO>.Unauthorized(Errors.InvalidConfirmationCode);
+
+                user.IsEmailConfirmed = true;
+                _userRepo.Update(user);
+            }
 
             // Create refresh token
             string rToken = _tokenService.GenerateRefreshToken();
@@ -136,12 +165,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
             User newUser = null;
             newUser = _mapper.Map(request, newUser);
             newUser.Password = _passwordHasher.HashPassword(request.Password);
-
-            newUser.Role = UserRole.Tester;
-            newUser.IsEmailConfirmed = true; // TODO: remove this after implementing e-mail confirmation
-
             await _userRepo.AddAsync(newUser);
+
+            string code = _generator.GenerateDigitsCode();
+            await _confirmsRepo.AddAsync(new Confirmation { 
+                User = newUser,
+                Kind = EmailConfirmationKind.Registration,
+                Code = code
+            });
+
             await _unitOfWork.CommitAsync();
+            await _emailService.SendMailAsync(newUser.Email, Common.Email_UserRegistrationSubject, string.Format(Common.Email_UserRegistrationText, newUser.FirstName, code));
 
             return new ResponseDTO<bool>(true);
         }

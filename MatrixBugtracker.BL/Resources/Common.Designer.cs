@@ -133,6 +133,24 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm registration.
+        /// </summary>
+        internal static string Email_UserRegistrationSubject {
+            get {
+                return ResourceManager.GetString("Email_UserRegistrationSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, {0}!&lt;br&gt;Your confirmation code for registration on bugtracker: {1}.
+        /// </summary>
+        internal static string Email_UserRegistrationText {
+            get {
+                return ResourceManager.GetString("Email_UserRegistrationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello, {0}!&lt;br&gt;&lt;br&gt;{1}.
         /// </summary>
         internal static string EmailContent {

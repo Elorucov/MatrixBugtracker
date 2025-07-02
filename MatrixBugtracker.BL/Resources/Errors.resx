@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountNotConfirmed" xml:space="preserve">
+    <value>Account not confirmed</value>
+  </data>
   <data name="AllTagsAlreadyExist" xml:space="preserve">
     <value>All submitted tags already exist</value>
   </data>
@@ -159,8 +162,14 @@
   <data name="ForbiddenSeverityStatusCommentDeletion" xml:space="preserve">
     <value>Deleting a comment with severity or status update is not allowed</value>
   </data>
+  <data name="InternalServerError" xml:space="preserve">
+    <value>Internal server error</value>
+  </data>
   <data name="InvalidCommentId" xml:space="preserve">
     <value>Invalid comment id</value>
+  </data>
+  <data name="InvalidConfirmationCode" xml:space="preserve">
+    <value>Wrong confirmation code</value>
   </data>
   <data name="InvalidCreatorId" xml:space="preserve">
     <value>Invalid creator id</value>
