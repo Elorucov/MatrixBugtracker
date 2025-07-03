@@ -88,7 +88,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             var query = _dbSet.Where(condition);
             var totalCount = await query.CountAsync();
 
-            var statusCounters = await query.GroupBy(r => r.Status).Select(r => new {
+            var statusCounters = await query.GroupBy(r => r.Status).Select(r => new
+            {
                 Status = r.Key,
                 Count = r.Count()
             }).ToListAsync();
@@ -118,7 +119,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
             // Getting report counts only for 3 open products
             var statusCounters = await query.GroupBy(r => r.Product)
-                .Where(r => r.Key.AccessLevel == ProductAccessLevel.Open).Select(r => new {
+                .Where(r => r.Key.AccessLevel == ProductAccessLevel.Open).Select(r => new
+                {
                     ProductId = r.Key.Id,
                     Count = r.Count()
                 }).OrderByDescending(g => g.Count).Take(3).ToListAsync();

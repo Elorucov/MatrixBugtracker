@@ -266,15 +266,15 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // Reports count (total and by status)
             var membersCount = await _repo.GetMembersCountAsync(productId);
 
-            List<byte> openStatuses = new List<byte> { 
-                (byte)ReportStatus.Open, (byte)ReportStatus.Reopened 
+            List<byte> openStatuses = new List<byte> {
+                (byte)ReportStatus.Open, (byte)ReportStatus.Reopened
             };
 
-            List<byte> workingStatuses = new List<byte> { 
-                (byte)ReportStatus.InProgress, (byte)ReportStatus.UnderReview, (byte)ReportStatus.Fixed 
+            List<byte> workingStatuses = new List<byte> {
+                (byte)ReportStatus.InProgress, (byte)ReportStatus.UnderReview, (byte)ReportStatus.Fixed
             };
 
-            List<byte> fixedStatuses = new List<byte> { 
+            List<byte> fixedStatuses = new List<byte> {
                 (byte)ReportStatus.Fixed, (byte)ReportStatus.ReadyForTesting, (byte)ReportStatus.Verified
             };
 
@@ -286,7 +286,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Return
             ProductDTO dto = _mapper.Map<ProductDTO>(product);
-            dto.Counters = new ProductCountersDTO {
+            dto.Counters = new ProductCountersDTO
+            {
                 Members = membersCount,
                 TotalReports = totalReportsCount,
                 OpenReports = openReportsCount,

@@ -81,7 +81,8 @@ namespace MatrixBugtracker.BL.Profiles
             {
                 adto.CreatorId = file.CreatorId;
                 adto.Id = file.Id;
-            } else
+            }
+            else
             {
                 int currentUserId = UserIdProvider.UserId;
                 dto.Id = currentUserId == file.CreatorId && dto is not FileAdminDTO ? file.Id : null;

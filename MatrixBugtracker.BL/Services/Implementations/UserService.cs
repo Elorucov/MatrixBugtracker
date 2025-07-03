@@ -271,7 +271,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             foreach (var repCount in reportsCountByProduct)
             {
-                topProducts.Add(new UserStatProductDTO { 
+                topProducts.Add(new UserStatProductDTO
+                {
                     ProductId = repCount.Key,
                     ReportsCount = repCount.Value
                 });
