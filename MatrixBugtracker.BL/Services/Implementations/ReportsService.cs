@@ -2,6 +2,7 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Reports;
+using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
@@ -44,9 +45,9 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _commentRepo = _unitOfWork.GetRepository<ICommentRepository>();
         }
 
-        public async Task<ResponseDTO<Report>> CheckAccessAsync(int reportId)
+        public async Task<ResponseDTO<Report>> CheckAccessAsync(int reportId, bool needIncludes = false)
         {
-            Report report = await _repo.GetByIdAsync(reportId);
+            Report report = needIncludes ? await _repo.GetByIdWithIncludesAsync(reportId) : await _repo.GetByIdAsync(reportId);
             if (report == null) return ResponseDTO<Report>.NotFound();
 
             // We don't use AccessService.CheckAccess, because moders and employees can access every report.
@@ -292,10 +293,22 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
+        public async Task<ResponseDTO<List<UserDTO>>> GetReproducedUsersAsync(int reportId)
+        {
+            Report report = null;
+            var accessCheck = await CheckAccessAsync(reportId, false);
+            if (!accessCheck.Success) return ResponseDTO<List<UserDTO>>.Error(accessCheck);
+            report = accessCheck.Response;
+
+            var users = await _repo.GetReproducedUsersAsync(reportId);
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);
+            return new ResponseDTO<List<UserDTO>>(userDTOs);
+        }
+
         public async Task<ResponseDTO<ReportDTO>> GetByIdAsync(int reportId)
         {
             Report report = null;
-            var accessCheck = await CheckAccessAsync(reportId);
+            var accessCheck = await CheckAccessAsync(reportId, true);
             if (!accessCheck.Success) return ResponseDTO<ReportDTO>.Error(accessCheck);
             report = accessCheck.Response;
 

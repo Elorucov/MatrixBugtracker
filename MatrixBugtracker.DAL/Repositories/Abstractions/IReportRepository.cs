@@ -23,6 +23,7 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
         Task RemoveAllTagsAsync(int reportId);
         Task AddAttachmentAsync(Report report, List<UploadedFile> files);
         Task RemoveAllAttachmentsAsync(int reportId);
+        Task<List<User>> GetReproducedUsersAsync(int reportId);
         Task<ReportReproduce> GetReproducedUserAsync(int reportId, int userId);
         Task AddReproducedUserAsync(int reportId, int userId);
         void DeleteReproducedUser(ReportReproduce entity);

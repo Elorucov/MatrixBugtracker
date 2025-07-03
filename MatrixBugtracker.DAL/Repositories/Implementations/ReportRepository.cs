@@ -165,6 +165,11 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             await _db.ReportAttachments.Where(rt => rt.ReportId == reportId).ExecuteDeleteAsync();
         }
 
+        public async Task<List<User>> GetReproducedUsersAsync(int reportId)
+        {
+            return await _db.ReportReproduces.Include(rr => rr.User).Select(rr => rr.User).ToListAsync();
+        }
+
         public async Task<ReportReproduce> GetReproducedUserAsync(int reportId, int userId)
         {
             return await _db.ReportReproduces.SingleOrDefaultAsync(rr => rr.ReportId == reportId && rr.UserId == userId);

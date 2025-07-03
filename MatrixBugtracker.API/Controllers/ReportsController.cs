@@ -71,6 +71,13 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.SetReproducedAsync(reportId, false));
         }
 
+        [HttpGet("reproduced-users")]
+        [AuthorizeApi]
+        public async Task<IActionResult> GetReproducedUsersAsync(int reportId)
+        {
+            return APIResponse(await _service.GetReproducedUsersAsync(reportId));
+        }
+
         [HttpDelete("{reportId}")]
         [AuthorizeApi]
         public async Task<IActionResult> DeleteAsync(int reportId)
