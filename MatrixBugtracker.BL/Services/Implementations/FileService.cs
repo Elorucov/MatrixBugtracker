@@ -1,4 +1,5 @@
-﻿using MatrixBugtracker.Abstractions;
+﻿using AutoMapper;
+using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
@@ -21,17 +22,19 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUserService _userService;
         private readonly IAccessService _accessService;
         private readonly IUserIdProvider _userIdProvider;
+        private readonly IMapper _mapper;
         private readonly ILogger<FileService> _logger;
         private readonly string _uploadedFilesPath;
 
         public FileService(IUnitOfWork unitOfWork, IConfiguration config, IUserService userService, IAccessService accessService,
-            IUserIdProvider userIdProvider, ILogger<FileService> logger)
+            IUserIdProvider userIdProvider, IMapper mapper, ILogger<FileService> logger)
         {
             _unitOfWork = unitOfWork;
             _repo = unitOfWork.GetRepository<IFileRepository>();
             _userService = userService;
             _accessService = accessService;
             _userIdProvider = userIdProvider;
+            _mapper = mapper;
             _logger = logger;
             _uploadedFilesPath = config["PathForUploadedFiles"];
         }
@@ -123,6 +126,24 @@ namespace MatrixBugtracker.BL.Services.Implementations
             byte[] content = await File.ReadAllBytesAsync(filePath);
 
             return (content, contentType);
+        }
+
+        public async Task<PaginationResponseDTO<FileDTO>> GetCurrentUserFilesAsync(PaginationRequestDTO request)
+        {
+            int currentUserId = _userIdProvider.UserId;
+            var result = await _repo.GetUserFilesAsync(currentUserId, request.Number, request.Size);
+
+            List<FileDTO> fileDTOs = _mapper.Map<List<FileDTO>>(result.Items);
+            return new PaginationResponseDTO<FileDTO>(fileDTOs, result.TotalCount);
+        }
+
+        public async Task<PaginationResponseDTO<FileAdminDTO>> GetAllFilesAsync(PaginationRequestDTO request)
+        {
+            int currentUserId = _userIdProvider.UserId;
+            var result = await _repo.GetPageAsync(request.Number, request.Size);
+
+            List<FileAdminDTO> fileDTOs = _mapper.Map<List<FileAdminDTO>>(result.Items);
+            return new PaginationResponseDTO<FileAdminDTO>(fileDTOs, result.TotalCount);
         }
     }
 }

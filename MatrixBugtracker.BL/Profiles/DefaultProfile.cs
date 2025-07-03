@@ -27,6 +27,7 @@ namespace MatrixBugtracker.BL.Profiles
             _contextAccessor = contextAccessor;
 
             CreateMap<UploadedFile, FileDTO>().AfterMap(ToFileDTO);
+            CreateMap<UploadedFile, FileAdminDTO>().AfterMap(ToFileDTO);
             CreateMap<User, UserDTO>().AfterMap(ToUserDTO);
 
             CreateMap<RegisterRequestDTO, User>().ReverseMap();
@@ -71,9 +72,16 @@ namespace MatrixBugtracker.BL.Profiles
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)
         {
-            // Only file owner/creator can know its id
-            int currentUserId = UserIdProvider.UserId;
-            dto.FileId = currentUserId == file.CreatorId ? file.Id : null;
+            // Only file owner/creator (and admin) can know its id
+            if (dto is FileAdminDTO adto)
+            {
+                adto.CreatorId = file.CreatorId;
+                adto.Id = file.Id;
+            } else
+            {
+                int currentUserId = UserIdProvider.UserId;
+                dto.Id = currentUserId == file.CreatorId && dto is not FileAdminDTO ? file.Id : null;
+            }
 
             var uri = _contextAccessor.HttpContext.Request;
             string link = $"{uri.Scheme}://{uri.Host}/api/v1/files/{file.Path}";

@@ -9,5 +9,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<UploadedFile>> GetFileEntityAsync(int fileId, bool isImage);
         Task<ResponseDTO<List<UploadedFile>>> CheckFilesAccessAsync(int[] fileIds);
         Task<(byte[], string)> GetFileContentByPathAsync(string path);
+        Task<PaginationResponseDTO<FileDTO>> GetCurrentUserFilesAsync(PaginationRequestDTO request);
+        Task<PaginationResponseDTO<FileAdminDTO>> GetAllFilesAsync(PaginationRequestDTO request);
     }
 }
