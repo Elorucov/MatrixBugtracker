@@ -18,20 +18,15 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             return await _dbSet.Where(p => p.Name == name).CountAsync() > 0;
         }
 
-        public async Task<PaginationResult<Product>> GetPageWithMembersAsync(int number, int size)
+        public async Task<PaginationResult<Product>> GetPageWithMembersAsync(int number, int size, ProductType? type, string searchQuery = null)
         {
-            return await _dbSet.Include(pm => pm.ProductMembers)
-                .GetPageAsync(number, size);
+            var query = _dbSet.AsQueryable();
+            if (type.HasValue) query = query.Where(p => p.Type == type.Value);
+            if (!string.IsNullOrEmpty(searchQuery)) query = query.Where(p => p.Name.ToLower().Contains(searchQuery.ToLower()));
+            return await query.Include(p => p.ProductMembers).GetPageAsync(number, size);
         }
 
-        public async Task<PaginationResult<Product>> SearchAsync(string query, int number, int size)
-        {
-            return await _dbSet.Include(pm => pm.ProductMembers)
-                .Where(p => p.Name.ToLower().Contains(query.ToLower()))
-                .GetPageAsync(number, size);
-        }
-
-        public async Task<PaginationResult<Product>> GetWithoutSecretProductsAsync(int authorizedUserId, int number, int size)
+        public async Task<PaginationResult<Product>> GetWithoutSecretProductsAsync(int authorizedUserId, int number, int size, ProductType? type, string searchQuery = null)
         {
             ProductMemberStatus[] statuses = { ProductMemberStatus.InviteReceived, ProductMemberStatus.Joined };
             var joinedSecretProducts = await _db.ProductMembers.Include(p => p.Product)
@@ -39,22 +34,12 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
                 .Select(p => p.Product)
                 .ToListAsync();
 
-            return await _dbSet.Include(pm => pm.ProductMembers)
-                .Where(p => p.AccessLevel != ProductAccessLevel.Secret || joinedSecretProducts.Contains(p))
-                .GetPageAsync(number, size);
-        }
+            var query = _dbSet.Include(pm => pm.ProductMembers)
+                .Where(p => p.AccessLevel != ProductAccessLevel.Secret || joinedSecretProducts.Contains(p));
+            if (type.HasValue) query = query.Where(p => p.Type == type.Value);
+            if (!string.IsNullOrEmpty(searchQuery)) query = query.Where(p => p.Name.ToLower().Contains(searchQuery.ToLower()));
 
-        public async Task<PaginationResult<Product>> SearchWithoutSecretProductsAsync(int authorizedUserId, string query, int number, int size)
-        {
-            ProductMemberStatus[] statuses = { ProductMemberStatus.InviteReceived, ProductMemberStatus.Joined };
-            var joinedSecretProducts = await _db.ProductMembers.Include(p => p.Product)
-                .Where(p => p.MemberId == authorizedUserId && p.Product.AccessLevel == ProductAccessLevel.Secret && statuses.Contains(p.Status))
-                .Select(p => p.Product)
-                .ToListAsync();
-
-            return await _dbSet.Include(pm => pm.ProductMembers)
-                .Where(p => p.Name.ToLower().Contains(query.ToLower()) && (p.AccessLevel != ProductAccessLevel.Secret || joinedSecretProducts.Contains(p)))
-                .GetPageAsync(number, size);
+            return await query.GetPageAsync(number, size);
         }
 
         public async Task<Product> GetByIdWithMembersAsync(int productId)

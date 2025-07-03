@@ -234,13 +234,13 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         // Returns a list of all products in the bugtracker.
         // Note: if user is tester, the list should NOT contain secret products that the tester is not a member of.
-        public async Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(PaginationRequestDTO request)
+        public async Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(GetProductsRequestDTO request)
         {
             var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
             PaginationResult<Product> result = currentUser.Role switch
             {
-                UserRole.Tester => await _repo.GetWithoutSecretProductsAsync(currentUser.Id, request.Number, request.Size),
-                _ => await _repo.GetPageWithMembersAsync(request.Number, request.Size)
+                UserRole.Tester => await _repo.GetWithoutSecretProductsAsync(currentUser.Id, request.Number, request.Size, request.Type, request.Query),
+                _ => await _repo.GetPageWithMembersAsync(request.Number, request.Size, request.Type, request.Query)
             };
 
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(result.Items);
@@ -273,21 +273,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             var result = await GetProductsByUserMembershipAsync(currentUserId, ProductMemberStatus.Joined, request);
             return result;
-        }
-
-        // Search products in the bugtracker.
-        // Note: if user is tester, the list should NOT contain secret products that the tester is not a member of.
-        public async Task<PaginationResponseDTO<ProductDTO>> SearchAsync(PaginatedSearchRequestDTO request)
-        {
-            var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
-            PaginationResult<Product> result = currentUser.Role switch
-            {
-                UserRole.Tester => await _repo.SearchWithoutSecretProductsAsync(currentUser.Id, request.Query, request.Number, request.Size),
-                _ => await _repo.SearchAsync(request.Query, request.Number, request.Size)
-            };
-
-            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(result.Items);
-            return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
         }
 
         // For product creator and admins: get users that sent join request to product

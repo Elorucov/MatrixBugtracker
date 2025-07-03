@@ -8,10 +8,8 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
     public interface IProductRepository : IRepository<Product>
     {
         Task<bool> HasEntityAsync(string name);
-        Task<PaginationResult<Product>> GetPageWithMembersAsync(int number, int size);
-        Task<PaginationResult<Product>> SearchAsync(string query, int number, int size);
-        Task<PaginationResult<Product>> GetWithoutSecretProductsAsync(int authorizedUserId, int number, int size);
-        Task<PaginationResult<Product>> SearchWithoutSecretProductsAsync(int authorizedUserId, string query, int number, int size);
+        Task<PaginationResult<Product>> GetPageWithMembersAsync(int number, int size, ProductType? type, string searchQuery = null);
+        Task<PaginationResult<Product>> GetWithoutSecretProductsAsync(int authorizedUserId, int number, int size, ProductType? type, string searchQuery = null);
         Task<Product> GetByIdWithMembersAsync(int productId);
         Task<ProductMember> GetProductMemberAsync(int productId, int userId);
         Task<PaginationResult<Product>> GetProductsForUserByStatusAsync(ProductMemberStatus status, int userId, int number, int size);

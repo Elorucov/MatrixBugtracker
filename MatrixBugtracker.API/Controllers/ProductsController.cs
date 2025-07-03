@@ -45,7 +45,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync([FromQuery] PaginationRequestDTO request)
+        public async Task<IActionResult> GetAsync([FromQuery] GetProductsRequestDTO request)
         {
             return APIResponse(await _service.GetAllAsync(request));
         }
@@ -63,13 +63,6 @@ namespace MatrixBugtracker.API.Controllers
         {
             // return APIResponse(await _service.GetByIdAsync(productId));
             return APIResponse(ResponseDTO<object>.NotImplemented());
-        }
-
-        [HttpGet("search")]
-        [AuthorizeApi]
-        public async Task<IActionResult> SearchAsync([FromQuery] PaginatedSearchRequestDTO request)
-        {
-            return APIResponse(await _service.SearchAsync(request));
         }
     }
 }
