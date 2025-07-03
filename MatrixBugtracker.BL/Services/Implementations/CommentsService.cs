@@ -17,6 +17,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAccessService _accessService;
         private readonly IFileService _fileService;
+        private readonly IProductService _productService;
         private readonly IReportsService _reportsService;
         private readonly INotificationService _notificationService;
         private readonly IUserService _userService;
@@ -25,13 +26,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         private readonly ICommentRepository _repo;
 
-        public CommentsService(IUnitOfWork unitOfWork, IAccessService accessService,
+        public CommentsService(IUnitOfWork unitOfWork, IAccessService accessService, IProductService productService,
             IFileService fileService, IReportsService reportsService, INotificationService notificationService,
-        IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
+            IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _accessService = accessService;
             _fileService = fileService;
+            _productService = productService;
             _reportsService = reportsService;
             _notificationService = notificationService;
             _userService = userService;
@@ -68,9 +70,15 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (currentUser.Id != reportCreatorId)
             {
-                string userName = request.AsModerator ? currentUser.ModeratorName : $"{currentUser.FirstName} {currentUser.LastName}";
-                var notificationText = string.Format(Common.CommentAddedNotification, userName, report.Title.Truncate(64), request.Text.Truncate(128));
-                await _notificationService.SendToUserAsync(reportCreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, request.ReportId);
+                // Check if report creator is member of product.
+                // We don't send notification if report created for non-opened product and report creator is not member of that product.
+                var access = await _productService.CheckAccessAsync(report.ProductId, false, report.CreatorId);
+                if (access.Success)
+                {
+                    string userName = request.AsModerator ? currentUser.ModeratorName : $"{currentUser.FirstName} {currentUser.LastName}";
+                    var notificationText = string.Format(Common.CommentAddedNotification, userName, report.Title.Truncate(64), request.Text.Truncate(128));
+                    await _notificationService.SendToUserAsync(reportCreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, request.ReportId);
+                }
             }
 
             await _unitOfWork.CommitAsync();

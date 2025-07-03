@@ -300,12 +300,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
         }
 
         // Users that not member of the open product can access to it, but not create reports for this.
-        public async Task<ResponseDTO<Product>> CheckAccessAsync(int productId, bool toCreateReport)
+        public async Task<ResponseDTO<Product>> CheckAccessAsync(int productId, bool toCreateReport, int userId = 0)
         {
-            int currentUserId = _userIdProvider.UserId;
+            if (userId == 0) userId = _userIdProvider.UserId;
             if (toCreateReport)
             {
-                var membership = await _repo.GetProductMemberAsync(productId, currentUserId);
+                var membership = await _repo.GetProductMemberAsync(productId, userId);
                 if (membership == null || membership.Status != ProductMemberStatus.Joined)
                     return ResponseDTO<Product>.Forbidden(Errors.ForbiddenProduct);
 
@@ -313,14 +313,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
             else
             {
-                User currentUser = await _userService.GetSingleUserAsync(currentUserId);
+                User currentUser = await _userService.GetSingleUserAsync(userId);
                 var product = await _repo.GetByIdAsync(productId);
                 if (product == null) return ResponseDTO<Product>.NotFound(Errors.NotFoundProduct);
 
                 if (currentUser.Role != UserRole.Tester || product.AccessLevel == ProductAccessLevel.Open)
                     return new ResponseDTO<Product>(product);
 
-                var membership = await _repo.GetProductMemberAsync(productId, currentUserId);
+                var membership = await _repo.GetProductMemberAsync(productId, userId);
                 if (membership == null || membership.Status != ProductMemberStatus.Joined)
                     return ResponseDTO<Product>.Forbidden(Errors.ForbiddenProduct);
 

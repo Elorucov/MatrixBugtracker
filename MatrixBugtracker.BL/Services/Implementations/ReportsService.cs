@@ -176,10 +176,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _commentRepo.AddAsync(comment);
 
-            string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportSeverityChanged : Common.ReportSeverityChangedWithComment;
-            string severityStr = EnumValues.ResourceManager.GetString($"{nameof(ReportSeverity)}_{request.NewValue}");
-            var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), severityStr, request.Comment.Truncate(128));
-            await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
+            // Sending a comment, but first check if report creator is member of product.
+            // We don't send notification to report creator if report created for non-opened product and report creator is not member of that product.
+
+            var access = await _productService.CheckAccessAsync(report.ProductId, false, report.CreatorId);
+            if (access.Success)
+            {
+                string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportSeverityChanged : Common.ReportSeverityChangedWithComment;
+                string severityStr = EnumValues.ResourceManager.GetString($"{nameof(ReportSeverity)}_{request.NewValue}");
+                var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), severityStr, request.Comment.Truncate(128));
+                await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
+            }
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
@@ -242,10 +249,17 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (currentUser.Id != report.CreatorId)
             {
-                string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportStatusChanged : Common.ReportStatusChangedWithComment;
-                string statusStr = EnumValues.ResourceManager.GetString($"{nameof(ReportStatus)}_{request.NewValue}");
-                var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), statusStr, request.Comment.Truncate(128));
-                await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
+                // Sending a comment, but first check if report creator is member of product.
+                // We don't send notification to report creator if report created for non-opened product and report creator is not member of that product.
+                var access = await _productService.CheckAccessAsync(report.ProductId, false, report.CreatorId);
+
+                if (access.Success)
+                {
+                    string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportStatusChanged : Common.ReportStatusChangedWithComment;
+                    string statusStr = EnumValues.ResourceManager.GetString($"{nameof(ReportStatus)}_{request.NewValue}");
+                    var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), statusStr, request.Comment.Truncate(128));
+                    await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
+                }
             }
 
             await _unitOfWork.CommitAsync();
