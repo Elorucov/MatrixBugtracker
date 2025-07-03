@@ -16,6 +16,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<bool>> JoinAsync(int productId);
         Task<ResponseDTO<bool>> LeaveAsync(int productId);
         Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(GetProductsRequestDTO request);
+        Task<ResponseDTO<ProductDTO>> GetByIdAsync(int productId);
         Task<PaginationResponseDTO<ProductDTO>> GetProductsByUserMembershipAsync(int userId, ProductMemberStatus status, PaginationRequestDTO request);
         Task<PaginationResponseDTO<ProductDTO>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request);
         Task<PaginationResponseDTO<ProductDTO>> GetJoinedProductsAsync(PaginationRequestDTO request);

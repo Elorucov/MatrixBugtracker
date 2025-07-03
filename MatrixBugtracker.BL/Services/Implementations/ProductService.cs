@@ -24,6 +24,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IMapper _mapper;
 
         private readonly IProductRepository _repo;
+        private readonly IReportRepository _reportsRepo;
 
         public ProductService(IUnitOfWork unitOfWork, IAccessService accessService, IFileService fileService,
             IUserService userService, INotificationService notificationService, IUserIdProvider userIdProvider, IMapper mapper)
@@ -37,6 +38,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _mapper = mapper;
 
             _repo = _unitOfWork.GetRepository<IProductRepository>();
+            _reportsRepo = _unitOfWork.GetRepository<IReportRepository>();
         }
 
         public async Task<ResponseDTO<int?>> CreateAsync(ProductCreateDTO request)
@@ -245,6 +247,54 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(result.Items);
             return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
+        }
+
+        public async Task<ResponseDTO<ProductDTO>> GetByIdAsync(int productId)
+        {
+            User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
+            var product = await _repo.GetByIdAsync(productId);
+            if (product == null) return ResponseDTO<ProductDTO>.NotFound(Errors.NotFoundProduct);
+
+            if (currentUser.Role == UserRole.Tester && product.AccessLevel != ProductAccessLevel.Open)
+            {
+                var membership = await _repo.GetProductMemberAsync(productId, currentUser.Id);
+                if (membership == null || membership.Status != ProductMemberStatus.Joined)
+                    return ResponseDTO<ProductDTO>.Forbidden(Errors.ForbiddenProduct);
+            }
+
+
+            // Reports count (total and by status)
+            var membersCount = await _repo.GetMembersCountAsync(productId);
+
+            List<byte> openStatuses = new List<byte> { 
+                (byte)ReportStatus.Open, (byte)ReportStatus.Reopened 
+            };
+
+            List<byte> workingStatuses = new List<byte> { 
+                (byte)ReportStatus.InProgress, (byte)ReportStatus.UnderReview, (byte)ReportStatus.Fixed 
+            };
+
+            List<byte> fixedStatuses = new List<byte> { 
+                (byte)ReportStatus.Fixed, (byte)ReportStatus.ReadyForTesting, (byte)ReportStatus.Verified
+            };
+
+            var reportCounters = await _reportsRepo.GetStatusCountersByProductAsync(productId);
+            int totalReportsCount = reportCounters.Where(c => c.Key == byte.MaxValue).Select(c => c.Value).Sum();
+            int openReportsCount = reportCounters.Where(c => openStatuses.Contains(c.Key)).Select(c => c.Value).Sum();
+            int workingReportsCount = reportCounters.Where(c => workingStatuses.Contains(c.Key)).Select(c => c.Value).Sum();
+            int fixedReportsCount = reportCounters.Where(c => fixedStatuses.Contains(c.Key)).Select(c => c.Value).Sum();
+
+            // Return
+            ProductDTO dto = _mapper.Map<ProductDTO>(product);
+            dto.Counters = new ProductCountersDTO {
+                Members = membersCount,
+                TotalReports = totalReportsCount,
+                OpenReports = openReportsCount,
+                WorkingReports = workingReportsCount,
+                FixedReports = fixedReportsCount
+            };
+
+            return new ResponseDTO<ProductDTO>(dto);
         }
 
         // Returns a list of products that user is joined to product, or have invite request, etc. (depends on status)

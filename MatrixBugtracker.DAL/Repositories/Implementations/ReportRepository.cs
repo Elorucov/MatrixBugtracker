@@ -82,6 +82,23 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             return await query.GetPageAsync(pageNumber, pageSize);
         }
 
+        public async Task<Dictionary<byte, int>> GetStatusCountersByProductAsync(int productId)
+        {
+            var query = _dbSet.Where(r => r.ProductId == productId);
+            var totalCount = await query.CountAsync();
+
+            var statusCounters = await query.GroupBy(r => r.Status).Select(r => new {
+                Status = r.Key,
+                Count = r.Count()
+            }).ToListAsync();
+
+            Dictionary<byte, int> result = new Dictionary<byte, int>();
+            result.Add(byte.MaxValue, totalCount);
+            foreach (var group in statusCounters) result.Add((byte)group.Status, group.Count);
+
+            return result;
+        }
+
         public async Task AddTagsAsync(Report report, List<Tag> tags)
         {
             foreach (var tag in tags)

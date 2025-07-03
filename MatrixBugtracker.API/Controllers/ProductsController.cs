@@ -56,13 +56,11 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.GetJoinedProductsAsync(request));
         }
 
-        // TODO: product advanced info (how many reports created, top users)
         [HttpGet("{productId}")]
         [AuthorizeApi]
-        public IActionResult GetById(int productId)
+        public async Task<IActionResult> GetById(int productId)
         {
-            // return APIResponse(await _service.GetByIdAsync(productId));
-            return APIResponse(ResponseDTO<object>.NotImplemented());
+            return APIResponse(await _service.GetByIdAsync(productId));
         }
     }
 }

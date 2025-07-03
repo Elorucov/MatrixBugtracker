@@ -1,6 +1,7 @@
 ﻿using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.DAL.Repositories.Abstractions
 {
@@ -15,6 +16,7 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
             int pageNumber, int pageSize, int productId, int creatorId = 0, ReportFilter filter = null);
 
         Task<PaginationResult<Report>> GetFilteredAsync(int pageNumber, int pageSize, int productId = 0, int creatorId = 0, ReportFilter filter = null);
+        Task<Dictionary<byte, int>> GetStatusCountersByProductAsync(int productId);
 
         Task AddTagsAsync(Report report, List<Tag> tags);
         Task RemoveAllTagsAsync(int reportId);
