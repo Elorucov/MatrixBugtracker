@@ -17,6 +17,7 @@ namespace MatrixBugtracker.DAL.Extensions
 
         public static IQueryable<Report> WithFilter(this IQueryable<Report> query, ReportFilter filter)
         {
+            if (!string.IsNullOrEmpty(filter.SearchQuery)) query = query.Where(r => r.Title.ToLower().Contains(filter.SearchQuery.ToLower()));
             if (filter?.Severities?.Count > 0) query = query.Where(r => filter.Severities.Contains(r.Severity));
             if (filter?.ProblemTypes?.Count > 0) query = query.Where(r => filter.ProblemTypes.Contains(r.ProblemType));
             if (filter?.Statuses?.Count > 0) query = query.Where(r => filter.Statuses.Contains(r.Status));
@@ -27,6 +28,9 @@ namespace MatrixBugtracker.DAL.Extensions
                 query = query.Include(r => r.Tags);
                 query = query.Where(r => r.Tags.Any(rt => tagIds.Contains(rt.TagId)));
             }
+
+            // By default (Reverse = false), reports returns in order "newest to oldest"
+            if (!filter.Reverse) query = query.OrderByDescending(r => r.Id);
 
             return query;
         }

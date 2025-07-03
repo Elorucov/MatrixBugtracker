@@ -11,5 +11,6 @@ namespace MatrixBugtracker.BL.DTOs.Reports
         public List<ReportProblemType> ProblemTypes { get; init; }
         public List<ReportStatus> Statuses { get; init; }
         public string[] Tags { get; init; }
+        public bool Reverse { get; init; }
     }
 }
