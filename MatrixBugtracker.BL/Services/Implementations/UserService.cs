@@ -3,6 +3,7 @@ using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Admin;
 using MatrixBugtracker.BL.DTOs.Auth;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
@@ -27,6 +28,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUserRepository _userRepo;
         private readonly IConfirmationRepository _confirmsRepo;
         private readonly IFileRepository _fileRepo;
+        private readonly IReportRepository _reportsRepo;
+        private readonly IProductRepository _prodsRepo;
         private readonly IRefreshTokenRepository _refreshTokenRepo;
 
         private readonly IPasswordHasher _passwordHasher;
@@ -48,6 +51,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _userRepo = unitOfWork.GetRepository<IUserRepository>();
             _confirmsRepo = unitOfWork.GetRepository<IConfirmationRepository>();
             _fileRepo = unitOfWork.GetRepository<IFileRepository>();
+            _reportsRepo = unitOfWork.GetRepository<IReportRepository>();
+            _prodsRepo = unitOfWork.GetRepository<IProductRepository>();
             _refreshTokenRepo = unitOfWork.GetRepository<IRefreshTokenRepository>();
 
             _passwordHasher = passwordHasher;
@@ -246,8 +251,45 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var user = await GetSingleUserAsync(userId);
             if (user == null) return ResponseDTO<UserDTO>.NotFound(Errors.NotFoundUser);
 
-            UserDTO dto = null;
-            dto = _mapper.Map(user, dto);
+            // Getting counters
+            List<byte> acceptedStatuses = new List<byte> {
+                (byte)ReportStatus.UnderReview, (byte)ReportStatus.InProgress, (byte)ReportStatus.Fixed,
+                (byte)ReportStatus.ReadyForTesting, (byte)ReportStatus.Verified
+            };
+
+            var reportCounters = await _reportsRepo.GetStatusCountersByUserAsync(userId);
+            int totalReportsCount = reportCounters.Where(c => c.Key == 0).Select(c => c.Value).Sum();
+            int acceptedReportsCount = reportCounters.Where(c => acceptedStatuses.Contains(c.Key)).Select(c => c.Value).Sum();
+
+            // Getting joined products count
+            int joinedProductsCount = await _prodsRepo.GetUserJoinedProductsCountAsync(userId);
+
+            // Getting reports count by product
+            var reportsCountByProduct = await _reportsRepo.GetUserReportsCountGroupedByProductAsync(userId);
+
+            List<UserStatProductDTO> topProducts = new List<UserStatProductDTO>();
+
+            foreach (var repCount in reportsCountByProduct)
+            {
+                topProducts.Add(new UserStatProductDTO { 
+                    ProductId = repCount.Key,
+                    ReportsCount = repCount.Value
+                });
+            }
+
+            var dto = _mapper.Map<UserDTO>(user);
+            dto.Stats = new UserStatsDTO
+            {
+                TotalReports = totalReportsCount,
+                AcceptedReports = acceptedReportsCount,
+                JoinedProducts = joinedProductsCount,
+                TopProducts = topProducts
+            };
+
+            // Getting mentioned products
+            var productIds = topProducts.Select(t => t.ProductId);
+            var products = await _prodsRepo.GetByIdsWithMembersAsync(productIds);
+            dto.MentionedProducts = _mapper.Map<List<ProductDTO>>(products);
 
             return new ResponseDTO<UserDTO>(dto);
         }

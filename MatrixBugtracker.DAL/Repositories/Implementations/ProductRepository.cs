@@ -26,6 +26,11 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             return await query.Include(p => p.ProductMembers).GetPageAsync(number, size);
         }
 
+        public async Task<List<Product>> GetByIdsWithMembersAsync(IEnumerable<int> ids)
+        {
+            return await _dbSet.Include(p => p.ProductMembers).Where(p => ids.Contains(p.Id)).ToListAsync();
+        }
+
         public async Task<PaginationResult<Product>> GetWithoutSecretProductsAsync(int authorizedUserId, int number, int size, ProductType? type, string searchQuery = null)
         {
             ProductMemberStatus[] statuses = { ProductMemberStatus.InviteReceived, ProductMemberStatus.Joined };
@@ -54,7 +59,12 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<int> GetMembersCountAsync(int productId)
         {
-            return await _db.ProductMembers.Where(p => p.ProductId == productId).CountAsync();
+            return await _db.ProductMembers.Where(p => p.ProductId == productId && p.Status == ProductMemberStatus.Joined).CountAsync();
+        }
+
+        public async Task<int> GetUserJoinedProductsCountAsync(int userId)
+        {
+            return await _db.ProductMembers.Where(p => p.MemberId == userId && p.Status == ProductMemberStatus.Joined).CountAsync();
         }
 
         public async Task<PaginationResult<Product>> GetProductsForUserByStatusAsync(ProductMemberStatus status, int userId, int number, int size)

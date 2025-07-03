@@ -23,6 +23,7 @@ namespace MatrixBugtracker.BL.DTOs.Products
 
         public bool IsOver { get; set; }
 
+
         #region Extended (only when getting single product by id)
 
         public ProductCountersDTO Counters { get; set; }

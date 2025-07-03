@@ -38,6 +38,11 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations.Base
             return await _dbSet.FindAsync(id);
         }
 
+        public async Task<List<T>> GetByIdsAsync(IEnumerable<int> ids)
+        {
+            return await _dbSet.Where(e => ids.Contains(e.Id)).ToListAsync();
+        }
+
         public async Task<bool> HasEntityAsync(int id)
         {
             return await _dbSet.FindAsync(id) != null;

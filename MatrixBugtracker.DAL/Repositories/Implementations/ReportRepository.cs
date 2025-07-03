@@ -6,6 +6,7 @@ using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations
 {
@@ -82,9 +83,9 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             return await query.GetPageAsync(pageNumber, pageSize);
         }
 
-        public async Task<Dictionary<byte, int>> GetStatusCountersByProductAsync(int productId)
+        public async Task<Dictionary<byte, int>> GetStatusCountersAsync(Expression<Func<Report, bool>> condition)
         {
-            var query = _dbSet.Where(r => r.ProductId == productId);
+            var query = _dbSet.Where(condition);
             var totalCount = await query.CountAsync();
 
             var statusCounters = await query.GroupBy(r => r.Status).Select(r => new {
@@ -95,6 +96,35 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             Dictionary<byte, int> result = new Dictionary<byte, int>();
             result.Add(byte.MaxValue, totalCount);
             foreach (var group in statusCounters) result.Add((byte)group.Status, group.Count);
+
+            return result;
+        }
+
+        public async Task<Dictionary<byte, int>> GetStatusCountersByProductAsync(int productId)
+        {
+            return await GetStatusCountersAsync(r => r.ProductId == productId);
+        }
+
+        public async Task<Dictionary<byte, int>> GetStatusCountersByUserAsync(int userId)
+        {
+            return await GetStatusCountersAsync(r => r.CreatorId == userId);
+        }
+
+        public async Task<Dictionary<int, int>> GetUserReportsCountGroupedByProductAsync(int userId)
+        {
+            // ThenInclude(p => p.ProductMembers) required for ProductDTO.MembershipStatus property.
+            var query = _dbSet.Include(r => r.Product).ThenInclude(p => p.ProductMembers).Where(r => r.CreatorId == userId);
+            var totalCount = await query.CountAsync();
+
+            // Getting report counts only for 3 open products
+            var statusCounters = await query.GroupBy(r => r.Product)
+                .Where(r => r.Key.AccessLevel == ProductAccessLevel.Open).Select(r => new {
+                    ProductId = r.Key.Id,
+                    Count = r.Count()
+                }).OrderByDescending(g => g.Count).Take(3).ToListAsync();
+
+            Dictionary<int, int> result = new Dictionary<int, int>();
+            foreach (var group in statusCounters) result.Add(group.ProductId, group.Count);
 
             return result;
         }

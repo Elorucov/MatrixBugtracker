@@ -10,6 +10,7 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions.Base
         void Delete(T entity);
         Task<PaginationResult<T>> GetPageAsync(int number, int size);
         Task<T> GetByIdAsync(int id);
+        Task<List<T>> GetByIdsAsync(IEnumerable<int> ids);
         Task<bool> HasEntityAsync(int id);
     }
 }

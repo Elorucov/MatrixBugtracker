@@ -17,6 +17,8 @@ namespace MatrixBugtracker.DAL.Repositories.Abstractions
 
         Task<PaginationResult<Report>> GetFilteredAsync(int pageNumber, int pageSize, int productId = 0, int creatorId = 0, ReportFilter filter = null);
         Task<Dictionary<byte, int>> GetStatusCountersByProductAsync(int productId);
+        Task<Dictionary<byte, int>> GetStatusCountersByUserAsync(int userId);
+        Task<Dictionary<int, int>> GetUserReportsCountGroupedByProductAsync(int userId);
 
         Task AddTagsAsync(Report report, List<Tag> tags);
         Task RemoveAllTagsAsync(int reportId);
