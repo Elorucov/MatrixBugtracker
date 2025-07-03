@@ -66,8 +66,12 @@ namespace MatrixBugtracker.BL.Profiles
                 .ForMember(m => m.Author, t => t.Ignore())
                 .AfterMap(ToCommentDTO);
 
-            CreateMap<UserNotification, UserNotificationDTO>().ForMember(n => n.IsRead, (a) => a.MapFrom(b => b.ViewedByTargetUser));
-            CreateMap<PlatformNotification, PlatformNotificationDTO>();
+            CreateMap<UserNotification, UserNotificationDTO>()
+                .ForMember(n => n.DateTime, (a) => a.MapFrom(b => b.CreationTime))
+                .ForMember(n => n.IsRead, (a) => a.MapFrom(b => b.ViewedByTargetUser));
+
+            CreateMap<PlatformNotification, PlatformNotificationDTO>()
+                .ForMember(n => n.DateTime, (a) => a.MapFrom(b => b.CreationTime));
         }
 
         private void ToFileDTO(UploadedFile file, FileDTO dto)
