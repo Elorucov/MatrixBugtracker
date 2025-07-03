@@ -15,13 +15,6 @@ namespace MatrixBugtracker.API.Controllers
             _service = service;
         }
 
-        [HttpGet("config")]
-        [AuthorizeApi]
-        public IActionResult GetEnumValues()
-        {
-            return APIResponse(_service.GetEnumValues());
-        }
-
         [HttpGet]
         [AuthorizeApi]
         public async Task<IActionResult> GetAsync([FromQuery] GetReportsRequestDTO request)
@@ -38,37 +31,44 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPost]
         [AuthorizeApi]
-        public async Task<IActionResult> CreateAsync([FromBody] ReportCreateDTO request)
+        public async Task<IActionResult> CreateAsync(ReportCreateDTO request)
         {
             return APIResponse(await _service.CreateAsync(request));
         }
 
         [HttpPatch]
         [AuthorizeApi]
-        public async Task<IActionResult> EditAsync([FromBody] ReportEditDTO request)
+        public async Task<IActionResult> EditAsync(ReportEditDTO request)
         {
             return APIResponse(await _service.EditAsync(request));
         }
 
         [HttpPatch("set-severity")]
         [AuthorizeApi([UserRole.Moderator, UserRole.Employee, UserRole.Admin])]
-        public async Task<IActionResult> SetSeverityAsync([FromForm] ReportPatchEnumDTO<ReportSeverity> request)
+        public async Task<IActionResult> SetSeverityAsync(ReportPatchEnumDTO<ReportSeverity> request)
         {
             return APIResponse(await _service.SetSeverityAsync(request));
         }
 
         [HttpPatch("set-status")]
         [AuthorizeApi]
-        public async Task<IActionResult> SetStatusAsync([FromForm] ReportPatchEnumDTO<ReportStatus> request)
+        public async Task<IActionResult> SetStatusAsync(ReportPatchEnumDTO<ReportStatus> request)
         {
             return APIResponse(await _service.SetStatusAsync(request));
         }
 
         [HttpPatch("set-reproduced")]
         [AuthorizeApi]
-        public async Task<IActionResult> SetReproducedAsync([FromForm] int reportId, [FromForm] bool reproduced)
+        public async Task<IActionResult> SetReproducedAsync([FromForm] int reportId)
         {
-            return APIResponse(await _service.SetReproducedAsync(reportId, reproduced));
+            return APIResponse(await _service.SetReproducedAsync(reportId, true));
+        }
+
+        [HttpPatch("unset-reproduced")]
+        [AuthorizeApi]
+        public async Task<IActionResult> UnsetReproducedAsync([FromForm] int reportId)
+        {
+            return APIResponse(await _service.SetReproducedAsync(reportId, false));
         }
 
         [HttpDelete("{reportId}")]

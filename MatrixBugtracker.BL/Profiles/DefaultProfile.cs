@@ -8,7 +8,6 @@ using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.DTOs.Tags;
 using MatrixBugtracker.BL.DTOs.Users;
-using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
@@ -22,8 +21,6 @@ namespace MatrixBugtracker.BL.Profiles
 
         private IMapper Mapper => _contextAccessor.HttpContext.RequestServices.GetService<IMapper>();
         private IUserIdProvider UserIdProvider => _contextAccessor.HttpContext.RequestServices.GetService<IUserIdProvider>();
-
-        public EnumValueDTO GetTranslatedEnum { get; private set; }
 
         public DefaultProfile(IHttpContextAccessor contextAccessor)
         {
@@ -50,9 +47,6 @@ namespace MatrixBugtracker.BL.Profiles
                 .ForMember(m => m.Attachments, t => t.Ignore());
 
             CreateMap<Report, ReportDTO>()
-                .ForMember(m => m.Severity, t => t.Ignore())
-                .ForMember(m => m.ProblemType, t => t.Ignore())
-                .ForMember(m => m.Status, t => t.Ignore())
                 .ForMember(m => m.Attachments, t => t.Ignore())
                 .ForMember(m => m.Tags, t => t.Ignore())
                 .ForMember(m => m.Reproduces, t => t.Ignore())
@@ -117,10 +111,6 @@ namespace MatrixBugtracker.BL.Profiles
         {
             int currentUserId = UserIdProvider.UserId;
 
-            dto.Severity = report.Severity.GetTranslatedEnum();
-            dto.ProblemType = report.ProblemType.GetTranslatedEnum();
-            dto.Status = report.Status.GetTranslatedEnum();
-
             dto.Attachments = Mapper.Map<List<FileDTO>>(report.Attachments.Select(a => a.File));
             dto.IsAttachmentsPrivate = report.IsAttachmentsPrivate;
 
@@ -134,8 +124,8 @@ namespace MatrixBugtracker.BL.Profiles
         {
             int currentUserId = UserIdProvider.UserId;
 
-            if (comment.NewSeverity.HasValue) dto.NewSeverity = comment.NewSeverity.Value.GetTranslatedEnum();
-            if (comment.NewStatus.HasValue) dto.NewStatus = comment.NewStatus.Value.GetTranslatedEnum();
+            if (comment.NewSeverity.HasValue) dto.NewSeverity = comment.NewSeverity.Value;
+            if (comment.NewStatus.HasValue) dto.NewStatus = comment.NewStatus.Value;
 
             dto.Attachments = Mapper.Map<List<FileDTO>>(comment.Attachments.Select(a => a.File));
             dto.IsAttachmentsPrivate = comment.IsAttachmentsPrivate;

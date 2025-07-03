@@ -1,4 +1,5 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.DTOs.Reports
 {
@@ -13,9 +14,9 @@ namespace MatrixBugtracker.BL.DTOs.Reports
         public string Steps { get; set; }
         public string Actual { get; set; }
         public string Supposed { get; set; }
-        public EnumValueDTO Severity { get; set; }
-        public EnumValueDTO ProblemType { get; set; }
-        public EnumValueDTO Status { get; set; }
+        public ReportSeverity Severity { get; set; }
+        public ReportProblemType ProblemType { get; set; }
+        public ReportStatus Status { get; set; }
         public List<string> Tags { get; set; }
         public List<FileDTO> Attachments { get; set; } // only when getting single report
         public bool IsAttachmentsPrivate { get; set; }

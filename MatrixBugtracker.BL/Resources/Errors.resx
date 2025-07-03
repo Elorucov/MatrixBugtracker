@@ -178,7 +178,7 @@
     <value>Invalid creator id</value>
   </data>
   <data name="InvalidEnum" xml:space="preserve">
-    <value>Invalid value, must be {0}</value>
+    <value>Invalid value. Must be {0}</value>
   </data>
   <data name="InvalidFileFormat" xml:space="preserve">
     <value>The format of uploaded file is wrong</value>
@@ -191,6 +191,9 @@
   </data>
   <data name="InvalidReportId" xml:space="preserve">
     <value>Invalid report id</value>
+  </data>
+  <data name="InvalidUserId" xml:space="preserve">
+    <value>Invalid user id</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>Not found</value>

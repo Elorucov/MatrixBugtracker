@@ -4,7 +4,7 @@ using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.Profiles;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.BL.Services.Implementations;
-using MatrixBugtracker.BL.Validators;
+using MatrixBugtracker.BL.Validators.Admin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +17,7 @@ namespace MatrixBugtracker.BL.Extensions
             IServiceProvider provider = services.BuildServiceProvider();
 
             services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
-            services.AddValidatorsFromAssemblyContaining<TestValidator>();
+            services.AddValidatorsFromAssemblyContaining<SetRoleRequestValidator>();
 
             services.AddAutoMapper(opt =>
             {
@@ -26,7 +26,6 @@ namespace MatrixBugtracker.BL.Extensions
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IGenerator, Generator>();
-            services.AddScoped<IPlatformService, PlatformService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAccessService, AccessService>();

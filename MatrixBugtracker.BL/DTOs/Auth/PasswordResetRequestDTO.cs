@@ -4,7 +4,7 @@
     {
         public string Email { get; init; }
         public string Code { get; init; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
+        public string Password { get; init; }
+        public string ConfirmPassword { get; init; }
     }
 }

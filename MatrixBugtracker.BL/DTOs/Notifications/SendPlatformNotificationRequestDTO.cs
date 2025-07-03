@@ -4,9 +4,11 @@ using System.Text.Json.Serialization;
 
 namespace MatrixBugtracker.BL.DTOs.Notifications
 {
-    public class PlatformNotificationDTO : NotificationDTO
+    public class SendPlatformNotificationRequestDTO
     {
         [JsonConverter(typeof(CustomEnumConverter))]
-        public PlatformNotificationKind Kind { get; set; }
+        public PlatformNotificationKind Kind { get; init; }
+
+        public string Text { get; init; }
     }
 }

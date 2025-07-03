@@ -1,6 +1,4 @@
-﻿using MatrixBugtracker.BL.DTOs.Infra;
-using MatrixBugtracker.BL.Resources;
-using System.Text;
+﻿using System.Text;
 
 namespace MatrixBugtracker.BL.Extensions
 {
@@ -22,15 +20,10 @@ namespace MatrixBugtracker.BL.Extensions
             return string.Join(", ", nums);
         }
 
-        public static List<EnumValueDTO> GetTranslatedEnums<T>() where T : struct, Enum
+        public static string GetStringValuesCommaSeparated<T>() where T : struct, Enum
         {
-            return Enum.GetValues<T>()
-                .Select(e => new EnumValueDTO(Convert.ToByte(e), EnumValues.ResourceManager.GetString($"{typeof(T).Name}_{e}"))).ToList();
-        }
-
-        public static EnumValueDTO GetTranslatedEnum<T>(this T value) where T : struct, Enum
-        {
-            return new EnumValueDTO(Convert.ToByte(value), EnumValues.ResourceManager.GetString($"{typeof(T).Name}_{value}"));
+            var names = Enum.GetNames<T>();
+            return string.Join(", ", names);
         }
     }
 }

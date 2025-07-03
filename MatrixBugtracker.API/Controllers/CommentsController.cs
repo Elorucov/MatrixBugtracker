@@ -24,14 +24,14 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPost]
         [AuthorizeApi]
-        public async Task<IActionResult> CreateAsync([FromBody] CommentCreateDTO request)
+        public async Task<IActionResult> CreateAsync(CommentCreateDTO request)
         {
             return APIResponse(await _service.CreateAsync(request));
         }
 
         [HttpPut]
         [AuthorizeApi]
-        public async Task<IActionResult> EditAsync([FromBody] CommentEditDTO request)
+        public async Task<IActionResult> EditAsync(CommentEditDTO request)
         {
             return APIResponse(await _service.EditAsync(request));
         }

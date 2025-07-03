@@ -4,6 +4,6 @@ namespace MatrixBugtracker.BL.DTOs.Products
 {
     public class GetJoinRequestUsersReqDTO : PaginationRequestDTO
     {
-        public int ProductId { get; set; }
+        public int ProductId { get; init; }
     }
 }

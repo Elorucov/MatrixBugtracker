@@ -2,8 +2,8 @@
 {
     public class PaginationRequestDTO
     {
-        public int Number { get; set; }
-        public int Size { get; set; }
+        public int Number { get; init; }
+        public int Size { get; init; }
 
         public static readonly PaginationRequestDTO Infinity = new PaginationRequestDTO { Number = 1, Size = int.MaxValue };
     }

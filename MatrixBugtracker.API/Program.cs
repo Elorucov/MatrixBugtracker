@@ -1,14 +1,13 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.API.Middlewares;
-using MatrixBugtracker.API.Misc;
 using MatrixBugtracker.API.ProviderImpls;
+using MatrixBugtracker.BL.Converters;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Extensions;
 using MatrixBugtracker.Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -34,15 +33,13 @@ namespace MatrixBugtracker.API
             builder.Services.Configure<JsonOptions>(options =>
                 options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull);
 
-            builder.Services.AddControllers(opts =>
-            {
-                opts.Conventions.Add(new RouteTokenTransformerConvention(new ToSnakeCaseParameterTransformer()));
-            }).ConfigureApiBehaviorOptions(options =>
+            builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull;
+                options.JsonSerializerOptions.Converters.Add(new CustomEnumConverter());
             });
 
             // Logger

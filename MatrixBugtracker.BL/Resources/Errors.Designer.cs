@@ -241,7 +241,7 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid value, must be {0}.
+        ///   Looks up a localized string similar to Invalid value. Must be {0}.
         /// </summary>
         internal static string InvalidEnum {
             get {
@@ -282,6 +282,15 @@ namespace MatrixBugtracker.BL.Resources {
         internal static string InvalidReportId {
             get {
                 return ResourceManager.GetString("InvalidReportId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid user id.
+        /// </summary>
+        internal static string InvalidUserId {
+            get {
+                return ResourceManager.GetString("InvalidUserId", resourceCulture);
             }
         }
         

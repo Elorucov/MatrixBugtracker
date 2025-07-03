@@ -8,9 +8,11 @@ namespace MatrixBugtracker.BL.Services.Abstractions
     {
         Task<bool> SendToUserAsync(int targetUserId, bool sendEmail, UserNotificationKind kind, string text,
             LinkedEntityType? entityType = null, int? entityId = null);
+
         Task<bool> SendToUsersAsync(List<int> targetUserIds, bool sendEmail, UserNotificationKind kind, string text,
             LinkedEntityType? entityType = null, int? entityId = null);
-        Task<ResponseDTO<int?>> SendToAllAsync(PlatformNotificationKind kind, string message);
+
+        Task<ResponseDTO<int?>> SendToAllAsync(SendPlatformNotificationRequestDTO request);
 
         Task<PaginationResponseDTO<UserNotificationDTO>> GetUserNotificationsAsync(PaginationRequestDTO request);
         Task<PaginationResponseDTO<PlatformNotificationDTO>> GetPlatformNotificationsAsync(PaginationRequestDTO request);

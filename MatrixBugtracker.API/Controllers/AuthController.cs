@@ -15,7 +15,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromForm] LoginRequestDTO request)
+        public async Task<IActionResult> LoginAsync(LoginRequestDTO request)
         {
             return APIResponse(await _userService.LoginAsync(request));
         }
@@ -27,7 +27,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync([FromForm] RegisterRequestDTO request)
+        public async Task<IActionResult> RegisterAsync(RegisterRequestDTO request)
         {
             return APIResponse(await _userService.CreateUserAsync(request));
         }
@@ -39,7 +39,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPost("reset-password-confirm")]
-        public async Task<IActionResult> ResetPasswordAsync([FromForm] PasswordResetRequestDTO request)
+        public async Task<IActionResult> ResetPasswordAsync(PasswordResetRequestDTO request)
         {
             return APIResponse(await _userService.ResetPasswordAsync(request));
         }

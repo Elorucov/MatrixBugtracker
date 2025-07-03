@@ -3,7 +3,6 @@ using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Users;
-using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Models;
@@ -91,7 +90,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
-        public async Task<ResponseDTO<bool>> SetIsOverFlagAsync(int productId, bool flag)
+        public async Task<ResponseDTO<bool>> ChangeIsOverFlagAsync(int productId, bool isOver)
         {
             Product product = await _repo.GetByIdWithMembersAsync(productId);
             if (product == null) return ResponseDTO<bool>.NotFound();
@@ -100,11 +99,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var access = await _accessService.CheckAccessAsync(product);
             if (!access.Success) return ResponseDTO<bool>.Error(access);
 
-            product.IsOver = flag;
+            product.IsOver = isOver;
 
             _repo.Update(product);
 
-            if (flag)
+            // Sending notification to product members about finishing testing
+            if (isOver)
             {
                 string notificationText = string.Format(Common.ProductTestingFinished, product.Name);
                 var memberUserIds = product.ProductMembers.Select(pm => pm.MemberId).ToList();
@@ -116,9 +116,9 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
-        public async Task<ResponseDTO<bool>> InviteUserAsync(int productId, int userId)
+        public async Task<ResponseDTO<bool>> InviteUserAsync(ProductUserRequestDTO request)
         {
-            Product product = await _repo.GetByIdAsync(productId);
+            Product product = await _repo.GetByIdAsync(request.ProductId);
             if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
 
             // Admins can access to all products, employees can access to only own created products
@@ -129,7 +129,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // If user itself sent a join request, he will be joined,
             // otherwise we send an invite
 
-            var prodMem = await _repo.GetProductMemberAsync(productId, userId);
+            var prodMem = await _repo.GetProductMemberAsync(request.ProductId, request.UserId);
             if (prodMem != null)
             {
                 if (prodMem.Status != ProductMemberStatus.JoinRequested)
@@ -148,25 +148,25 @@ namespace MatrixBugtracker.BL.Services.Implementations
                     _repo.UpdateProductMember(prodMem);
 
                     string notificationText = string.Format(Common.ProductJoinRequestAccepted, product.Name);
-                    await _notificationService.SendToUserAsync(userId, true, UserNotificationKind.ProductJoinAccepted, notificationText, LinkedEntityType.Product, productId);
+                    await _notificationService.SendToUserAsync(request.UserId, true, UserNotificationKind.ProductJoinAccepted, notificationText, LinkedEntityType.Product, product.Id);
                 }
             }
             else
             {
-                User user = await _userService.GetSingleUserAsync(userId);
+                User user = await _userService.GetSingleUserAsync(request.UserId);
                 await _repo.AddUserToProductAsync(product.Id, user.Id, ProductMemberStatus.InviteReceived);
 
                 string notificationText = string.Format(Common.ProductInviteRequest, product.Name);
-                await _notificationService.SendToUserAsync(userId, true, UserNotificationKind.ProductInvitation, notificationText, LinkedEntityType.Product, productId);
+                await _notificationService.SendToUserAsync(request.UserId, true, UserNotificationKind.ProductInvitation, notificationText, LinkedEntityType.Product, product.Id);
             }
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
         }
 
-        public async Task<ResponseDTO<bool>> KickUserAsync(int productId, int userId)
+        public async Task<ResponseDTO<bool>> KickUserAsync(ProductUserRequestDTO request)
         {
-            Product product = await _repo.GetByIdAsync(productId);
+            Product product = await _repo.GetByIdAsync(request.ProductId);
             if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
 
             // Admins can access to all products, employees can access to only own created products
@@ -175,7 +175,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             // Check if user already joined into product.
 
-            var prodMem = await _repo.GetProductMemberAsync(productId, userId);
+            var prodMem = await _repo.GetProductMemberAsync(request.ProductId, request.UserId);
             if (prodMem == null) return ResponseDTO<bool>.BadRequest(Errors.UserIsNotMember);
 
             _repo.RemoveUserFromProduct(prodMem);
@@ -326,21 +326,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
                 return new ResponseDTO<Product>(membership.Product);
             }
-        }
-
-        public ResponseDTO<ProductEnumsDTO> GetEnumValues()
-        {
-            var accessLevels = EnumExtensions.GetTranslatedEnums<ProductAccessLevel>();
-
-            var types = EnumExtensions.GetTranslatedEnums<ProductType>();
-
-            ProductEnumsDTO response = new ProductEnumsDTO
-            {
-                AccessLevels = accessLevels,
-                Types = types
-            };
-
-            return new ResponseDTO<ProductEnumsDTO>(response);
         }
     }
 }

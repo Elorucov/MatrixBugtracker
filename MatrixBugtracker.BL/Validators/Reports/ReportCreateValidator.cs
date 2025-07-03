@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using MatrixBugtracker.BL.DTOs.Reports;
-using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
-using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Validators.Reports
 {
@@ -27,12 +25,6 @@ namespace MatrixBugtracker.BL.Validators.Reports
             RuleFor(p => p.Supposed).NotEmpty()
                 .MinimumLength(10).WithMessage(Errors.TooShort)
                 .MaximumLength(4096).WithMessage(Errors.TooLong);
-
-            RuleFor(p => p.Severity).NotEmpty()
-                .IsInEnum().WithMessage(string.Format(Errors.InvalidEnum, EnumExtensions.GetValuesCommaSeparated<ReportSeverity>()));
-
-            RuleFor(p => p.ProblemType).NotEmpty()
-                .IsInEnum().WithMessage(string.Format(Errors.InvalidEnum, EnumExtensions.GetValuesCommaSeparated<ReportProblemType>()));
         }
     }
 }

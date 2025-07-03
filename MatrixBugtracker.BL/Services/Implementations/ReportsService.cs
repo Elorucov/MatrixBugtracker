@@ -364,7 +364,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
             else
             {
-                result = await _repo.GetFilteredAsync(request.Number, request.Size, request.ProductId, request.CreatorId);
+                result = await _repo.GetFilteredAsync(request.Number, request.Size, request.ProductId, request.CreatorId, filter);
             }
 
             List<ReportDTO> reportDTOs = _mapper.Map<List<ReportDTO>>(result.Items);
@@ -382,22 +382,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return new ResponseDTO<bool>(true);
-        }
-
-        public ResponseDTO<ReportEnumsDTO> GetEnumValues()
-        {
-            var problemTypes = EnumExtensions.GetTranslatedEnums<ReportProblemType>();
-            var severities = EnumExtensions.GetTranslatedEnums<ReportSeverity>();
-            var statuses = EnumExtensions.GetTranslatedEnums<ReportStatus>();
-
-            ReportEnumsDTO response = new ReportEnumsDTO
-            {
-                ProblemTypes = problemTypes,
-                Severities = severities,
-                Statuses = statuses
-            };
-
-            return new ResponseDTO<ReportEnumsDTO>(response);
         }
     }
 }

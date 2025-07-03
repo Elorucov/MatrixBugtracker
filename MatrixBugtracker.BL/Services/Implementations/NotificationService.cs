@@ -127,12 +127,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
         }
 
         // Note: we don't send email to all users!
-        public async Task<ResponseDTO<int?>> SendToAllAsync(PlatformNotificationKind kind, string message)
+        public async Task<ResponseDTO<int?>> SendToAllAsync(SendPlatformNotificationRequestDTO request)
         {
             PlatformNotification notification = new PlatformNotification
             {
-                Kind = kind,
-                Text = message
+                Kind = request.Kind,
+                Text = request.Text
             };
 
             await _platformNotificationRepo.AddAsync(notification);

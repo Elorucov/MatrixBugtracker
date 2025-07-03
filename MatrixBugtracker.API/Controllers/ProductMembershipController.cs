@@ -18,16 +18,16 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpPost("invite")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> InviteUserAsync([FromForm] int productId, [FromForm] int userId)
+        public async Task<IActionResult> InviteUserAsync(ProductUserRequestDTO request)
         {
-            return APIResponse(await _service.InviteUserAsync(productId, userId));
+            return APIResponse(await _service.InviteUserAsync(request));
         }
 
         [HttpDelete("kick")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> KickUserAsync([FromForm] int productId, [FromForm] int userId)
+        public async Task<IActionResult> KickUserAsync(ProductUserRequestDTO request)
         {
-            return APIResponse(await _service.KickUserAsync(productId, userId));
+            return APIResponse(await _service.KickUserAsync(request));
         }
 
         [HttpPost("join")]

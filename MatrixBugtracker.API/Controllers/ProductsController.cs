@@ -16,23 +16,16 @@ namespace MatrixBugtracker.API.Controllers
             _service = service;
         }
 
-        [HttpGet("config")]
-        [AuthorizeApi]
-        public IActionResult GetEnumValues()
-        {
-            return APIResponse(_service.GetEnumValues());
-        }
-
         [HttpPost]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> CreateAsync([FromForm] ProductCreateDTO request)
+        public async Task<IActionResult> CreateAsync(ProductCreateDTO request)
         {
             return APIResponse(await _service.CreateAsync(request));
         }
 
         [HttpPut]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> EditAsync([FromForm] ProductEditDTO request)
+        public async Task<IActionResult> EditAsync(ProductEditDTO request)
         {
             return APIResponse(await _service.EditAsync(request));
         }
@@ -41,14 +34,14 @@ namespace MatrixBugtracker.API.Controllers
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> FinishTestingAsync([FromForm] int productId)
         {
-            return APIResponse(await _service.SetIsOverFlagAsync(productId, true));
+            return APIResponse(await _service.ChangeIsOverFlagAsync(productId, true));
         }
 
         [HttpPatch("resume-testing")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> ResumeTestingAsync([FromForm] int productId)
         {
-            return APIResponse(await _service.SetIsOverFlagAsync(productId, false));
+            return APIResponse(await _service.ChangeIsOverFlagAsync(productId, false));
         }
 
         [HttpGet]

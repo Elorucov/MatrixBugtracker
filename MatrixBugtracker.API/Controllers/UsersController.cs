@@ -23,7 +23,7 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditAsync([FromForm] UserEditDTO request)
+        public async Task<IActionResult> EditAsync(UserEditDTO request)
         {
             return APIResponse(await _service.EditAsync(request));
         }
