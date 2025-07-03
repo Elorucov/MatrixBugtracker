@@ -106,6 +106,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot change a role for requested user.
+        /// </summary>
+        internal static string CannotChangeRole {
+            get {
+                return ResourceManager.GetString("CannotChangeRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You cannot change your role.
         /// </summary>
         internal static string CannotRevokeAdminRoleFromCurrentUser {

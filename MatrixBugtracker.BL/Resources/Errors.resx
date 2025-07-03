@@ -132,6 +132,9 @@
   <data name="BadRequest" xml:space="preserve">
     <value>Bad request</value>
   </data>
+  <data name="CannotChangeRole" xml:space="preserve">
+    <value>Cannot change a role for requested user</value>
+  </data>
   <data name="CannotRevokeAdminRoleFromCurrentUser" xml:space="preserve">
     <value>You cannot change your role</value>
   </data>

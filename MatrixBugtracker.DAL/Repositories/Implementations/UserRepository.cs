@@ -15,9 +15,14 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             return await _dbSet.SingleOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<User> GetByIdWithIncludeAsync(int id)
+        public async Task<User> GetByIdWithPhotoAsync(int id)
         {
             return await _dbSet.Include(e => e.PhotoFile).SingleOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User> GetByIdWithProductsAsync(int id)
+        {
+            return await _dbSet.Include(e => e.CreatedProducts).SingleOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<List<KeyValuePair<string, string>>> GetEmailsAsync(IEnumerable<int> ids)

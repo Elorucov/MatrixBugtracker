@@ -68,7 +68,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         {
             if (!_cachedUsers.TryGetValue(userId, out User user))
             {
-                user = await _userRepo.GetByIdWithIncludeAsync(userId);
+                user = await _userRepo.GetByIdWithPhotoAsync(userId);
                 if (user != null) _cachedUsers.TryAdd(userId, user);
             }
 
@@ -257,9 +257,16 @@ namespace MatrixBugtracker.BL.Services.Implementations
             int currentUserId = _userIdProvider.UserId;
             if (request.UserId == currentUserId) return ResponseDTO<bool>.BadRequest(Errors.CannotRevokeAdminRoleFromCurrentUser);
 
-            var user = await GetSingleUserAsync(request.UserId);
+            var user = await _userRepo.GetByIdWithProductsAsync(request.UserId);
             if (user == null) return ResponseDTO<bool>.NotFound();
             if (user.Role == request.Role) return ResponseDTO<bool>.BadRequest(Errors.RoleIsSame);
+
+            // Don't downgrade role from employee if he has a products.
+            if ((byte)user.Role <= 2 && (int)request.Role > 2 && user.CreatedProducts.Count > 0)
+            {
+                _logger.LogWarning("User {0} as {1} has {2} products. Cannot downgrade role to {3}", user.Id, user.Role, user.CreatedProducts.Count, request.Role);
+                return ResponseDTO<bool>.BadRequest(Errors.CannotChangeRole);
+            }
 
             // Set default moderator name if user's role changed from tester to higher role.
             // We get the count of users with moder name, add 1 to the count and assign it to the moder name.
