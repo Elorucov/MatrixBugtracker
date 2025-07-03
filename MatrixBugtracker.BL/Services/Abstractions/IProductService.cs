@@ -17,10 +17,11 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<bool>> LeaveAsync(int productId);
         Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(GetProductsRequestDTO request);
         Task<ResponseDTO<ProductDTO>> GetByIdAsync(int productId);
+        Task<PaginationResponseDTO<UserDTO>> GetMembersAsync(GetMembersRequestDTO request);
         Task<PaginationResponseDTO<ProductDTO>> GetProductsByUserMembershipAsync(int userId, ProductMemberStatus status, PaginationRequestDTO request);
         Task<PaginationResponseDTO<ProductDTO>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request);
         Task<PaginationResponseDTO<ProductDTO>> GetJoinedProductsAsync(PaginationRequestDTO request);
-        Task<PaginationResponseDTO<UserDTO>> GetJoinRequestUsers(GetJoinRequestUsersReqDTO request);
+        Task<PaginationResponseDTO<UserDTO>> GetJoinRequestUsers(GetMembersRequestDTO request);
         Task<ResponseDTO<Product>> CheckAccessAsync(int productId, bool toCreateReport, int userId = 0);
     }
 }

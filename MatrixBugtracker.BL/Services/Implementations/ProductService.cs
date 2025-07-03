@@ -298,6 +298,18 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<ProductDTO>(dto);
         }
 
+        public async Task<PaginationResponseDTO<UserDTO>> GetMembersAsync(GetMembersRequestDTO request)
+        {
+            Product product = null;
+            var access = await CheckAccessAsync(request.ProductId, false);
+            if (!access.Success) return PaginationResponseDTO<UserDTO>.Error(access);
+            product = access.Response;
+
+            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.Joined, request.ProductId, request.Number, request.Size);
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);
+            return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
+        }
+
         // Returns a list of products that user is joined to product, or have invite request, etc. (depends on status)
         public async Task<PaginationResponseDTO<ProductDTO>> GetProductsByUserMembershipAsync(int userId, ProductMemberStatus status, PaginationRequestDTO request)
         {
@@ -327,7 +339,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         }
 
         // For product creator and admins: get users that sent join request to product
-        public async Task<PaginationResponseDTO<UserDTO>> GetJoinRequestUsers(GetJoinRequestUsersReqDTO request)
+        public async Task<PaginationResponseDTO<UserDTO>> GetJoinRequestUsers(GetMembersRequestDTO request)
         {
             Product product = await _repo.GetByIdAsync(request.ProductId);
             if (product == null) return PaginationResponseDTO<UserDTO>.NotFound();

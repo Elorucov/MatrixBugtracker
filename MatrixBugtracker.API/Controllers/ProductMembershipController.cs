@@ -53,7 +53,7 @@ namespace MatrixBugtracker.API.Controllers
 
         [HttpGet("get-join-requests")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
-        public async Task<IActionResult> GetJoinRequestsAsync([FromQuery] GetJoinRequestUsersReqDTO request)
+        public async Task<IActionResult> GetJoinRequestsAsync([FromQuery] GetMembersRequestDTO request)
         {
             return APIResponse(await _service.GetJoinRequestUsers(request));
         }

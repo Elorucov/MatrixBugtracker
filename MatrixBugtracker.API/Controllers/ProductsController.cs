@@ -45,15 +45,24 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         [HttpGet]
+        [AuthorizeApi]
         public async Task<IActionResult> GetAsync([FromQuery] GetProductsRequestDTO request)
         {
             return APIResponse(await _service.GetAllAsync(request));
         }
 
         [HttpGet("joined")]
+        [AuthorizeApi]
         public async Task<IActionResult> GetJoinedAsync([FromQuery] PaginationRequestDTO request)
         {
             return APIResponse(await _service.GetJoinedProductsAsync(request));
+        }
+
+        [HttpGet("members")]
+        [AuthorizeApi]
+        public async Task<IActionResult> GetProductMembersAsync([FromQuery] GetMembersRequestDTO request)
+        {
+            return APIResponse(await _service.GetMembersAsync(request));
         }
 
         [HttpGet("{productId}")]
