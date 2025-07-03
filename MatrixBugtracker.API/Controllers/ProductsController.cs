@@ -50,6 +50,12 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.GetAllAsync(request));
         }
 
+        [HttpGet("joined")]
+        public async Task<IActionResult> GetJoinedAsync([FromQuery] PaginationRequestDTO request)
+        {
+            return APIResponse(await _service.GetJoinedProductsAsync(request));
+        }
+
         // TODO: product advanced info (how many reports created, top users)
         [HttpGet("{productId}")]
         [AuthorizeApi]

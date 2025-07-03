@@ -189,12 +189,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Product product = await _repo.GetByIdAsync(productId);
             if (product == null) return ResponseDTO<bool>.NotFound(Errors.NotFoundProduct);
 
-            int currentUserId = _userIdProvider.UserId;
+            var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
 
-            var prodMem = await _repo.GetProductMemberAsync(productId, currentUserId);
+            var prodMem = await _repo.GetProductMemberAsync(productId, currentUser.Id);
             if (prodMem != null)
             {
-                if (prodMem.Status != ProductMemberStatus.InviteReceived) return ResponseDTO<bool>.BadRequest();
+                if (currentUser.Role == UserRole.Tester && prodMem.Status != ProductMemberStatus.InviteReceived) return ResponseDTO<bool>.BadRequest();
                 prodMem.Status = ProductMemberStatus.Joined;
 
                 _repo.UpdateProductMember(prodMem);
@@ -203,10 +203,10 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
             else
             {
-                if (product.AccessLevel == ProductAccessLevel.Secret) return ResponseDTO<bool>.Forbidden();
+                if (currentUser.Role == UserRole.Tester && product.AccessLevel == ProductAccessLevel.Secret) return ResponseDTO<bool>.Forbidden();
 
-                User user = await _userService.GetSingleUserAsync(currentUserId);
-                var status = product.AccessLevel == ProductAccessLevel.Closed
+                User user = await _userService.GetSingleUserAsync(currentUser.Id);
+                var status = currentUser.Role == UserRole.Tester && product.AccessLevel == ProductAccessLevel.Closed
                     ? ProductMemberStatus.JoinRequested : ProductMemberStatus.Joined;
 
                 await _repo.AddUserToProductAsync(product.Id, user.Id, status);
@@ -263,6 +263,15 @@ namespace MatrixBugtracker.BL.Services.Implementations
             int currentUserId = _userIdProvider.UserId;
 
             var result = await GetProductsByUserMembershipAsync(currentUserId, ProductMemberStatus.InviteReceived, request);
+            return result;
+        }
+
+        // Returns a list of products that current user has joined.
+        public async Task<PaginationResponseDTO<ProductDTO>> GetJoinedProductsAsync(PaginationRequestDTO request)
+        {
+            int currentUserId = _userIdProvider.UserId;
+
+            var result = await GetProductsByUserMembershipAsync(currentUserId, ProductMemberStatus.Joined, request);
             return result;
         }
 
