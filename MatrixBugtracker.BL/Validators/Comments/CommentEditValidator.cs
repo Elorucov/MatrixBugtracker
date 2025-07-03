@@ -13,6 +13,8 @@ namespace MatrixBugtracker.BL.Validators.Comments
             RuleFor(p => p.Text).NotEmpty()
                 .MinimumLength(1).WithMessage(Errors.TooShort)
                 .MaximumLength(2048).WithMessage(Errors.TooLong);
+
+            RuleFor(p => p.FileIds).Must(x => x.Length <= 5);
         }
     }
 }
