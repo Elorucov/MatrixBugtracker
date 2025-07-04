@@ -18,6 +18,7 @@ There is a notification system. Sending notifications by e-mail to testers has b
 * AutoMapper
 * FluentValidator
 * _JWT_ and _refresh_ tokens
+* Unit-tests with xUnit and Moq
 * DDD architecture
 * Design following SOLID Principles
 * Repository and Unit-of-Work pattern

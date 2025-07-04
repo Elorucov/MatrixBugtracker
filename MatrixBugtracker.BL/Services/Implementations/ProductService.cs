@@ -258,11 +258,10 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (currentUser.Role == UserRole.Tester && product.AccessLevel != ProductAccessLevel.Open)
             {
-                var membership = await _repo.GetProductMemberAsync(productId, currentUser.Id);
+                var membership = product.ProductMembers.SingleOrDefault(pm => pm.ProductId == productId && pm.MemberId == currentUser.Id);
                 if (membership == null || membership.Status != ProductMemberStatus.Joined)
                     return ResponseDTO<ProductDTO>.Forbidden(Errors.ForbiddenProduct);
             }
-
 
             // Reports count (total and by status)
             var membersCount = product.ProductMembers.Count;

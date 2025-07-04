@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixBugtracker.Abstractio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixBugtracker.Domain", "MatrixBugtracker.Domain\MatrixBugtracker.Domain.csproj", "{1C38F35F-666A-45DA-9ED1-E25CBD1C0E2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixBugtracker.Tests", "MatrixBugtracker.Tests\MatrixBugtracker.Tests.csproj", "{B0F38D7B-61CE-43EA-AA19-7D1AA22BB917}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1C38F35F-666A-45DA-9ED1-E25CBD1C0E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C38F35F-666A-45DA-9ED1-E25CBD1C0E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C38F35F-666A-45DA-9ED1-E25CBD1C0E2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0F38D7B-61CE-43EA-AA19-7D1AA22BB917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0F38D7B-61CE-43EA-AA19-7D1AA22BB917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0F38D7B-61CE-43EA-AA19-7D1AA22BB917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0F38D7B-61CE-43EA-AA19-7D1AA22BB917}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
