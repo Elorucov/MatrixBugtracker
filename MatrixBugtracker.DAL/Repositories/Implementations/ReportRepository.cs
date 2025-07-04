@@ -31,13 +31,15 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
         {
             if (currentUserId <= 0) throw new ArgumentException($"Value must be greater than 0", nameof(currentUserId));
 
-            var query = _dbSet.AsQueryable();
+            // These includes required for getting report creator names and product names
+            var query = _dbSet.Include(r => r.Product).ThenInclude(p => p.PhotoFile)
+                .Include(r => r.Creator).ThenInclude(u => u.PhotoFile).AsQueryable();
             if (creatorId > 0)
             {
-                query = query.Include(r => r.Product).Where(r => r.CreatorId == creatorId);
+                query = query.Where(r => r.CreatorId == creatorId);
 
                 // Getting all products that creatorId is created reports for and non-open
-                var nonOpenProductsThatReportsCreated = await query.Include(r => r.Product).GroupBy(r => r.Product)
+                var nonOpenProductsThatReportsCreated = await query.GroupBy(r => r.Product)
                     .Select(g => g.Key).Where(p => p.AccessLevel != ProductAccessLevel.Open).ToListAsync();
 
                 // Then get product ids that creatorId is created reports for and currentUser can access to
@@ -62,7 +64,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
             if (currentUserId <= 0) throw new ArgumentException($"Value must be greater than 0", nameof(currentUserId));
             if (productId <= 0) throw new ArgumentException($"Value must be greater than 0", nameof(productId));
 
-            var query = _dbSet.AsQueryable();
+            var query = _dbSet.Include(r => r.Product).ThenInclude(p => p.PhotoFile)
+                .Include(r => r.Creator).ThenInclude(u => u.PhotoFile).AsQueryable();
 
             query = query.WithFilter(filter);
             if (creatorId > 0) query = query.Where(r => r.CreatorId == creatorId);
@@ -74,7 +77,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<PaginationResult<Report>> GetFilteredAsync(int pageNumber, int pageSize, int productId = 0, int creatorId = 0, ReportFilter filter = null)
         {
-            var query = _dbSet.AsQueryable();
+            var query = _dbSet.Include(r => r.Product).ThenInclude(p => p.PhotoFile)
+                .Include(r => r.Creator).ThenInclude(u => u.PhotoFile).AsQueryable();
 
             query = query.WithFilter(filter);
             if (creatorId > 0) query = query.Where(r => r.CreatorId == creatorId);

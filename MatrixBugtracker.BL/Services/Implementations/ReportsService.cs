@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Extensions;
@@ -332,7 +333,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<ReportDTO>(dto);
         }
 
-        public async Task<PaginationResponseDTO<ReportDTO>> GetAsync(GetReportsRequestDTO request)
+        public async Task<ReportsDTO> GetAsync(GetReportsRequestDTO request)
         {
             var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
 
@@ -340,7 +341,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // trying to access other user's vulnerability reports
             if (request.CreatorId != currentUser.Id && currentUser.Role == UserRole.Tester
                 && request.Severities?.Count == 1 && request.Severities[0] == ReportSeverity.Vulnerability)
-                return PaginationResponseDTO<ReportDTO>.BadRequest();
+                return ReportsDTO.BadRequest();
 
             // Get found tags entities
             List<Tag> tags = null;
@@ -362,7 +363,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (currentUser.Role == UserRole.Tester)
             {
                 var joinedProductsResponse = await _productService.GetProductsByUserMembershipAsync(currentUser.Id, ProductMemberStatus.Joined, PaginationRequestDTO.Infinity);
-                if (!joinedProductsResponse.Success) return PaginationResponseDTO<ReportDTO>.Error(joinedProductsResponse);
+                if (!joinedProductsResponse.Success) return ReportsDTO.Error(joinedProductsResponse);
 
                 var joinedProducts = joinedProductsResponse.Response;
                 var joinedProductIds = joinedProducts.Select(p => p.Id).ToList();
@@ -384,7 +385,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 {
                     // Get by product id. Need check access to product.
                     var productCheck = await _productService.CheckAccessAsync(request.ProductId, false);
-                    if (!productCheck.Success) return PaginationResponseDTO<ReportDTO>.Forbidden(Errors.ForbiddenProduct);
+                    if (!productCheck.Success) return ReportsDTO.Forbidden(Errors.ForbiddenProduct);
 
                     result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id, request.Number, request.Size, request.ProductId, request.CreatorId, filter);
                 }
@@ -394,8 +395,18 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 result = await _repo.GetFilteredAsync(request.Number, request.Size, request.ProductId, request.CreatorId, filter);
             }
 
+            var mentionedUsers = result.Items.GroupBy(r => r.CreatorId).Select(r => r.FirstOrDefault().Creator).ToList();
+            var mentionedProducts = result.Items.GroupBy(r => r.ProductId).Select(r => r.FirstOrDefault().Product).ToList();
+
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(mentionedUsers);
+            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(mentionedProducts);
+
             List<ReportDTO> reportDTOs = _mapper.Map<List<ReportDTO>>(result.Items);
-            return new PaginationResponseDTO<ReportDTO>(reportDTOs, result.TotalCount);
+            return new ReportsDTO(reportDTOs, result.TotalCount)
+            {
+                MentionedProducts = productDTOs,
+                MentionedUsers = userDTOs
+            };
         }
 
         public async Task<ResponseDTO<bool>> DeleteAsync(int reportId)
