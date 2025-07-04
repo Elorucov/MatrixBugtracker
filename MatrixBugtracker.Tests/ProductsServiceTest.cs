@@ -10,6 +10,7 @@ using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 
 namespace MatrixBugtracker.Tests
@@ -20,6 +21,7 @@ namespace MatrixBugtracker.Tests
         private readonly Mock<HttpContext> _httpContextMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IProductRepository> _repoMock;
+        private readonly Mock<IReportRepository> _reportsRepoMock;
         private readonly Mock<IAccessService> _accessServiceMock;
         private readonly Mock<IFileService> _fileServiceMock;
         private readonly Mock<IUserService> _userServiceMock;
@@ -35,6 +37,7 @@ namespace MatrixBugtracker.Tests
             _httpContextMock = new Mock<HttpContext>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _repoMock = new Mock<IProductRepository>();
+            _reportsRepoMock = new Mock<IReportRepository>();
             _accessServiceMock = new Mock<IAccessService>();
             _fileServiceMock = new Mock<IFileService>();
             _userServiceMock = new Mock<IUserService>();
@@ -44,6 +47,8 @@ namespace MatrixBugtracker.Tests
 
             _unitOfWorkMock.Setup(uow => uow.GetRepository<IProductRepository>())
                 .Returns(_repoMock.Object);
+            _unitOfWorkMock.Setup(uow => uow.GetRepository<IReportRepository>())
+                .Returns(_reportsRepoMock.Object);
 
             _serviceProviderMock.Setup(sp => sp.GetService(typeof(IMapper)))
                 .Returns(_mapper);
@@ -101,6 +106,51 @@ namespace MatrixBugtracker.Tests
             // Assert
             Assert.False(response.Success);
             Assert.Equal(StatusCodes.Status403Forbidden, response.HttpStatusCode);
+        }
+
+        // Testing "access denied" error if user as tester is not a member of secret product
+        [Fact]
+        public async Task GetByIdAsync_ClosedProductAccessCheck_Ok()
+        {
+            // Arrange
+            int currentUserId = 7;
+            int productId = 5;
+
+            _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
+
+            var currentUser = new User
+            {
+                Id = currentUserId,
+                FirstName = "Sample",
+                LastName = "User",
+                Role = UserRole.Tester
+            };
+            _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
+                .ReturnsAsync(currentUser);
+
+            var product = new Product
+            {
+                Id = productId,
+                Name = "Sample",
+                Type = ProductType.MobileApp,
+                AccessLevel = ProductAccessLevel.Closed,
+                ProductMembers = new List<ProductMember>()
+            };
+            var counters = new Dictionary<byte, int>() {
+                { byte.MaxValue, 5 }
+            };
+
+            _repoMock.Setup(r => r.GetByIdWithIncludesAsync(productId))
+                .ReturnsAsync(product);
+            _reportsRepoMock.Setup(r => r.GetStatusCountersByProductAsync(productId))
+                .ReturnsAsync(counters);
+
+            // Act
+            var response = await _service.GetByIdAsync(productId);
+
+            // Assert
+            Assert.True(response.Success);
+            Assert.Equal(productId, response.Response.Id);
         }
     }
 }

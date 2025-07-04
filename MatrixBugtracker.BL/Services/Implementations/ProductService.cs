@@ -256,10 +256,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var product = await _repo.GetByIdWithIncludesAsync(productId);
             if (product == null) return ResponseDTO<ProductDTO>.NotFound(Errors.NotFoundProduct);
 
-            if (currentUser.Role == UserRole.Tester && product.AccessLevel != ProductAccessLevel.Open)
+            if (currentUser.Role == UserRole.Tester && product.AccessLevel == ProductAccessLevel.Secret)
             {
                 var membership = product.ProductMembers.SingleOrDefault(pm => pm.ProductId == productId && pm.MemberId == currentUser.Id);
-                if (membership == null || membership.Status != ProductMemberStatus.Joined)
+                var accessibleStatuses = new[] { ProductMemberStatus.Joined, ProductMemberStatus.InviteReceived };
+
+                if (membership == null || !accessibleStatuses.Contains(membership.Status))
                     return ResponseDTO<ProductDTO>.Forbidden(Errors.ForbiddenProduct);
             }
 
