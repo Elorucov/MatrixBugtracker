@@ -75,30 +75,15 @@ namespace MatrixBugtracker.Tests
         {
             // Arrange
             int currentUserId = 7;
-            int productId = 5;
+            int productId = 3;
 
             _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
 
-            var currentUser = new User
-            {
-                Id = currentUserId,
-                FirstName = "Sample",
-                LastName = "User",
-                Role = UserRole.Tester
-            };
             _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
-                .ReturnsAsync(currentUser);
+                .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
 
-            var product = new Product
-            {
-                Id = productId,
-                Name = "Sample",
-                Type = ProductType.MobileApp,
-                AccessLevel = ProductAccessLevel.Secret,
-                ProductMembers = new List<ProductMember>()
-            };
             _repoMock.Setup(r => r.GetByIdWithIncludesAsync(productId))
-                .ReturnsAsync(product);
+                .ReturnsAsync(Seed.Products.SingleOrDefault(p => p.Id == productId));
 
             // Act
             var response = await _service.GetByIdAsync(productId);
@@ -108,40 +93,25 @@ namespace MatrixBugtracker.Tests
             Assert.Equal(StatusCodes.Status403Forbidden, response.HttpStatusCode);
         }
 
-        // Testing "access denied" error if user as tester is not a member of secret product
+        // Testing access to closed product
         [Fact]
         public async Task GetByIdAsync_ClosedProductAccessCheck_Ok()
         {
             // Arrange
             int currentUserId = 7;
-            int productId = 5;
+            int productId = 2;
 
             _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
 
-            var currentUser = new User
-            {
-                Id = currentUserId,
-                FirstName = "Sample",
-                LastName = "User",
-                Role = UserRole.Tester
-            };
             _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
-                .ReturnsAsync(currentUser);
+                .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
 
-            var product = new Product
-            {
-                Id = productId,
-                Name = "Sample",
-                Type = ProductType.MobileApp,
-                AccessLevel = ProductAccessLevel.Closed,
-                ProductMembers = new List<ProductMember>()
-            };
             var counters = new Dictionary<byte, int>() {
                 { byte.MaxValue, 5 }
             };
 
             _repoMock.Setup(r => r.GetByIdWithIncludesAsync(productId))
-                .ReturnsAsync(product);
+                .ReturnsAsync(Seed.Products.SingleOrDefault(p => p.Id == productId));
             _reportsRepoMock.Setup(r => r.GetStatusCountersByProductAsync(productId))
                 .ReturnsAsync(counters);
 
@@ -151,6 +121,46 @@ namespace MatrixBugtracker.Tests
             // Assert
             Assert.True(response.Success);
             Assert.Equal(productId, response.Response.Id);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_CountersCheck_Ok()
+        {
+            // Arrange
+            int currentUserId = 7;
+            int productId = 1;
+
+            _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
+
+            _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
+                .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
+
+            var counters = new Dictionary<byte, int>() {
+                { byte.MaxValue, 27 }, // total
+                { 0, 3 }, // open (open)
+                { 6, 1 }, // open (reopened)
+                { 1, 2 }, // working (in-progress)
+                { 4, 3 }, // working (under review)
+                { 2, 1 }, // working & fixed (fixed)
+                { 10, 1 }, // fixed (ready for testing)
+                { 11, 1 }, // fixed (verified)
+            };
+
+            _repoMock.Setup(r => r.GetByIdWithIncludesAsync(productId))
+                .ReturnsAsync(Seed.Products.SingleOrDefault(p => p.Id == productId));
+            _reportsRepoMock.Setup(r => r.GetStatusCountersByProductAsync(productId))
+                .ReturnsAsync(counters);
+
+            // Act
+            var response = await _service.GetByIdAsync(productId);
+
+            // Assert
+            Assert.True(response.Success);
+            Assert.Equal(productId, response.Response.Id);
+            Assert.Equal(27, response.Response.Counters.TotalReports);
+            Assert.Equal(4, response.Response.Counters.OpenReports);
+            Assert.Equal(6, response.Response.Counters.WorkingReports);
+            Assert.Equal(3, response.Response.Counters.FixedReports);
         }
     }
 }
