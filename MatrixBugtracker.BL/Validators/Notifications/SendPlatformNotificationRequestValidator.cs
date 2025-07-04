@@ -8,6 +8,7 @@ namespace MatrixBugtracker.BL.Validators.Notifications
         public SendPlatformNotificationRequestValidator()
         {
             RuleFor(p => p.Text).NotEmpty().Length(5, 1024);
+            RuleFor(p => p.Kind).NotEmpty();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace MatrixBugtracker.BL.Validators.Reports
         public ReportPatchStatusValidator()
         {
             RuleFor(p => p.Id).NotEmpty().GreaterThan(0).WithMessage(Errors.InvalidReportId);
+            RuleFor(p => p.NewValue).NotEmpty();
         }
     }
 }

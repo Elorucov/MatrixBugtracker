@@ -175,6 +175,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             User newUser = null;
             newUser = _mapper.Map(request, newUser);
             newUser.Password = _passwordHasher.HashPassword(request.Password);
+            newUser.Role = UserRole.Tester;
             await _userRepo.AddAsync(newUser);
 
             string code = _generator.GenerateDigitsCode();
@@ -248,6 +249,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public async Task<ResponseDTO<UserDTO>> GetByIdAsync(int userId)
         {
+            var currentUser = await GetSingleUserAsync(_userIdProvider.UserId);
+
             var user = await GetSingleUserAsync(userId);
             if (user == null) return ResponseDTO<UserDTO>.NotFound(Errors.NotFoundUser);
 
@@ -292,7 +295,28 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var products = await _prodsRepo.GetByIdsWithMembersAsync(productIds);
             dto.MentionedProducts = _mapper.Map<List<ProductDTO>>(products);
 
+            // Admin & non-testers things
+            if (currentUser.Role == UserRole.Admin) dto.Role = user.Role;
+            if (currentUser.Role != UserRole.Tester) dto.ModeratorName = user.ModeratorName;
+
             return new ResponseDTO<UserDTO>(dto);
+        }
+
+        // Only admins can call this method
+        public async Task<PaginationResponseDTO<UserDTO>> GetUsersByRoleAsync(GetUsersByRoleRequestDTO request)
+        {
+            var result = await _userRepo.GetByRoleAsync(request.Role, request.Number, request.Size);
+
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);
+            return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
+        }
+
+        public async Task<PaginationResponseDTO<UserDTO>> SearchUsersAsync(PaginatedSearchRequestDTO request)
+        {
+            var result = await _userRepo.SearchAsync(request.Query, request.Number, request.Size);
+
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);
+            return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
         }
 
         public async Task<ResponseDTO<bool>> SetUserRoleAsync(SetRoleRequestDTO request)

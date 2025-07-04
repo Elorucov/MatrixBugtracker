@@ -1,7 +1,10 @@
 ﻿using MatrixBugtracker.DAL.Data;
+using MatrixBugtracker.DAL.Extensions;
+using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using MatrixBugtracker.Domain.Entities;
+using MatrixBugtracker.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatrixBugtracker.DAL.Repositories.Implementations
@@ -33,6 +36,16 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
         public async Task<int> GetUsersCountWithModeratorNamesAsync()
         {
             return await _dbSet.Where(e => e.ModeratorName != null).CountAsync();
+        }
+
+        public async Task<PaginationResult<User>> GetByRoleAsync(UserRole role, int number, int size)
+        {
+            return await _dbSet.Where(e => e.Role == role).GetPageAsync(number, size);
+        }
+
+        public async Task<PaginationResult<User>> SearchAsync(string name, int number, int size)
+        {
+            return await _dbSet.Where(e => e.FirstName.Contains(name) || e.LastName.Contains(name)).GetPageAsync(number, size);
         }
     }
 }

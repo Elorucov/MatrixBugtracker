@@ -28,7 +28,11 @@ namespace MatrixBugtracker.BL.Profiles
 
             CreateMap<UploadedFile, FileDTO>().AfterMap(ToFileDTO);
             CreateMap<UploadedFile, FileAdminDTO>().AfterMap(ToFileDTO);
-            CreateMap<User, UserDTO>().AfterMap(ToUserDTO);
+
+            CreateMap<User, UserDTO>()
+                .ForMember(m => m.Role, t => t.Ignore())
+                .ForMember(m => m.ModeratorName, t => t.Ignore())
+                .AfterMap(ToUserDTO);
 
             CreateMap<RegisterRequestDTO, User>().ReverseMap();
             CreateMap<UserEditDTO, User>().ReverseMap();

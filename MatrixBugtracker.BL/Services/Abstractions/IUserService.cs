@@ -16,6 +16,8 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<bool>> SendPasswordResetConfirmationAsync(string email);
         Task<ResponseDTO<bool>> ResetPasswordAsync(PasswordResetRequestDTO request);
         Task<ResponseDTO<UserDTO>> GetByIdAsync(int userId);
+        Task<PaginationResponseDTO<UserDTO>> GetUsersByRoleAsync(GetUsersByRoleRequestDTO request);
+        Task<PaginationResponseDTO<UserDTO>> SearchUsersAsync(PaginatedSearchRequestDTO request);
         Task<ResponseDTO<bool>> SetUserRoleAsync(SetRoleRequestDTO request);
         Task<ResponseDTO<bool>> EditAsync(UserEditDTO request);
         Task<ResponseDTO<bool>> ChangePhotoAsync(int photoFileId);

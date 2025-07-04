@@ -26,6 +26,9 @@ namespace MatrixBugtracker.BL.Validators.Reports
                 .MinimumLength(10).WithMessage(Errors.TooShort)
                 .MaximumLength(4096).WithMessage(Errors.TooLong);
 
+            RuleFor(p => p.Severity).NotEmpty();
+            RuleFor(p => p.ProblemType).NotEmpty();
+
             RuleFor(p => p.FileIds).Must(x => x.Length <= 5);
         }
     }
