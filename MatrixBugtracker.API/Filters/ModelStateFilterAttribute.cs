@@ -18,7 +18,7 @@ namespace MatrixBugtracker.API.Filters
                     if (state.Value.Errors.Count > 0) fields.Add(state.Key, string.Join("; ", state.Value.Errors.Select(e => e.ErrorMessage)));
                 }
 
-                context.Result = new BadRequestObjectResult(ResponseDTO<object>.BadRequest("One of the parameters specified was invalid", fields));
+                context.Result = new BadRequestObjectResult(ResponseDTO<object>.BadRequest(BL.Resources.Errors.InvalidParameters, fields));
             }
         }
     }
