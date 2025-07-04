@@ -313,7 +313,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public async Task<PaginationResponseDTO<UserDTO>> SearchUsersAsync(PaginatedSearchRequestDTO request)
         {
-            var result = await _userRepo.SearchAsync(request.Query, request.PageNumber, request.PageSize);
+            var result = await _userRepo.SearchAsync(request.SearchQuery, request.PageNumber, request.PageSize);
 
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);
             return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);

@@ -353,7 +353,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 tags = tagsCheck.Response;
             }
 
-            ReportFilter filter = new ReportFilter(request.Severities, request.ProblemTypes, request.Statuses, tags, request.Query, request.Reverse);
+            ReportFilter filter = new ReportFilter(request.Severities, request.ProblemTypes, request.Statuses, tags, request.SearchQuery, request.Reverse);
 
             PaginationResult<Report> result = null;
 

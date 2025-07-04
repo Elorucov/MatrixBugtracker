@@ -2,6 +2,6 @@
 {
     public class PaginatedSearchRequestDTO : PaginationRequestDTO
     {
-        public string Query { get; init; }
+        public string SearchQuery { get; init; }
     }
 }

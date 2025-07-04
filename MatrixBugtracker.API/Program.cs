@@ -104,13 +104,6 @@ namespace MatrixBugtracker.API
 
 
             app.MapControllers();
-
-            app.Map("/file/{path}", async (string path, [Microsoft.AspNetCore.Mvc.FromServices] IFileService service) =>
-            {
-                var (content, type) = await service.GetFileContentByPathAsync(path);
-                return Results.File(content, type);
-            });
-
             app.Run();
         }
     }
