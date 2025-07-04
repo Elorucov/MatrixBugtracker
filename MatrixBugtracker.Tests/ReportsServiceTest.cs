@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
-using MatrixBugtracker.DAL.Repositories.Abstractions;
-using Microsoft.AspNetCore.Http;
-using Moq;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.Profiles;
+using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.BL.Services.Implementations;
+using MatrixBugtracker.DAL.Repositories.Abstractions;
+using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
+using Microsoft.AspNetCore.Http;
+using Moq;
 
 namespace MatrixBugtracker.Tests
 {
@@ -171,7 +171,8 @@ namespace MatrixBugtracker.Tests
             int reportId = 1;
             var report = Seed.Reports.SingleOrDefault(r => r.Id == reportId);
             var product = Seed.Products.SingleOrDefault(p => p.Id == report.ProductId);
-            var productMember = new ProductMember {
+            var productMember = new ProductMember
+            {
                 ProductId = report.ProductId,
                 MemberId = currentUserId,
                 Status = ProductMemberStatus.Joined

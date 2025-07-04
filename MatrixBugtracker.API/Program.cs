@@ -3,7 +3,6 @@ using MatrixBugtracker.API.Middlewares;
 using MatrixBugtracker.API.ProviderImpls;
 using MatrixBugtracker.BL.Converters;
 using MatrixBugtracker.BL.Extensions;
-using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Extensions;
 using MatrixBugtracker.Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

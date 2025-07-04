@@ -1,10 +1,5 @@
 ﻿using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.Tests
 {
@@ -72,7 +67,7 @@ namespace MatrixBugtracker.Tests
                     LastName = "G"
                 }
             };
-    
+
         private static List<Product> GetProducts() => new List<Product> {
                 new Product
                 {

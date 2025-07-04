@@ -1,19 +1,13 @@
 using AutoMapper;
 using MatrixBugtracker.Abstractions;
-using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.Profiles;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.BL.Services.Implementations;
-using MatrixBugtracker.DAL.Models;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
-using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using System.Diagnostics.Metrics;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.Tests
 {
@@ -67,7 +61,7 @@ namespace MatrixBugtracker.Tests
             _httpContextAccessorMock.Setup(hca => hca.HttpContext)
                 .Returns(_httpContextMock.Object);
 
-            _service = new ProductService(_unitOfWorkMock.Object, _accessServiceMock.Object, _fileServiceMock.Object, 
+            _service = new ProductService(_unitOfWorkMock.Object, _accessServiceMock.Object, _fileServiceMock.Object,
                 _userServiceMock.Object, _notificationServiceMock.Object, _userIdProviderMock.Object, _mapper);
         }
 

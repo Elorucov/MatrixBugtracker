@@ -13,7 +13,7 @@ namespace MatrixBugtracker.BL.DTOs.Reports
         public List<ProductDTO> MentionedProducts { get; set; }
 
 
-        // TODO: try remove duplicate
+        // TODO: try remove duplicate or find a way to call base class's method!
 
         public static new ReportsDTO Error(int httpStatusCode, string message, Dictionary<string, string> fields = null)
         {

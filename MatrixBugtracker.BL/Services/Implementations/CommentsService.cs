@@ -2,7 +2,6 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
-using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
@@ -141,7 +140,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
                         Name = !comment.AsModerator ? $"{author.FirstName} {author.LastName}" : $"{author.ModeratorName} ({author.FirstName} {author.LastName})"
                     };
                     authors.Add(author);
-                } else
+                }
+                else
                 {
                     dto.Author = new CommentAuthorDTO
                     {

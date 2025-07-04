@@ -1,13 +1,6 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
-using MatrixBugtracker.BL.DTOs.Products;
-using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Resources;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.BL.DTOs.Comments
 {
@@ -18,7 +11,7 @@ namespace MatrixBugtracker.BL.DTOs.Comments
         public List<UserDTO> MentionedUsers { get; set; }
 
 
-        // TODO: try remove duplicate
+        // TODO: try remove duplicate or find a way to call base class's method!
 
         public static new CommentsDTO Error(int httpStatusCode, string message, Dictionary<string, string> fields = null)
         {

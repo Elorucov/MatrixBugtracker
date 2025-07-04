@@ -11,7 +11,8 @@ namespace MatrixBugtracker.BL.DTOs.Infra
             TotalCount = count;
         }
 
-        // TODO: try remove duplicate
+        // TODO: try remove duplicate or find a way to call base class's method!
+
         public static new PaginationResponseDTO<T> Error(int httpStatusCode, string message, Dictionary<string, string> fields = null)
         {
             return new PaginationResponseDTO<T>(default, null, httpStatusCode)

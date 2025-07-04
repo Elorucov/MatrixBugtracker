@@ -241,7 +241,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
             PaginationResult<Product> result = currentUser.Role switch
             {
-                UserRole.Tester => await _repo.GetWithoutSecretProductsAsync(currentUser.Id, request.PageNumber, request.PageSize, 
+                UserRole.Tester => await _repo.GetWithoutSecretProductsAsync(currentUser.Id, request.PageNumber, request.PageSize,
                                                 request.Type, request.SearchQuery),
 
                 _ => await _repo.GetPageWithMembersAsync(request.PageNumber, request.PageSize, request.Type, request.SearchQuery)
