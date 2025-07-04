@@ -16,7 +16,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<Report> GetByIdWithIncludesAsync(int id)
         {
-            return await _dbSet.Include(r => r.Product)
+            return await _dbSet.Include(r => r.Product).ThenInclude(p => p.PhotoFile)
+                .Include(r => r.Creator).ThenInclude(u => u.PhotoFile)
                 .Include(r => r.Tags).ThenInclude(rt => rt.Tag)
                 .Include(r => r.Attachments).ThenInclude(ra => ra.File)
                 .Include(r => r.Reproduces).ThenInclude(rp => rp.User)
@@ -171,7 +172,8 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<List<User>> GetReproducedUsersAsync(int reportId)
         {
-            return await _db.ReportReproduces.Include(rr => rr.User).Select(rr => rr.User).ToListAsync();
+            return await _db.ReportReproduces.Include(rr => rr.User).ThenInclude(u => u.PhotoFile)
+                .Select(rr => rr.User).ToListAsync();
         }
 
         public async Task<ReportReproduce> GetReproducedUserAsync(int reportId, int userId)

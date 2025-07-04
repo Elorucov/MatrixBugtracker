@@ -1,4 +1,6 @@
 ﻿using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Products;
+using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.DTOs.Reports
@@ -23,5 +25,12 @@ namespace MatrixBugtracker.BL.DTOs.Reports
         public ReportReproducesDTO Reproduces { get; set; } // only when getting single report
         public bool IsSeveritySetByModerator { get; set; }
         public bool CanDelete { get; set; }
+
+        #region Extended (only when getting single user by id)
+
+        public UserDTO Creator { get; set; }
+        public ProductDTO Product { get; set; }
+
+        #endregion
     }
 }

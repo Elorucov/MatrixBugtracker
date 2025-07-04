@@ -324,6 +324,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             ReportDTO dto = _mapper.Map<ReportDTO>(report);
             dto.Reproduces = reproDTO;
+            dto.Creator = _mapper.Map<UserDTO>(report.Creator);
+            dto.Product = _mapper.Map<ProductDTO>(report.Product);
 
             // Remove files from DTO if attachments is private.
             // Only report creator and moderators (and higher) can see private attachments

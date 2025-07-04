@@ -52,6 +52,8 @@ namespace MatrixBugtracker.BL.Profiles
                 .ForMember(m => m.Attachments, t => t.Ignore());
 
             CreateMap<Report, ReportDTO>()
+                .ForMember(m => m.Creator, t => t.Ignore())
+                .ForMember(m => m.Product, t => t.Ignore())
                 .ForMember(m => m.Attachments, t => t.Ignore())
                 .ForMember(m => m.Tags, t => t.Ignore())
                 .ForMember(m => m.Reproduces, t => t.Ignore())
