@@ -1,23 +1,23 @@
-using AutoMapper;
-using MatrixBugtracker.Abstractions;
-using MatrixBugtracker.BL.DTOs.Products;
-using MatrixBugtracker.BL.Profiles;
+﻿using AutoMapper;
 using MatrixBugtracker.BL.Services.Abstractions;
-using MatrixBugtracker.BL.Services.Implementations;
-using MatrixBugtracker.DAL.Models;
-using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
+using MatrixBugtracker.DAL.Repositories.Abstractions;
+using Microsoft.AspNetCore.Http;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MatrixBugtracker.Abstractions;
+using MatrixBugtracker.BL.Profiles;
+using MatrixBugtracker.BL.Services.Implementations;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using System.Diagnostics.Metrics;
-using System.Threading.Tasks;
 
 namespace MatrixBugtracker.Tests
 {
-    public class ProductsServiceTest
+    public class ReportsServiceTest
     {
         private readonly Mock<IServiceProvider> _serviceProviderMock;
         private readonly Mock<HttpContext> _httpContextMock;
@@ -26,14 +26,16 @@ namespace MatrixBugtracker.Tests
         private readonly Mock<IReportRepository> _reportsRepoMock;
         private readonly Mock<IAccessService> _accessServiceMock;
         private readonly Mock<IFileService> _fileServiceMock;
+        private readonly Mock<ITagsService> _tagsServiceMock;
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<INotificationService> _notificationServiceMock;
         private readonly Mock<IUserIdProvider> _userIdProviderMock;
         private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
         private readonly IMapper _mapper;
-        private readonly IProductService _service;
+        private readonly IProductService _productService;
+        private readonly IReportsService _service;
 
-        public ProductsServiceTest()
+        public ReportsServiceTest()
         {
             _serviceProviderMock = new Mock<IServiceProvider>();
             _httpContextMock = new Mock<HttpContext>();
@@ -42,6 +44,7 @@ namespace MatrixBugtracker.Tests
             _reportsRepoMock = new Mock<IReportRepository>();
             _accessServiceMock = new Mock<IAccessService>();
             _fileServiceMock = new Mock<IFileService>();
+            _tagsServiceMock = new Mock<ITagsService>();
             _userServiceMock = new Mock<IUserService>();
             _notificationServiceMock = new Mock<INotificationService>();
             _userIdProviderMock = new Mock<IUserIdProvider>();
@@ -67,103 +70,78 @@ namespace MatrixBugtracker.Tests
             _httpContextAccessorMock.Setup(hca => hca.HttpContext)
                 .Returns(_httpContextMock.Object);
 
-            _service = new ProductService(_unitOfWorkMock.Object, _accessServiceMock.Object, _fileServiceMock.Object, 
+            _productService = new ProductService(_unitOfWorkMock.Object, _accessServiceMock.Object, _fileServiceMock.Object,
                 _userServiceMock.Object, _notificationServiceMock.Object, _userIdProviderMock.Object, _mapper);
+
+            _service = new ReportsService(_unitOfWorkMock.Object, _fileServiceMock.Object, _productService, _tagsServiceMock.Object,
+                _notificationServiceMock.Object, _userServiceMock.Object, _userIdProviderMock.Object, _mapper);
         }
 
-        // Testing "access denied" error if user as tester is not a member of secret product
+        // Testing "access denied" error if user as tester is not a member of secret product for which the report is created
         [Fact]
-        public async Task GetByIdAsync_SecretProductAccessCheckAsTester_Forbidden()
+        public async Task GetByIdAsync_ReportFromSecretProductAsTester_Forbidden()
         {
             // Arrange
             int currentUserId = 7;
-            int productId = 3;
+            int reportId = 1;
+            var report = Seed.Reports.SingleOrDefault(r => r.Id == reportId);
+            var product = Seed.Products.SingleOrDefault(p => p.Id == report.ProductId);
 
             _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
 
             _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
                 .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
 
-            _productsRepoMock.Setup(r => r.GetByIdWithIncludesAsync(productId))
-                .ReturnsAsync(Seed.Products.SingleOrDefault(p => p.Id == productId));
+            _productsRepoMock.Setup(pr => pr.GetByIdAsync(report.ProductId))
+                .ReturnsAsync(product);
+
+            _reportsRepoMock.Setup(r => r.GetByIdWithIncludesAsync(reportId))
+                .ReturnsAsync(report);
 
             // Act
-            var response = await _service.GetByIdAsync(productId);
+            var response = await _service.GetByIdAsync(reportId);
 
             // Assert
             Assert.False(response.Success);
             Assert.Equal(StatusCodes.Status403Forbidden, response.HttpStatusCode);
+            Assert.Equal(BL.Resources.Errors.ForbiddenProduct, response.ErrorMessage);
         }
 
-        // Testing access to closed product
+        // Testing access to report if user as tester is member of secret product for which the report is created
         [Fact]
-        public async Task GetByIdAsync_ClosedProductAccessCheckAsTester_Ok()
+        public async Task GetByIdAsync_ReportFromSecretProductAsTester_Ok()
         {
             // Arrange
             int currentUserId = 7;
-            int productId = 2;
+            int reportId = 1;
+            var report = Seed.Reports.SingleOrDefault(r => r.Id == reportId);
+            var product = Seed.Products.SingleOrDefault(p => p.Id == report.ProductId);
+            var productMember = new ProductMember {
+                ProductId = report.ProductId,
+                MemberId = currentUserId,
+                Status = ProductMemberStatus.Joined
+            };
 
             _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
 
             _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
                 .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
 
-            var counters = new Dictionary<byte, int>() {
-                { byte.MaxValue, 5 }
-            };
+            _productsRepoMock.Setup(pr => pr.GetProductMemberAsync(report.ProductId, currentUserId))
+                .ReturnsAsync(productMember);
 
-            _productsRepoMock.Setup(r => r.GetByIdWithIncludesAsync(productId))
-                .ReturnsAsync(Seed.Products.SingleOrDefault(p => p.Id == productId));
-            _reportsRepoMock.Setup(r => r.GetStatusCountersByProductAsync(productId))
-                .ReturnsAsync(counters);
+            _productsRepoMock.Setup(pr => pr.GetByIdAsync(report.ProductId))
+                .ReturnsAsync(product);
+
+            _reportsRepoMock.Setup(r => r.GetByIdWithIncludesAsync(reportId))
+                .ReturnsAsync(report);
 
             // Act
-            var response = await _service.GetByIdAsync(productId);
+            var response = await _service.GetByIdAsync(reportId);
 
             // Assert
             Assert.True(response.Success);
-            Assert.Equal(productId, response.Response.Id);
-        }
-
-        // Testing product counters
-        [Fact]
-        public async Task GetByIdAsync_CountersCheck_Ok()
-        {
-            // Arrange
-            int currentUserId = 7;
-            int productId = 1;
-
-            _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
-
-            _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
-                .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
-
-            var counters = new Dictionary<byte, int>() {
-                { byte.MaxValue, 27 }, // total
-                { (byte)ReportStatus.Open, 3 }, // open
-                { (byte)ReportStatus.Reopened, 1 }, // open
-                { (byte)ReportStatus.InProgress, 2 }, // working
-                { (byte)ReportStatus.UnderReview, 3 }, // working
-                { (byte)ReportStatus.Fixed, 1 }, // working & fixed
-                { (byte)ReportStatus.ReadyForTesting, 1 }, // fixed
-                { (byte)ReportStatus.Verified, 1 }, // fixed
-            };
-
-            _productsRepoMock.Setup(r => r.GetByIdWithIncludesAsync(productId))
-                .ReturnsAsync(Seed.Products.SingleOrDefault(p => p.Id == productId));
-            _reportsRepoMock.Setup(r => r.GetStatusCountersByProductAsync(productId))
-                .ReturnsAsync(counters);
-
-            // Act
-            var response = await _service.GetByIdAsync(productId);
-
-            // Assert
-            Assert.True(response.Success);
-            Assert.Equal(productId, response.Response.Id);
-            Assert.Equal(27, response.Response.Counters.TotalReports);
-            Assert.Equal(4, response.Response.Counters.OpenReports);
-            Assert.Equal(6, response.Response.Counters.WorkingReports);
-            Assert.Equal(3, response.Response.Counters.FixedReports);
+            Assert.Equal(reportId, response.Response.Id);
         }
     }
 }

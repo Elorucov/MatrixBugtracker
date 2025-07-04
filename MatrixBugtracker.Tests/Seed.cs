@@ -12,11 +12,17 @@ namespace MatrixBugtracker.Tests
     {
         public static List<User> Users { get; private set; }
         public static List<Product> Products { get; private set; }
+        public static List<Report> Reports { get; private set; }
 
         static Seed()
         {
-            Users = new List<User> { 
-                new User { 
+            Users = GetUsers();
+            Products = GetProducts();
+            Reports = GetReports();
+        }
+
+        private static List<User> GetUsers() => new List<User> {
+                new User {
                     Id = 1,
                     Email = "alice@example.com",
                     Role = UserRole.Admin,
@@ -66,8 +72,8 @@ namespace MatrixBugtracker.Tests
                     LastName = "G"
                 }
             };
-
-            Products = new List<Product> { 
+    
+        private static List<Product> GetProducts() => new List<Product> {
                 new Product
                 {
                     Id = 1,
@@ -93,6 +99,29 @@ namespace MatrixBugtracker.Tests
                     Name = "Website secret"
                 }
             };
-        }
+
+        private static List<Report> GetReports() => new List<Report>
+        {
+            new Report
+            {
+                Id = 1,
+                ProductId = 3,
+                CreatorId = 6,
+                Title = "Sample report for secret product created by user 6",
+                Steps = "Steps",
+                Actual = "Actual",
+                Supposed = "Supposed",
+                Severity = ReportSeverity.Medium,
+                ProblemType = ReportProblemType.FunctionNotWorking,
+                Status = ReportStatus.Open,
+                Reproduces = new List<ReportReproduce>
+                {
+                    new ReportReproduce
+                    {
+                        UserId = 7, ReportId = 1
+                    }
+                }
+            }
+        };
     }
 }

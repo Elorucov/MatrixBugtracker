@@ -130,10 +130,10 @@ namespace MatrixBugtracker.BL.Profiles
         {
             int currentUserId = UserIdProvider.UserId;
 
-            dto.Attachments = Mapper.Map<List<FileDTO>>(report.Attachments.Select(a => a.File));
+            dto.Attachments = Mapper.Map<List<FileDTO>>(report.Attachments?.Select(a => a.File));
             dto.IsAttachmentsPrivate = report.IsAttachmentsPrivate;
 
-            dto.Tags = report.Tags.Select(t => t.Tag.Name).ToList();
+            dto.Tags = report.Tags?.Select(t => t.Tag.Name).ToList();
 
             dto.CanDelete = report.CreatorId == currentUserId && report.Status == ReportStatus.Open
                 && report.CreationTime.AddHours(24) >= DateTime.Now;

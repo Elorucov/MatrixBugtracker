@@ -22,7 +22,7 @@ namespace MatrixBugtracker.BL.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Errors {
+    public class Errors {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace MatrixBugtracker.BL.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MatrixBugtracker.BL.Resources.Errors", typeof(Errors).Assembly);
@@ -51,7 +51,7 @@ namespace MatrixBugtracker.BL.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Account not confirmed.
         /// </summary>
-        internal static string AccountNotConfirmed {
+        public static string AccountNotConfirmed {
             get {
                 return ResourceManager.GetString("AccountNotConfirmed", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to All submitted tags already exist.
         /// </summary>
-        internal static string AllTagsAlreadyExist {
+        public static string AllTagsAlreadyExist {
             get {
                 return ResourceManager.GetString("AllTagsAlreadyExist", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A producth with requested name already exist.
         /// </summary>
-        internal static string AlreadyHaveProductWithName {
+        public static string AlreadyHaveProductWithName {
             get {
                 return ResourceManager.GetString("AlreadyHaveProductWithName", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Authenticated user not found or deleted.
         /// </summary>
-        internal static string AuthUserNotFound {
+        public static string AuthUserNotFound {
             get {
                 return ResourceManager.GetString("AuthUserNotFound", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bad request.
         /// </summary>
-        internal static string BadRequest {
+        public static string BadRequest {
             get {
                 return ResourceManager.GetString("BadRequest", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Cannot change a role for requested user.
         /// </summary>
-        internal static string CannotChangeRole {
+        public static string CannotChangeRole {
             get {
                 return ResourceManager.GetString("CannotChangeRole", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to You cannot change your role.
         /// </summary>
-        internal static string CannotRevokeAdminRoleFromCurrentUser {
+        public static string CannotRevokeAdminRoleFromCurrentUser {
             get {
                 return ResourceManager.GetString("CannotRevokeAdminRoleFromCurrentUser", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Deletion not allowed after 24 hours.
         /// </summary>
-        internal static string DeletionTimeRestriction {
+        public static string DeletionTimeRestriction {
             get {
                 return ResourceManager.GetString("DeletionTimeRestriction", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Editing not allowed after 24 hours.
         /// </summary>
-        internal static string EditTimeRestriction {
+        public static string EditTimeRestriction {
             get {
                 return ResourceManager.GetString("EditTimeRestriction", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to This e-mail is already in use.
         /// </summary>
-        internal static string EmailInUse {
+        public static string EmailInUse {
             get {
                 return ResourceManager.GetString("EmailInUse", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to File with this id is not an image.
         /// </summary>
-        internal static string FileIsNotImage {
+        public static string FileIsNotImage {
             get {
                 return ResourceManager.GetString("FileIsNotImage", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Access denied.
         /// </summary>
-        internal static string Forbidden {
+        public static string Forbidden {
             get {
                 return ResourceManager.GetString("Forbidden", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Access to this file denied.
         /// </summary>
-        internal static string ForbiddenFile {
+        public static string ForbiddenFile {
             get {
                 return ResourceManager.GetString("ForbiddenFile", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Access to these files ({0}) denied.
         /// </summary>
-        internal static string ForbiddenFiles {
+        public static string ForbiddenFiles {
             get {
                 return ResourceManager.GetString("ForbiddenFiles", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Access to product denied.
         /// </summary>
-        internal static string ForbiddenProduct {
+        public static string ForbiddenProduct {
             get {
                 return ResourceManager.GetString("ForbiddenProduct", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Deleting a comment with severity or status update is not allowed.
         /// </summary>
-        internal static string ForbiddenSeverityStatusCommentDeletion {
+        public static string ForbiddenSeverityStatusCommentDeletion {
             get {
                 return ResourceManager.GetString("ForbiddenSeverityStatusCommentDeletion", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Internal server error.
         /// </summary>
-        internal static string InternalServerError {
+        public static string InternalServerError {
             get {
                 return ResourceManager.GetString("InternalServerError", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid comment id.
         /// </summary>
-        internal static string InvalidCommentId {
+        public static string InvalidCommentId {
             get {
                 return ResourceManager.GetString("InvalidCommentId", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Wrong confirmation code.
         /// </summary>
-        internal static string InvalidConfirmationCode {
+        public static string InvalidConfirmationCode {
             get {
                 return ResourceManager.GetString("InvalidConfirmationCode", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid creator id.
         /// </summary>
-        internal static string InvalidCreatorId {
+        public static string InvalidCreatorId {
             get {
                 return ResourceManager.GetString("InvalidCreatorId", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid value. Must be {0}.
         /// </summary>
-        internal static string InvalidEnum {
+        public static string InvalidEnum {
             get {
                 return ResourceManager.GetString("InvalidEnum", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The format of uploaded file is wrong.
         /// </summary>
-        internal static string InvalidFileFormat {
+        public static string InvalidFileFormat {
             get {
                 return ResourceManager.GetString("InvalidFileFormat", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to One of the parameters specified was invalid.
         /// </summary>
-        internal static string InvalidParameters {
+        public static string InvalidParameters {
             get {
                 return ResourceManager.GetString("InvalidParameters", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid product id.
         /// </summary>
-        internal static string InvalidProductId {
+        public static string InvalidProductId {
             get {
                 return ResourceManager.GetString("InvalidProductId", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid report id.
         /// </summary>
-        internal static string InvalidReportId {
+        public static string InvalidReportId {
             get {
                 return ResourceManager.GetString("InvalidReportId", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid user id.
         /// </summary>
-        internal static string InvalidUserId {
+        public static string InvalidUserId {
             get {
                 return ResourceManager.GetString("InvalidUserId", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Not found.
         /// </summary>
-        internal static string NotFound {
+        public static string NotFound {
             get {
                 return ResourceManager.GetString("NotFound", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The requested file was not found.
         /// </summary>
-        internal static string NotFoundFile {
+        public static string NotFoundFile {
             get {
                 return ResourceManager.GetString("NotFoundFile", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Requested files ({0}) not found.
         /// </summary>
-        internal static string NotFoundFiles {
+        public static string NotFoundFiles {
             get {
                 return ResourceManager.GetString("NotFoundFiles", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The requested product was not found.
         /// </summary>
-        internal static string NotFoundProduct {
+        public static string NotFoundProduct {
             get {
                 return ResourceManager.GetString("NotFoundProduct", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Some of the specified tags are not found or archived.
         /// </summary>
-        internal static string NotFoundSomeTags {
+        public static string NotFoundSomeTags {
             get {
                 return ResourceManager.GetString("NotFoundSomeTags", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The requested user was not found.
         /// </summary>
-        internal static string NotFoundUser {
+        public static string NotFoundUser {
             get {
                 return ResourceManager.GetString("NotFoundUser", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to You already read all notifications.
         /// </summary>
-        internal static string NotificationAlreadyRead {
+        public static string NotificationAlreadyRead {
             get {
                 return ResourceManager.GetString("NotificationAlreadyRead", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Not implemented yet.
         /// </summary>
-        internal static string NotImplemented {
+        public static string NotImplemented {
             get {
                 return ResourceManager.GetString("NotImplemented", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to An invitation to test this product has already been sent to the requested user.
         /// </summary>
-        internal static string ProductInviteAlreadySent {
+        public static string ProductInviteAlreadySent {
             get {
                 return ResourceManager.GetString("ProductInviteAlreadySent", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Testing of this product is over.
         /// </summary>
-        internal static string ProductTestingIsOver {
+        public static string ProductTestingIsOver {
             get {
                 return ResourceManager.GetString("ProductTestingIsOver", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Refresh token is expired.
         /// </summary>
-        internal static string RefreshTokenExpired {
+        public static string RefreshTokenExpired {
             get {
                 return ResourceManager.GetString("RefreshTokenExpired", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Not allowed to edit report.
         /// </summary>
-        internal static string ReportEditForbidden {
+        public static string ReportEditForbidden {
             get {
                 return ResourceManager.GetString("ReportEditForbidden", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to This user already has this role.
         /// </summary>
-        internal static string RoleIsSame {
+        public static string RoleIsSame {
             get {
                 return ResourceManager.GetString("RoleIsSame", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A comment required for this status.
         /// </summary>
-        internal static string StatusRequiredComment {
+        public static string StatusRequiredComment {
             get {
                 return ResourceManager.GetString("StatusRequiredComment", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tag {0} is empty.
         /// </summary>
-        internal static string TagIsEmpty {
+        public static string TagIsEmpty {
             get {
                 return ResourceManager.GetString("TagIsEmpty", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tag {0} is long.
         /// </summary>
-        internal static string TagIsLong {
+        public static string TagIsLong {
             get {
                 return ResourceManager.GetString("TagIsLong", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Value is too short.
         /// </summary>
-        internal static string TooLong {
+        public static string TooLong {
             get {
                 return ResourceManager.GetString("TooLong", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Value is too long.
         /// </summary>
-        internal static string TooShort {
+        public static string TooShort {
             get {
                 return ResourceManager.GetString("TooShort", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Unauthorized.
         /// </summary>
-        internal static string Unauthorized {
+        public static string Unauthorized {
             get {
                 return ResourceManager.GetString("Unauthorized", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The requested user is already a member of this product.
         /// </summary>
-        internal static string UserAlreadyMember {
+        public static string UserAlreadyMember {
             get {
                 return ResourceManager.GetString("UserAlreadyMember", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The requested user is not a member of this product.
         /// </summary>
-        internal static string UserIsNotMember {
+        public static string UserIsNotMember {
             get {
                 return ResourceManager.GetString("UserIsNotMember", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace MatrixBugtracker.BL.Resources {
         /// <summary>
         ///   Looks up a localized string similar to E-mail or password is incorrect.
         /// </summary>
-        internal static string WrongEmailOrPassword {
+        public static string WrongEmailOrPassword {
             get {
                 return ResourceManager.GetString("WrongEmailOrPassword", resourceCulture);
             }
