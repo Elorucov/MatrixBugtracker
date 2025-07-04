@@ -1,5 +1,6 @@
 ﻿using MatrixBugtracker.BL.Converters;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.Domain.Enums;
 using System.Text.Json.Serialization;
 
@@ -27,6 +28,7 @@ namespace MatrixBugtracker.BL.DTOs.Products
         #region Extended (only when getting single product by id)
 
         public ProductCountersDTO Counters { get; set; }
+        public UserDTO Creator { get; set; } // only employees and admins can see this property
 
         #endregion
     }

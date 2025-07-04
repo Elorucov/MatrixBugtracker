@@ -252,7 +252,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<ResponseDTO<ProductDTO>> GetByIdAsync(int productId)
         {
             User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
-            var product = await _repo.GetByIdAsync(productId);
+
+            var product = await _repo.GetByIdWithIncludesAsync(productId);
             if (product == null) return ResponseDTO<ProductDTO>.NotFound(Errors.NotFoundProduct);
 
             if (currentUser.Role == UserRole.Tester && product.AccessLevel != ProductAccessLevel.Open)
@@ -264,7 +265,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
 
             // Reports count (total and by status)
-            var membersCount = await _repo.GetMembersCountAsync(productId);
+            var membersCount = product.ProductMembers.Count;
 
             List<byte> openStatuses = new List<byte> {
                 (byte)ReportStatus.Open, (byte)ReportStatus.Reopened
@@ -284,7 +285,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             int workingReportsCount = reportCounters.Where(c => workingStatuses.Contains(c.Key)).Select(c => c.Value).Sum();
             int fixedReportsCount = reportCounters.Where(c => fixedStatuses.Contains(c.Key)).Select(c => c.Value).Sum();
 
-            // Return
             ProductDTO dto = _mapper.Map<ProductDTO>(product);
             dto.Counters = new ProductCountersDTO
             {
@@ -294,6 +294,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 WorkingReports = workingReportsCount,
                 FixedReports = fixedReportsCount
             };
+
+            // Employee and admin things
+            if ((byte)currentUser.Role <= (byte)UserRole.Employee)
+            {
+                dto.Creator = _mapper.Map<UserDTO>(product.Creator);
+            }
 
             return new ResponseDTO<ProductDTO>(dto);
         }
