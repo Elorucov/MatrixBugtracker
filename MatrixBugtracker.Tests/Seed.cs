@@ -114,6 +114,40 @@ namespace MatrixBugtracker.Tests
                 Severity = ReportSeverity.Medium,
                 ProblemType = ReportProblemType.FunctionNotWorking,
                 Status = ReportStatus.Open,
+                Reproduces = new List<ReportReproduce>()
+            },
+            new Report
+            {
+                Id = 2,
+                ProductId = 2,
+                CreatorId = 6,
+                Title = "Sample report for closed product created by user 6",
+                Steps = "Steps",
+                Actual = "Actual",
+                Supposed = "Supposed",
+                Severity = ReportSeverity.Medium,
+                ProblemType = ReportProblemType.FunctionNotWorking,
+                Status = ReportStatus.Open,
+                Reproduces = new List<ReportReproduce>
+                {
+                    new ReportReproduce
+                    {
+                        UserId = 7, ReportId = 1
+                    }
+                }
+            },
+            new Report
+            {
+                Id = 3,
+                ProductId = 1,
+                CreatorId = 6,
+                Title = "Sample report for open product created by user 6",
+                Steps = "Steps",
+                Actual = "Actual",
+                Supposed = "Supposed",
+                Severity = ReportSeverity.Medium,
+                ProblemType = ReportProblemType.FunctionNotWorking,
+                Status = ReportStatus.Open,
                 Reproduces = new List<ReportReproduce>
                 {
                     new ReportReproduce

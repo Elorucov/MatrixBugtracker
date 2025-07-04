@@ -4,11 +4,6 @@ using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.Profiles;
 using MatrixBugtracker.BL.Services.Implementations;
@@ -77,9 +72,39 @@ namespace MatrixBugtracker.Tests
                 _notificationServiceMock.Object, _userServiceMock.Object, _userIdProviderMock.Object, _mapper);
         }
 
+        // Testing "access denied" error if user as tester is not a member of closed product for which the report is created
+        [Fact]
+        public async Task GetByIdAsync_ReportFromClosedProductIsNotMember_Forbidden()
+        {
+            // Arrange
+            int currentUserId = 7;
+            int reportId = 2;
+            var report = Seed.Reports.SingleOrDefault(r => r.Id == reportId);
+            var product = Seed.Products.SingleOrDefault(p => p.Id == report.ProductId);
+
+            _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
+
+            _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
+                .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
+
+            _productsRepoMock.Setup(pr => pr.GetByIdAsync(report.ProductId))
+                .ReturnsAsync(product);
+
+            _reportsRepoMock.Setup(r => r.GetByIdWithIncludesAsync(reportId))
+                .ReturnsAsync(report);
+
+            // Act
+            var response = await _service.GetByIdAsync(reportId);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal(StatusCodes.Status403Forbidden, response.HttpStatusCode);
+            Assert.Equal(BL.Resources.Errors.ForbiddenProduct, response.ErrorMessage);
+        }
+
         // Testing "access denied" error if user as tester is not a member of secret product for which the report is created
         [Fact]
-        public async Task GetByIdAsync_ReportFromSecretProductAsTester_Forbidden()
+        public async Task GetByIdAsync_ReportFromSecretProductAsTesterIsNotMember_Forbidden()
         {
             // Arrange
             int currentUserId = 7;
@@ -107,9 +132,39 @@ namespace MatrixBugtracker.Tests
             Assert.Equal(BL.Resources.Errors.ForbiddenProduct, response.ErrorMessage);
         }
 
+
+        // Testing access to report if user as tester is not a member of open product for which the report is created
+        [Fact]
+        public async Task GetByIdAsync_ReportFromOpenProductIsNotMember_Ok()
+        {
+            // Arrange
+            int currentUserId = 7;
+            int reportId = 3;
+            var report = Seed.Reports.SingleOrDefault(r => r.Id == reportId);
+            var product = Seed.Products.SingleOrDefault(p => p.Id == report.ProductId);
+
+            _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
+
+            _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
+                .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
+
+            _productsRepoMock.Setup(pr => pr.GetByIdAsync(report.ProductId))
+                .ReturnsAsync(product);
+
+            _reportsRepoMock.Setup(r => r.GetByIdWithIncludesAsync(reportId))
+                .ReturnsAsync(report);
+
+            // Act
+            var response = await _service.GetByIdAsync(reportId);
+
+            // Assert
+            Assert.True(response.Success);
+            Assert.Equal(product.Id, response.Response.ProductId);
+        }
+
         // Testing access to report if user as tester is member of secret product for which the report is created
         [Fact]
-        public async Task GetByIdAsync_ReportFromSecretProductAsTester_Ok()
+        public async Task GetByIdAsync_ReportFromSecretProductAsTesterIsMember_Ok()
         {
             // Arrange
             int currentUserId = 7;
