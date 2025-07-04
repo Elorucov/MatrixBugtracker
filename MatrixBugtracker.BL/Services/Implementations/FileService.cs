@@ -131,7 +131,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<PaginationResponseDTO<FileDTO>> GetCurrentUserFilesAsync(PaginationRequestDTO request)
         {
             int currentUserId = _userIdProvider.UserId;
-            var result = await _repo.GetUserFilesAsync(currentUserId, request.Number, request.Size);
+            var result = await _repo.GetUserFilesAsync(currentUserId, request.PageNumber, request.PageSize);
 
             List<FileDTO> fileDTOs = _mapper.Map<List<FileDTO>>(result.Items);
             return new PaginationResponseDTO<FileDTO>(fileDTOs, result.TotalCount);
@@ -140,7 +140,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         public async Task<PaginationResponseDTO<FileAdminDTO>> GetAllFilesAsync(PaginationRequestDTO request)
         {
             int currentUserId = _userIdProvider.UserId;
-            var result = await _repo.GetPageAsync(request.Number, request.Size);
+            var result = await _repo.GetPageAsync(request.PageNumber, request.PageSize);
 
             List<FileAdminDTO> fileDTOs = _mapper.Map<List<FileAdminDTO>>(result.Items);
             return new PaginationResponseDTO<FileAdminDTO>(fileDTOs, result.TotalCount);

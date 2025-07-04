@@ -7,8 +7,8 @@ namespace MatrixBugtracker.BL.Validators.Users
     {
         public GetUsersByRoleValidator()
         {
-            RuleFor(p => p.Number).GreaterThan(0);
-            RuleFor(p => p.Size).GreaterThan(0);
+            RuleFor(p => p.PageNumber).GreaterThan(0);
+            RuleFor(p => p.PageSize).GreaterThan(0);
             RuleFor(p => p.Role).NotEmpty();
         }
     }

@@ -145,7 +145,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         {
             int currentUserId = _userIdProvider.UserId;
 
-            var result = await _userNotificationRepo.GetForUserAsync(currentUserId, request.Number, request.Size);
+            var result = await _userNotificationRepo.GetForUserAsync(currentUserId, request.PageNumber, request.PageSize);
 
             List<UserNotificationDTO> notificationDTOs = _mapper.Map<List<UserNotificationDTO>>(result.Items);
             return new PaginationResponseDTO<UserNotificationDTO>(notificationDTOs, result.TotalCount);
@@ -155,7 +155,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         {
             int currentUserId = _userIdProvider.UserId;
 
-            var result = await _platformNotificationRepo.GetWithReadUsersAsync(request.Number, request.Size);
+            var result = await _platformNotificationRepo.GetWithReadUsersAsync(request.PageNumber, request.PageSize);
 
             List<PlatformNotificationDTO> notificationDTOs = new List<PlatformNotificationDTO>();
             foreach (var notification in result.Items)

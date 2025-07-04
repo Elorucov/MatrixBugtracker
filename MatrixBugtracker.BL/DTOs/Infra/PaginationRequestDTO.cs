@@ -2,9 +2,9 @@
 {
     public class PaginationRequestDTO
     {
-        public int Number { get; init; }
-        public int Size { get; init; }
+        public int PageNumber { get; init; }
+        public int PageSize { get; init; }
 
-        public static readonly PaginationRequestDTO Infinity = new PaginationRequestDTO { Number = 1, Size = int.MaxValue };
+        public static readonly PaginationRequestDTO Infinity = new PaginationRequestDTO { PageNumber = 1, PageSize = int.MaxValue };
     }
 }

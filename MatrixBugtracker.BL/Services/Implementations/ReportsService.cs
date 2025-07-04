@@ -375,13 +375,13 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 if (request.ProductId == 0 && request.CreatorId == 0)
                 {
                     // Get reports that creatorId == CU && products is he joined.
-                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.Number, request.Size, request.CreatorId, joinedNonOpenedProductIds, filter);
+                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize, request.CreatorId, joinedNonOpenedProductIds, filter);
 
                 }
                 else if (request.ProductId == 0 && request.CreatorId > 0)
                 {
                     // Get reports from creatorId's products that CU has access to 
-                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.Number, request.Size, request.CreatorId, joinedProductIds, filter);
+                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize, request.CreatorId, joinedProductIds, filter);
                 }
                 else
                 {
@@ -389,12 +389,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
                     var productCheck = await _productService.CheckAccessAsync(request.ProductId, false);
                     if (!productCheck.Success) return ReportsDTO.Forbidden(Errors.ForbiddenProduct);
 
-                    result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id, request.Number, request.Size, request.ProductId, request.CreatorId, filter);
+                    result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id, request.PageNumber, request.PageSize, request.ProductId, request.CreatorId, filter);
                 }
             }
             else
             {
-                result = await _repo.GetFilteredAsync(request.Number, request.Size, request.ProductId, request.CreatorId, filter);
+                result = await _repo.GetFilteredAsync(request.PageNumber, request.PageSize, request.ProductId, request.CreatorId, filter);
             }
 
             var mentionedUsers = result.Items.GroupBy(r => r.CreatorId).Select(r => r.FirstOrDefault().Creator).ToList();

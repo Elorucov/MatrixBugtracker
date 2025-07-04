@@ -8,8 +8,8 @@ namespace MatrixBugtracker.BL.Validators.Reports
     {
         public ReportsFilterValidator()
         {
-            RuleFor(p => p.Number).GreaterThan(0);
-            RuleFor(p => p.Size).GreaterThan(0);
+            RuleFor(p => p.PageNumber).GreaterThan(0);
+            RuleFor(p => p.PageSize).GreaterThan(0);
             RuleFor(p => p.ProductId).GreaterThanOrEqualTo(0).WithMessage(Errors.InvalidProductId);
             RuleFor(p => p.CreatorId).GreaterThanOrEqualTo(0).WithMessage(Errors.InvalidUserId);
         }

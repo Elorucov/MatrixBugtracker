@@ -124,7 +124,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (!accessCheck.Success) return CommentsDTO.Error(accessCheck);
 
             User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
-            var result = await _repo.GetForReportAsync(request.ReportId, request.Number, request.Size);
+            var result = await _repo.GetForReportAsync(request.ReportId, request.PageNumber, request.PageSize);
 
             List<CommentDTO> commentDTOs = new List<CommentDTO>();
             List<User> authors = new List<User>();

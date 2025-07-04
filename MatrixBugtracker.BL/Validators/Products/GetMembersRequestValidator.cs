@@ -8,8 +8,8 @@ namespace MatrixBugtracker.BL.Validators.Products
     {
         public GetMembersRequestValidator()
         {
-            RuleFor(p => p.Number).GreaterThan(0);
-            RuleFor(p => p.Size).GreaterThan(0);
+            RuleFor(p => p.PageNumber).GreaterThan(0);
+            RuleFor(p => p.PageSize).GreaterThan(0);
             RuleFor(p => p.ProductId).GreaterThan(0).WithMessage(Errors.InvalidProductId);
         }
     }

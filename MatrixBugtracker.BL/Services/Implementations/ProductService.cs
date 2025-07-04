@@ -241,8 +241,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
             PaginationResult<Product> result = currentUser.Role switch
             {
-                UserRole.Tester => await _repo.GetWithoutSecretProductsAsync(currentUser.Id, request.Number, request.Size, request.Type, request.Query),
-                _ => await _repo.GetPageWithMembersAsync(request.Number, request.Size, request.Type, request.Query)
+                UserRole.Tester => await _repo.GetWithoutSecretProductsAsync(currentUser.Id, request.PageNumber, request.PageSize, request.Type, request.Query),
+                _ => await _repo.GetPageWithMembersAsync(request.PageNumber, request.PageSize, request.Type, request.Query)
             };
 
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(result.Items);
@@ -311,7 +311,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (!access.Success) return PaginationResponseDTO<UserDTO>.Error(access);
             product = access.Response;
 
-            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.Joined, request.ProductId, request.Number, request.Size);
+            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.Joined, request.ProductId, request.PageNumber, request.PageSize);
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);
             return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
         }
@@ -319,7 +319,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         // Returns a list of products that user is joined to product, or have invite request, etc. (depends on status)
         public async Task<PaginationResponseDTO<ProductDTO>> GetProductsByUserMembershipAsync(int userId, ProductMemberStatus status, PaginationRequestDTO request)
         {
-            var result = await _repo.GetProductsForUserByStatusAsync(status, userId, request.Number, request.Size);
+            var result = await _repo.GetProductsForUserByStatusAsync(status, userId, request.PageNumber, request.PageSize);
             var products = result.Items;
 
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
@@ -354,7 +354,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var access = await _accessService.CheckAccessAsync(product);
             if (!access.Success) return PaginationResponseDTO<UserDTO>.Error(access);
 
-            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.JoinRequested, request.ProductId, request.Number, request.Size);
+            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.JoinRequested, request.ProductId, request.PageNumber, request.PageSize);
             var users = result.Items;
 
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);

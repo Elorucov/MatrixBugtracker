@@ -305,7 +305,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         // Only admins can call this method
         public async Task<PaginationResponseDTO<UserDTO>> GetUsersByRoleAsync(GetUsersByRoleRequestDTO request)
         {
-            var result = await _userRepo.GetByRoleAsync(request.Role, request.Number, request.Size);
+            var result = await _userRepo.GetByRoleAsync(request.Role, request.PageNumber, request.PageSize);
 
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);
             return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
@@ -313,7 +313,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public async Task<PaginationResponseDTO<UserDTO>> SearchUsersAsync(PaginatedSearchRequestDTO request)
         {
-            var result = await _userRepo.SearchAsync(request.Query, request.Number, request.Size);
+            var result = await _userRepo.SearchAsync(request.Query, request.PageNumber, request.PageSize);
 
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);
             return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
