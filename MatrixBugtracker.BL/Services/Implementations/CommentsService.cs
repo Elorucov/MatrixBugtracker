@@ -2,6 +2,8 @@
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
+using MatrixBugtracker.BL.DTOs.Products;
+using MatrixBugtracker.BL.DTOs.Users;
 using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
@@ -116,37 +118,50 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
-        public async Task<PaginationResponseDTO<CommentDTO>> GetAsync(GetCommentsRequestDTO request)
+        public async Task<CommentsDTO> GetAsync(GetCommentsRequestDTO request)
         {
             var accessCheck = await _reportsService.CheckAccessAsync(request.ReportId);
-            if (!accessCheck.Success) return PaginationResponseDTO<CommentDTO>.Error(accessCheck);
+            if (!accessCheck.Success) return CommentsDTO.Error(accessCheck);
 
             User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
             var result = await _repo.GetForReportAsync(request.ReportId, request.Number, request.Size);
 
             List<CommentDTO> commentDTOs = new List<CommentDTO>();
+            List<User> authors = new List<User>();
 
             foreach (var comment in result.Items)
             {
                 CommentDTO dto = _mapper.Map<CommentDTO>(comment);
                 var author = comment.Creator;
-                if (currentUser.Role != Domain.Enums.UserRole.Tester)
+                if (currentUser.Role != UserRole.Tester)
                 {
                     dto.Author = new CommentAuthorDTO
                     {
                         UserId = comment.CreatorId,
                         Name = !comment.AsModerator ? $"{author.FirstName} {author.LastName}" : $"{author.ModeratorName} ({author.FirstName} {author.LastName})"
                     };
-                }
-                dto.Author = new CommentAuthorDTO
+                    authors.Add(author);
+                } else
                 {
-                    UserId = !comment.AsModerator ? comment.CreatorId : null,
-                    Name = !comment.AsModerator ? $"{author.FirstName} {author.LastName}" : author.ModeratorName
-                };
+                    dto.Author = new CommentAuthorDTO
+                    {
+                        UserId = !comment.AsModerator ? comment.CreatorId : null,
+                        Name = !comment.AsModerator ? $"{author.FirstName} {author.LastName}" : author.ModeratorName
+                    };
+                    if (!comment.AsModerator) authors.Add(author);
+                }
                 commentDTOs.Add(dto);
             }
 
-            return new PaginationResponseDTO<CommentDTO>(commentDTOs, result.TotalCount);
+            // Remove duplicates
+            var mentionedUsers = authors.GroupBy(r => r.Id).Select(r => r.FirstOrDefault()).ToList();
+
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(mentionedUsers);
+
+            return new CommentsDTO(commentDTOs, result.TotalCount)
+            {
+                MentionedUsers = userDTOs
+            };
         }
 
         public async Task<ResponseDTO<bool>> DeleteAsync(int commentId)

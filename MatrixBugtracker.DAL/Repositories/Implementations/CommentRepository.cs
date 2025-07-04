@@ -14,7 +14,7 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<PaginationResult<Comment>> GetForReportAsync(int reportId, int number, int size)
         {
-            return await _dbSet.Include(c => c.Creator)
+            return await _dbSet.Include(c => c.Creator).ThenInclude(u => u.PhotoFile)
                 .Where(c => c.ReportId == reportId).GetPageAsync(number, size);
         }
 
