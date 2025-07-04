@@ -40,12 +40,14 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<PaginationResult<User>> GetByRoleAsync(UserRole role, int number, int size)
         {
-            return await _dbSet.Where(e => e.Role == role).GetPageAsync(number, size);
+            return await _dbSet.Include(e => e.PhotoFile)
+                .Where(e => e.Role == role).GetPageAsync(number, size);
         }
 
         public async Task<PaginationResult<User>> SearchAsync(string name, int number, int size)
         {
-            return await _dbSet.Where(e => e.FirstName.Contains(name) || e.LastName.Contains(name)).GetPageAsync(number, size);
+            return await _dbSet.Include(e => e.PhotoFile)
+                .Where(e => e.FirstName.Contains(name) || e.LastName.Contains(name)).GetPageAsync(number, size);
         }
     }
 }
