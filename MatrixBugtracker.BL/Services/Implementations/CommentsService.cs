@@ -64,7 +64,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             Comment comment = _mapper.Map<Comment>(request);
-            comment.IsAttachmentsPrivate = request.IsFilesPrivate; // TODO: mapper.
+            comment.IsAttachmentsPrivate = request.IsFilesPrivate;
             await _repo.AddAsync(comment);
 
             if (files?.Count > 0) await _repo.AddAttachmentAsync(comment, files);
@@ -107,7 +107,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             comment = _mapper.Map(request, comment);
-            comment.IsAttachmentsPrivate = request.IsFilesPrivate; // TODO: mapper
+            comment.IsAttachmentsPrivate = request.IsFilesPrivate;
             _repo.Update(comment);
 
             await _repo.RemoveAllAttachmentsAsync(comment.Id);
@@ -137,7 +137,9 @@ namespace MatrixBugtracker.BL.Services.Implementations
                     dto.Author = new CommentAuthorDTO
                     {
                         UserId = comment.CreatorId,
-                        Name = !comment.AsModerator ? $"{author.FirstName} {author.LastName}" : $"{author.ModeratorName} ({author.FirstName} {author.LastName})"
+                        Name = !comment.AsModerator
+                        ? $"{author.FirstName} {author.LastName}"
+                        : $"{author.ModeratorName} ({author.FirstName} {author.LastName})"
                     };
                     authors.Add(author);
                 }

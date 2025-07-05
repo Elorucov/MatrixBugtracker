@@ -316,7 +316,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (!access.Success) return ResponseDTO<PageDTO<UserDTO>>.Error(access);
             product = access.Data;
 
-            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.Joined, request.ProductId, 
+            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.Joined, request.ProductId,
                 request.PageNumber, request.PageSize);
 
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);

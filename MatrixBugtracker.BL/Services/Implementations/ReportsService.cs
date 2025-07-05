@@ -81,6 +81,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (product.IsOver) return ResponseDTO<int?>.BadRequest(Errors.ProductTestingIsOver);
 
+            // Checking tags
             List<Tag> tags = null;
             if (request.Tags?.Length > 0)
             {
@@ -89,6 +90,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 tags = tagsCheck.Data;
             }
 
+            // Checking files
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
             {
@@ -98,7 +100,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             Report report = _mapper.Map<Report>(request);
-            report.IsAttachmentsPrivate = request.IsFilesPrivate; // TODO: mapper.
+            report.IsAttachmentsPrivate = request.IsFilesPrivate;
             await _repo.AddAsync(report);
 
             if (tags?.Count > 0) await _repo.AddTagsAsync(report, tags);
@@ -119,8 +121,10 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // TODO: only tester (creator) can not edit, moders and higher can.
             if (report.Status != 0 || report.IsSeveritySetByModerator) return ResponseDTO<bool>.BadRequest(Errors.ReportEditForbidden);
 
-            if (report.CreationTime.AddHours(24) < DateTime.Now) return ResponseDTO<bool>.BadRequest(Errors.EditTimeRestriction);
+            if (report.CreationTime.AddHours(24) < DateTime.Now)
+                return ResponseDTO<bool>.BadRequest(Errors.EditTimeRestriction);
 
+            // Checking tags
             List<Tag> tags = null;
             if (request.Tags?.Length > 0)
             {
@@ -129,6 +133,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 tags = tagsCheck.Data;
             }
 
+            // Checking files
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
             {
@@ -138,7 +143,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             report = _mapper.Map(request, report);
-            report.IsAttachmentsPrivate = request.IsFilesPrivate; // TODO: mapper.
+            report.IsAttachmentsPrivate = request.IsFilesPrivate;
             _repo.Update(report);
 
             await _repo.RemoveAllTagsAsync(report.Id);
@@ -168,6 +173,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             report.IsSeveritySetByModerator = true;
             _repo.Update(report);
 
+            // Note: Due to the peculiarities of adding such comments, I did not single this out as a separate method in CommentsService.
             Comment comment = new Comment
             {
                 ReportId = report.Id,
@@ -179,15 +185,21 @@ namespace MatrixBugtracker.BL.Services.Implementations
             await _commentRepo.AddAsync(comment);
 
             // Sending a comment, but first check if report creator is member of product.
-            // We don't send notification to report creator if report created for non-opened product and report creator is not member of that product.
+            // We don't send notification to report creator if report created for non-opened product
+            // and report creator is not member of that product.
 
             var access = await _productService.CheckAccessAsync(report.ProductId, false, report.CreatorId);
             if (access.Success)
             {
-                string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportSeverityChanged : Common.ReportSeverityChangedWithComment;
+                string notificationResourceKey = string.IsNullOrEmpty(request.Comment)
+                    ? Common.ReportSeverityChanged : Common.ReportSeverityChangedWithComment;
+
                 string severityStr = EnumValues.ResourceManager.GetString($"{nameof(ReportSeverity)}_{request.NewValue}");
-                var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), severityStr, request.Comment.Truncate(128));
-                await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
+                var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName,
+                    report.Title.Truncate(64), severityStr, request.Comment.Truncate(128));
+
+                await _notificationService.SendToUserAsync(report.CreatorId, true,
+                    UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
             }
 
             await _unitOfWork.CommitAsync();
@@ -222,7 +234,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 if (oldStatus == ReportStatus.Open && newStatus == ReportStatus.Reopened)
                     return ResponseDTO<bool>.BadRequest();
 
-                if ((oldStatus == ReportStatus.NeedsCorrection || oldStatus == ReportStatus.CannotReproduce) && string.IsNullOrEmpty(request.Comment))
+                if ((oldStatus == ReportStatus.NeedsCorrection || oldStatus == ReportStatus.CannotReproduce)
+                    && string.IsNullOrEmpty(request.Comment))
                     return ResponseDTO<bool>.BadRequest(Errors.StatusRequiredComment);
             }
             else
@@ -239,6 +252,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             report.Status = newStatus;
             _repo.Update(report);
 
+            // Note: Due to the peculiarities of adding such comments, I did not single this out as a separate method in CommentsService.
             Comment comment = new Comment
             {
                 ReportId = report.Id,
@@ -252,15 +266,21 @@ namespace MatrixBugtracker.BL.Services.Implementations
             if (currentUser.Id != report.CreatorId)
             {
                 // Sending a comment, but first check if report creator is member of product.
-                // We don't send notification to report creator if report created for non-opened product and report creator is not member of that product.
+                // We don't send notification to report creator if report created for non-opened product
+                // and report creator is not member of that product.
                 var access = await _productService.CheckAccessAsync(report.ProductId, false, report.CreatorId);
 
                 if (access.Success)
                 {
-                    string notificationResourceKey = string.IsNullOrEmpty(request.Comment) ? Common.ReportStatusChanged : Common.ReportStatusChangedWithComment;
+                    string notificationResourceKey = string.IsNullOrEmpty(request.Comment)
+                        ? Common.ReportStatusChanged : Common.ReportStatusChangedWithComment;
+
                     string statusStr = EnumValues.ResourceManager.GetString($"{nameof(ReportStatus)}_{request.NewValue}");
-                    var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName, report.Title.Truncate(64), statusStr, request.Comment.Truncate(128));
-                    await _notificationService.SendToUserAsync(report.CreatorId, true, UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
+                    var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName,
+                        report.Title.Truncate(64), statusStr, request.Comment.Truncate(128));
+
+                    await _notificationService.SendToUserAsync(report.CreatorId, true,
+                        UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
                 }
             }
 
@@ -353,7 +373,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 tags = tagsCheck.Data;
             }
 
-            ReportFilter filter = new ReportFilter(request.Severities, request.ProblemTypes, request.Statuses, 
+            ReportFilter filter = new ReportFilter(request.Severities, request.ProblemTypes, request.Statuses,
                 tags, request.SearchQuery, request.Reverse);
 
             PaginationResult<Report> result = null;
@@ -366,9 +386,10 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             if (currentUser.Role == UserRole.Tester)
             {
-                var joinedProductsResponse = await _productService.GetProductsByUserMembershipAsync(currentUser.Id, ProductMemberStatus.Joined, PaginationRequestDTO.Infinity);
-                
-                if (!joinedProductsResponse.Success) 
+                var joinedProductsResponse = await _productService.GetProductsByUserMembershipAsync(currentUser.Id,
+                    ProductMemberStatus.Joined, PaginationRequestDTO.Infinity);
+
+                if (!joinedProductsResponse.Success)
                     return ResponseDTO<PageWithMentionsDTO<ReportDTO>>.Error(joinedProductsResponse);
 
                 var joinedProducts = joinedProductsResponse.Data;
@@ -381,14 +402,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 if (request.ProductId == 0 && request.CreatorId == 0)
                 {
                     // Get reports that creatorId == CU && products is he joined.
-                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize, 
+                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize,
                         request.CreatorId, joinedNonOpenedProductIds, filter);
 
                 }
                 else if (request.ProductId == 0 && request.CreatorId > 0)
                 {
                     // Get reports from creatorId's products that CU has access to 
-                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize, 
+                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize,
                         request.CreatorId, joinedProductIds, filter);
                 }
                 else
@@ -397,7 +418,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
                     var productCheck = await _productService.CheckAccessAsync(request.ProductId, false);
                     if (!productCheck.Success) return ResponseDTO<PageWithMentionsDTO<ReportDTO>>.Forbidden(Errors.ForbiddenProduct);
 
-                    result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id, request.PageNumber, request.PageSize, request.ProductId, request.CreatorId, filter);
+                    result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id,
+                        request.PageNumber, request.PageSize, request.ProductId, request.CreatorId, filter);
                 }
             }
             else

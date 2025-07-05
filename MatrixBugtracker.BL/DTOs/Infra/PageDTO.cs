@@ -1,6 +1,4 @@
-﻿using MatrixBugtracker.BL.Resources;
-
-namespace MatrixBugtracker.BL.DTOs.Infra
+﻿namespace MatrixBugtracker.BL.DTOs.Infra
 {
     public class PageDTO<T>
     {
