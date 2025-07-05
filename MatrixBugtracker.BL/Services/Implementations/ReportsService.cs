@@ -13,6 +13,7 @@ using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -26,12 +27,14 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUserIdProvider _userIdProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
+        private readonly ILogger<ReportsService> _logger;
 
         private readonly IReportRepository _repo;
 
         public ReportsService(IUnitOfWork unitOfWork, IFileService fileService,
             IProductsService productService, ITagsService tagsService,
-            IUserService userService, IUserIdProvider userIdProvider, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+            IUserService userService, IUserIdProvider userIdProvider, 
+            IHttpContextAccessor httpContextAccessor, IMapper mapper, ILogger<ReportsService> logger)
         {
             _unitOfWork = unitOfWork;
             _fileService = fileService;
@@ -41,6 +44,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _userIdProvider = userIdProvider;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
+            _logger = logger;
 
             _repo = _unitOfWork.GetRepository<IReportRepository>();
         }
@@ -343,6 +347,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 tags, request.SearchQuery, request.Reverse);
 
             PaginationResult<Report> result = null;
+            _logger.LogInformation("Getting reports. Current user id: {0}, role: {1}", currentUser.Id, currentUser.Role.ToString());
 
             // If current user (CU) is tester and not moderator (and higher):
             // 1. do not return vulnerability reports NOT created by CU,
@@ -358,11 +363,15 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 if (!joinedProductsResponse.Success)
                     return ResponseDTO<PageWithMentionsDTO<ReportDTO>>.Error(joinedProductsResponse);
 
+
                 var joinedProducts = joinedProductsResponse.Data;
                 var joinedProductIds = joinedProducts.Items.Select(p => p.Id).ToList();
+                _logger.LogInformation("Joined product ids: {0}", string.Join(", ", joinedProductIds));
 
                 var joinedNonOpenedProductIds = joinedProducts.Items
                     .Where(p => p.AccessLevel != ProductAccessLevel.Open).Select(p => p.Id).ToList();
+
+                _logger.LogInformation("Joined non-open product ids: {0}", string.Join(", ", joinedNonOpenedProductIds));
 
                 // TODO: to be optimized.
                 if (request.ProductId == 0 && request.CreatorId == 0)
@@ -370,7 +379,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
                     // Get reports that creatorId == CU && products is he joined.
                     result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize,
                         request.CreatorId, joinedNonOpenedProductIds, filter);
-
                 }
                 else if (request.ProductId == 0 && request.CreatorId > 0)
                 {
@@ -390,7 +398,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
             else
             {
-                result = await _repo.GetFilteredAsync(request.PageNumber, request.PageSize, request.ProductId, request.CreatorId, filter);
+                result = await _repo.GetFilteredAsync(request.PageNumber, request.PageSize, 
+                    request.ProductId, request.CreatorId, filter);
             }
 
             var mentionedUsers = result.Items.GroupBy(r => r.CreatorId).Select(r => r.FirstOrDefault().Creator).ToList();

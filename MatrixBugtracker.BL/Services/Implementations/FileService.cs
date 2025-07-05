@@ -57,7 +57,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             string newFileName = GetUniqueFileName(file.FileName);
             string filePath = Path.Combine(_uploadedFilesPath, newFileName);
 
-            _logger.LogInformation($"Saving uploaded file to {filePath} — Original file name: {file.FileName}, content type: {file.ContentType}, size: {file.Length} bytes");
+            _logger.LogInformation("Saving uploaded file to {1} — From user {0} Original file name: {2}, content type: {3}, size: {4} bytes",
+                _userIdProvider.UserId, filePath, file.FileName, file.ContentType, file.Length);
             using (Stream fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(fileStream);
