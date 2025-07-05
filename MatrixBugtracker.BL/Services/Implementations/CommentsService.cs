@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;
@@ -84,6 +85,43 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<int?>(comment.Id);
+        }
+
+        public async Task CreateWithSeverityStatusUpdateAsync(Report report, bool asModerator, string moderName, bool shouldNotify,
+            ReportSeverity? severity, ReportStatus? status, string text)
+        {
+            if (severity.HasValue && status.HasValue) throw new ArgumentException("Only one of these parameters are allowed: severity OR status");
+            if (!severity.HasValue && !status.HasValue) throw new ArgumentException("severity or status required");
+
+            Comment comment = new Comment
+            {
+                ReportId = report.Id,
+                NewSeverity = severity,
+                NewStatus = status,
+                Text = text,
+                AsModerator = asModerator
+            };
+
+            await _repo.AddAsync(comment);
+
+            if (shouldNotify)
+            {
+                string parameterWithoutComment = severity.HasValue ? Common.ReportSeverityChanged : Common.ReportStatusChanged;
+                string parameterWithComment = severity.HasValue ? Common.ReportSeverityChangedWithComment : Common.ReportStatusChangedWithComment;
+
+                string notificationResourceKey = string.IsNullOrEmpty(text)
+                        ? parameterWithoutComment : parameterWithComment;
+
+                string toValueString = severity.HasValue
+                    ? EnumValues.ResourceManager.GetString($"{nameof(ReportSeverity)}_{severity}")
+                    : EnumValues.ResourceManager.GetString($"{nameof(ReportStatus)}_{status}");
+
+                var notificationText = string.Format(notificationResourceKey, moderName,
+                    report.Title.Truncate(64), toValueString, text.Truncate(128));
+
+                await _notificationService.SendToUserAsync(report.CreatorId, true,
+                    UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
+            }
         }
 
         public async Task<ResponseDTO<bool>> EditAsync(CommentEditDTO request)

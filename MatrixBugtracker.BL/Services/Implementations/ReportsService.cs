@@ -4,7 +4,6 @@ using MatrixBugtracker.BL.DTOs.Infra;
 using MatrixBugtracker.BL.DTOs.Products;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.DTOs.Users;
-using MatrixBugtracker.BL.Extensions;
 using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.DAL.Models;
@@ -12,6 +11,8 @@ using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
@@ -21,29 +22,27 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IFileService _fileService;
         private readonly IProductsService _productService;
         private readonly ITagsService _tagsService;
-        private readonly INotificationService _notificationService;
         private readonly IUserService _userService;
         private readonly IUserIdProvider _userIdProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
         private readonly IReportRepository _repo;
-        private readonly ICommentRepository _commentRepo;
 
         public ReportsService(IUnitOfWork unitOfWork, IFileService fileService,
-            IProductsService productService, ITagsService tagsService, INotificationService notificationService,
-            IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
+            IProductsService productService, ITagsService tagsService,
+            IUserService userService, IUserIdProvider userIdProvider, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _fileService = fileService;
             _productService = productService;
             _tagsService = tagsService;
-            _notificationService = notificationService;
             _userService = userService;
             _userIdProvider = userIdProvider;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
 
             _repo = _unitOfWork.GetRepository<IReportRepository>();
-            _commentRepo = _unitOfWork.GetRepository<ICommentRepository>();
         }
 
         public async Task<ResponseDTO<Report>> CheckAccessAsync(int reportId, bool needIncludes = false)
@@ -173,34 +172,16 @@ namespace MatrixBugtracker.BL.Services.Implementations
             report.IsSeveritySetByModerator = true;
             _repo.Update(report);
 
-            // Note: Due to the peculiarities of adding such comments, I did not single this out as a separate method in CommentsService.
-            Comment comment = new Comment
-            {
-                ReportId = report.Id,
-                NewSeverity = request.NewValue,
-                Text = request.Comment,
-                AsModerator = true
-            };
-
-            await _commentRepo.AddAsync(comment);
-
             // Sending a comment, but first check if report creator is member of product.
             // We don't send notification to report creator if report created for non-opened product
             // and report creator is not member of that product.
 
+            // DI via class constructor leads to a crash on startup!
+            var commentsService = _httpContextAccessor.HttpContext.RequestServices.GetService<ICommentsService>();
             var access = await _productService.CheckAccessAsync(report.ProductId, false, report.CreatorId);
-            if (access.Success)
-            {
-                string notificationResourceKey = string.IsNullOrEmpty(request.Comment)
-                    ? Common.ReportSeverityChanged : Common.ReportSeverityChangedWithComment;
 
-                string severityStr = EnumValues.ResourceManager.GetString($"{nameof(ReportSeverity)}_{request.NewValue}");
-                var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName,
-                    report.Title.Truncate(64), severityStr, request.Comment.Truncate(128));
-
-                await _notificationService.SendToUserAsync(report.CreatorId, true,
-                    UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
-            }
+            await commentsService.CreateWithSeverityStatusUpdateAsync(report, true, currentUser.ModeratorName, access.Success,
+                request.NewValue, null, request.Comment);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
@@ -252,37 +233,22 @@ namespace MatrixBugtracker.BL.Services.Implementations
             report.Status = newStatus;
             _repo.Update(report);
 
-            // Note: Due to the peculiarities of adding such comments, I did not single this out as a separate method in CommentsService.
-            Comment comment = new Comment
-            {
-                ReportId = report.Id,
-                NewStatus = newStatus,
-                Text = request.Comment,
-                AsModerator = currentUser.Role != UserRole.Tester
-            };
+            // DI via class constructor leads to a crash on startup!
+            var commentsService = _httpContextAccessor.HttpContext.RequestServices.GetService<ICommentsService>();
 
-            await _commentRepo.AddAsync(comment);
-
-            if (currentUser.Id != report.CreatorId)
+            bool shouldNotify = currentUser.Id != report.CreatorId;
+            if (shouldNotify)
             {
                 // Sending a comment, but first check if report creator is member of product.
                 // We don't send notification to report creator if report created for non-opened product
                 // and report creator is not member of that product.
                 var access = await _productService.CheckAccessAsync(report.ProductId, false, report.CreatorId);
-
-                if (access.Success)
-                {
-                    string notificationResourceKey = string.IsNullOrEmpty(request.Comment)
-                        ? Common.ReportStatusChanged : Common.ReportStatusChangedWithComment;
-
-                    string statusStr = EnumValues.ResourceManager.GetString($"{nameof(ReportStatus)}_{request.NewValue}");
-                    var notificationText = string.Format(notificationResourceKey, currentUser.ModeratorName,
-                        report.Title.Truncate(64), statusStr, request.Comment.Truncate(128));
-
-                    await _notificationService.SendToUserAsync(report.CreatorId, true,
-                        UserNotificationKind.ReportCommentAdded, notificationText, LinkedEntityType.Report, report.Id);
-                }
+                shouldNotify = access.Success;
             }
+
+            bool asModerator = currentUser.Role != UserRole.Tester;
+            await commentsService.CreateWithSeverityStatusUpdateAsync(report, asModerator, currentUser.ModeratorName, shouldNotify,
+                null, request.NewValue, request.Comment);
 
             await _unitOfWork.CommitAsync();
             return new ResponseDTO<bool>(true);
