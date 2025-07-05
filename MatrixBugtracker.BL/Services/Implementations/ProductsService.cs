@@ -13,7 +13,7 @@ using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Services.Implementations
 {
-    public class ProductService : IProductService
+    public class ProductsService : IProductsService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAccessService _accessService;
@@ -26,7 +26,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IProductRepository _repo;
         private readonly IReportRepository _reportsRepo;
 
-        public ProductService(IUnitOfWork unitOfWork, IAccessService accessService, IFileService fileService,
+        public ProductsService(IUnitOfWork unitOfWork, IAccessService accessService, IFileService fileService,
             IUserService userService, INotificationService notificationService, IUserIdProvider userIdProvider, IMapper mapper)
         {
             _unitOfWork = unitOfWork;

@@ -25,7 +25,7 @@ namespace MatrixBugtracker.Tests
         private readonly Mock<IUserIdProvider> _userIdProviderMock;
         private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
         private readonly IMapper _mapper;
-        private readonly IProductService _service;
+        private readonly IProductsService _service;
 
         public ProductsServiceTest()
         {
@@ -61,7 +61,7 @@ namespace MatrixBugtracker.Tests
             _httpContextAccessorMock.Setup(hca => hca.HttpContext)
                 .Returns(_httpContextMock.Object);
 
-            _service = new ProductService(_unitOfWorkMock.Object, _accessServiceMock.Object, _fileServiceMock.Object,
+            _service = new ProductsService(_unitOfWorkMock.Object, _accessServiceMock.Object, _fileServiceMock.Object,
                 _userServiceMock.Object, _notificationServiceMock.Object, _userIdProviderMock.Object, _mapper);
         }
 

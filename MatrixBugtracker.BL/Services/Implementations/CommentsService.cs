@@ -18,7 +18,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAccessService _accessService;
         private readonly IFileService _fileService;
-        private readonly IProductService _productService;
+        private readonly IProductsService _productService;
         private readonly IReportsService _reportsService;
         private readonly INotificationService _notificationService;
         private readonly IUserService _userService;
@@ -27,7 +27,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         private readonly ICommentRepository _repo;
 
-        public CommentsService(IUnitOfWork unitOfWork, IAccessService accessService, IProductService productService,
+        public CommentsService(IUnitOfWork unitOfWork, IAccessService accessService, IProductsService productService,
             IFileService fileService, IReportsService reportsService, INotificationService notificationService,
             IUserService userService, IUserIdProvider userIdProvider, IMapper mapper)
         {

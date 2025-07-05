@@ -13,8 +13,8 @@ namespace MatrixBugtracker.API.Controllers
     [Route("api/v1/product-membership")]
     public class ProductMembershipController : BaseController
     {
-        private readonly IProductService _service;
-        public ProductMembershipController(IProductService service)
+        private readonly IProductsService _service;
+        public ProductMembershipController(IProductsService service)
         {
             _service = service;
         }

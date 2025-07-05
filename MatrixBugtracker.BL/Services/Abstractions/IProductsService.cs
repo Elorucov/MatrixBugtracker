@@ -6,7 +6,7 @@ using MatrixBugtracker.Domain.Enums;
 
 namespace MatrixBugtracker.BL.Services.Abstractions
 {
-    public interface IProductService
+    public interface IProductsService
     {
         Task<ResponseDTO<int?>> CreateAsync(ProductCreateDTO request);
         Task<ResponseDTO<bool>> EditAsync(ProductEditDTO request);
