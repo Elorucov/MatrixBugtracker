@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Castle.Core.Logging;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.Profiles;
@@ -11,6 +12,7 @@ using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -49,6 +51,7 @@ namespace MatrixBugtracker.Tests
             _notificationServiceMock = new Mock<INotificationService>();
             _userIdProviderMock = new Mock<IUserIdProvider>();
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var _loggerMock = new Mock<ILogger<ReportsService>>();
 
             _unitOfWorkMock.Setup(uow => uow.GetRepository<IProductRepository>())
                 .Returns(_productsRepoMock.Object);
@@ -78,7 +81,7 @@ namespace MatrixBugtracker.Tests
             _tagsService = new TagsService(_unitOfWorkMock.Object, _mapper);
 
             _service = new ReportsService(_unitOfWorkMock.Object, _fileServiceMock.Object, _productService, _tagsService,
-                _userServiceMock.Object, _userIdProviderMock.Object, _httpContextAccessorMock.Object, _mapper);
+                _userServiceMock.Object, _userIdProviderMock.Object, _httpContextAccessorMock.Object, _mapper, _loggerMock.Object);
         }
 
         // Testing "access denied" error if user as tester is not a member of closed product for which the report is created
