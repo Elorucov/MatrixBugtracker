@@ -70,7 +70,7 @@ namespace MatrixBugtracker.Tests
         public async Task GetByIdAsync_SecretProductAccessCheckAsTester_Forbidden()
         {
             // Arrange
-            int currentUserId = 7;
+            int currentUserId = 6;
             int productId = 3;
 
             _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);

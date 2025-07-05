@@ -7,12 +7,14 @@ namespace MatrixBugtracker.Tests
     {
         public static List<User> Users { get; private set; }
         public static List<Product> Products { get; private set; }
+        public static List<Tag> Tags { get; private set; }
         public static List<Report> Reports { get; private set; }
 
         static Seed()
         {
             Users = GetUsers();
             Products = GetProducts();
+            Tags = GetTags();
             Reports = GetReports();
         }
 
@@ -92,6 +94,23 @@ namespace MatrixBugtracker.Tests
                     AccessLevel = ProductAccessLevel.Secret,
                     Type = ProductType.WebSite,
                     Name = "Website secret"
+                }
+            };
+
+        private static List<Tag> GetTags() =>
+            new List<Tag>
+            {
+                new Tag
+                {
+                    Id = 1,
+                    Name = "unarchived",
+                    IsArchived = false
+                },
+                new Tag
+                {
+                    Id = 2,
+                    Name = "archived",
+                    IsArchived = true
                 }
             };
 
