@@ -48,9 +48,9 @@ namespace MatrixBugtracker.BL.Services.Implementations
         {
             var accessCheck = await _reportsService.CheckAccessAsync(request.ReportId);
             if (!accessCheck.Success) return ResponseDTO<int?>.Error(accessCheck);
-            var report = accessCheck.Response;
+            var report = accessCheck.Data;
 
-            int reportCreatorId = accessCheck.Response.CreatorId;
+            int reportCreatorId = accessCheck.Data.CreatorId;
             var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
 
             if (request.AsModerator && currentUser.Role == UserRole.Tester) return ResponseDTO<int?>.BadRequest();
@@ -60,7 +60,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<int?>.Error(filesCheck);
-                files = filesCheck.Response;
+                files = filesCheck.Data;
             }
 
             Comment comment = _mapper.Map<Comment>(request);
@@ -103,7 +103,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<bool>.Error(filesCheck);
-                files = filesCheck.Response;
+                files = filesCheck.Data;
             }
 
             comment = _mapper.Map(request, comment);
@@ -117,10 +117,10 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
-        public async Task<CommentsDTO> GetAsync(GetCommentsRequestDTO request)
+        public async Task<ResponseDTO<PageWithMentionsDTO<CommentDTO>>> GetAsync(GetCommentsRequestDTO request)
         {
             var accessCheck = await _reportsService.CheckAccessAsync(request.ReportId);
-            if (!accessCheck.Success) return CommentsDTO.Error(accessCheck);
+            if (!accessCheck.Success) return ResponseDTO<PageWithMentionsDTO<CommentDTO>>.Error(accessCheck);
 
             User currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
             var result = await _repo.GetForReportAsync(request.ReportId, request.PageNumber, request.PageSize);
@@ -158,10 +158,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(mentionedUsers);
 
-            return new CommentsDTO(commentDTOs, result.TotalCount)
+            var data = new PageWithMentionsDTO<CommentDTO>(commentDTOs, result.TotalCount)
             {
                 MentionedUsers = userDTOs
             };
+
+            return new ResponseDTO<PageWithMentionsDTO<CommentDTO>>(data);
         }
 
         public async Task<ResponseDTO<bool>> DeleteAsync(int commentId)

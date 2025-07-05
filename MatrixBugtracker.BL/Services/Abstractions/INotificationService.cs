@@ -14,8 +14,8 @@ namespace MatrixBugtracker.BL.Services.Abstractions
 
         Task<ResponseDTO<int?>> SendToAllAsync(SendPlatformNotificationRequestDTO request);
 
-        Task<PaginationResponseDTO<UserNotificationDTO>> GetUserNotificationsAsync(PaginationRequestDTO request);
-        Task<PaginationResponseDTO<PlatformNotificationDTO>> GetPlatformNotificationsAsync(PaginationRequestDTO request);
+        Task<ResponseDTO<PageDTO<UserNotificationDTO>>> GetUserNotificationsAsync(PaginationRequestDTO request);
+        Task<ResponseDTO<PageDTO<PlatformNotificationDTO>>> GetPlatformNotificationsAsync(PaginationRequestDTO request);
         Task<ResponseDTO<int?>> MarkAllUserNotificationsAsReadAsync();
         Task<ResponseDTO<int?>> MarkAllPlatformNotificationsAsReadAsync();
     }

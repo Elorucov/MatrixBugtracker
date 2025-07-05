@@ -20,7 +20,7 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<PaginationResult<Product>> GetPageWithMembersAsync(int number, int size, ProductType? type, string searchQuery = null)
         {
-            var query = _dbSet.AsQueryable();
+            var query = _dbSet.Include(p => p.PhotoFile).AsQueryable();
             if (type.HasValue) query = query.Where(p => p.Type == type.Value);
             if (!string.IsNullOrEmpty(searchQuery)) query = query.Where(p => p.Name.ToLower().Contains(searchQuery.ToLower()));
             return await query.Include(p => p.ProductMembers).GetPageAsync(number, size);
@@ -47,7 +47,7 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
                 .Select(p => p.Product)
                 .ToListAsync();
 
-            var query = _dbSet.Include(pm => pm.ProductMembers)
+            var query = _dbSet.Include(p => p.ProductMembers).Include(p => p.PhotoFile)
                 .Where(p => p.AccessLevel != ProductAccessLevel.Secret || joinedSecretProducts.Contains(p));
             if (type.HasValue) query = query.Where(p => p.Type == type.Value);
             if (!string.IsNullOrEmpty(searchQuery)) query = query.Where(p => p.Name.ToLower().Contains(searchQuery.ToLower()));

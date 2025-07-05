@@ -77,7 +77,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Product product = null;
             var access = await _productService.CheckAccessAsync(request.ProductId, true);
             if (!access.Success) return ResponseDTO<int?>.Error(access);
-            product = access.Response;
+            product = access.Data;
 
             if (product.IsOver) return ResponseDTO<int?>.BadRequest(Errors.ProductTestingIsOver);
 
@@ -86,7 +86,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 var tagsCheck = await _tagsService.CheckIsAllContainsAsync(request.Tags);
                 if (!tagsCheck.Success) return ResponseDTO<int?>.Error(tagsCheck);
-                tags = tagsCheck.Response;
+                tags = tagsCheck.Data;
             }
 
             List<UploadedFile> files = null;
@@ -94,7 +94,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<int?>.Error(filesCheck);
-                files = filesCheck.Response;
+                files = filesCheck.Data;
             }
 
             Report report = _mapper.Map<Report>(request);
@@ -113,7 +113,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = null;
             var accessCheck = await CheckAccessAsync(request.Id);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
-            report = accessCheck.Response;
+            report = accessCheck.Data;
 
             // We don't allow to edit reports whose status already changed or if severity changed by moderator
             // TODO: only tester (creator) can not edit, moders and higher can.
@@ -126,7 +126,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 var tagsCheck = await _tagsService.CheckIsAllContainsAsync(request.Tags);
                 if (!tagsCheck.Success) return ResponseDTO<bool>.Error(tagsCheck);
-                tags = tagsCheck.Response;
+                tags = tagsCheck.Data;
             }
 
             List<UploadedFile> files = null;
@@ -134,7 +134,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             {
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<bool>.Error(filesCheck);
-                files = filesCheck.Response;
+                files = filesCheck.Data;
             }
 
             report = _mapper.Map(request, report);
@@ -158,7 +158,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = null;
             var accessCheck = await CheckAccessAsync(request.Id);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
-            report = accessCheck.Response;
+            report = accessCheck.Data;
 
             if (report.Severity == request.NewValue) return ResponseDTO<bool>.BadRequest();
 
@@ -201,7 +201,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = null;
             var accessCheck = await CheckAccessAsync(request.Id);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
-            report = accessCheck.Response;
+            report = accessCheck.Data;
 
             ReportStatus oldStatus = report.Status;
             ReportStatus newStatus = request.NewValue;
@@ -273,7 +273,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = null;
             var accessCheck = await CheckAccessAsync(reportId);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
-            report = accessCheck.Response;
+            report = accessCheck.Data;
 
             var currentUserId = _userIdProvider.UserId;
             if (report.CreatorId == currentUserId) return ResponseDTO<bool>.BadRequest();
@@ -299,7 +299,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = null;
             var accessCheck = await CheckAccessAsync(reportId, false);
             if (!accessCheck.Success) return ResponseDTO<List<UserDTO>>.Error(accessCheck);
-            report = accessCheck.Response;
+            report = accessCheck.Data;
 
             var users = await _repo.GetReproducedUsersAsync(reportId);
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);
@@ -311,7 +311,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = null;
             var accessCheck = await CheckAccessAsync(reportId, true);
             if (!accessCheck.Success) return ResponseDTO<ReportDTO>.Error(accessCheck);
-            report = accessCheck.Response;
+            report = accessCheck.Data;
 
             var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
 
@@ -335,25 +335,26 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<ReportDTO>(dto);
         }
 
-        public async Task<ReportsDTO> GetAsync(GetReportsRequestDTO request)
+        public async Task<ResponseDTO<PageWithMentionsDTO<ReportDTO>>> GetAsync(GetReportsRequestDTO request)
         {
             var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
 
             // Return "bad request" if current user that is not moder (or higher)
             // trying to access other user's vulnerability reports
             if (request.CreatorId != currentUser.Id && currentUser.Role == UserRole.Tester
-                && request.Severities?.Count == 1 && request.Severities[0] == ReportSeverity.Vulnerability)
-                return ReportsDTO.BadRequest();
+                && request.Severities.Any(s => s == ReportSeverity.Vulnerability))
+                return ResponseDTO<PageWithMentionsDTO<ReportDTO>>.BadRequest();
 
             // Get found tags entities
             List<Tag> tags = null;
             if (request.Tags?.Length > 0)
             {
                 var tagsCheck = await _tagsService.CheckIsAllContainsAsync(request.Tags);
-                tags = tagsCheck.Response;
+                tags = tagsCheck.Data;
             }
 
-            ReportFilter filter = new ReportFilter(request.Severities, request.ProblemTypes, request.Statuses, tags, request.SearchQuery, request.Reverse);
+            ReportFilter filter = new ReportFilter(request.Severities, request.ProblemTypes, request.Statuses, 
+                tags, request.SearchQuery, request.Reverse);
 
             PaginationResult<Report> result = null;
 
@@ -362,32 +363,39 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // 2. if ProductId and CreatorId is not defined, return reports for those products that the CU is a member of,
             // 3. if ProductId is not defined and CreatorId > 0, return all reports created by CreatorId,..
             // ...excluding those created for non-open products the CU is not a member of.
+
             if (currentUser.Role == UserRole.Tester)
             {
                 var joinedProductsResponse = await _productService.GetProductsByUserMembershipAsync(currentUser.Id, ProductMemberStatus.Joined, PaginationRequestDTO.Infinity);
-                if (!joinedProductsResponse.Success) return ReportsDTO.Error(joinedProductsResponse);
+                
+                if (!joinedProductsResponse.Success) 
+                    return ResponseDTO<PageWithMentionsDTO<ReportDTO>>.Error(joinedProductsResponse);
 
-                var joinedProducts = joinedProductsResponse.Response;
-                var joinedProductIds = joinedProducts.Select(p => p.Id).ToList();
-                var joinedNonOpenedProductIds = joinedProducts.Where(p => p.AccessLevel != ProductAccessLevel.Open).Select(p => p.Id).ToList();
+                var joinedProducts = joinedProductsResponse.Data;
+                var joinedProductIds = joinedProducts.Items.Select(p => p.Id).ToList();
+
+                var joinedNonOpenedProductIds = joinedProducts.Items
+                    .Where(p => p.AccessLevel != ProductAccessLevel.Open).Select(p => p.Id).ToList();
 
                 // TODO: to be optimized.
                 if (request.ProductId == 0 && request.CreatorId == 0)
                 {
                     // Get reports that creatorId == CU && products is he joined.
-                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize, request.CreatorId, joinedNonOpenedProductIds, filter);
+                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize, 
+                        request.CreatorId, joinedNonOpenedProductIds, filter);
 
                 }
                 else if (request.ProductId == 0 && request.CreatorId > 0)
                 {
                     // Get reports from creatorId's products that CU has access to 
-                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize, request.CreatorId, joinedProductIds, filter);
+                    result = await _repo.GetWithRestrictionsAsync(currentUser.Id, request.PageNumber, request.PageSize, 
+                        request.CreatorId, joinedProductIds, filter);
                 }
                 else
                 {
                     // Get by product id. Need check access to product.
                     var productCheck = await _productService.CheckAccessAsync(request.ProductId, false);
-                    if (!productCheck.Success) return ReportsDTO.Forbidden(Errors.ForbiddenProduct);
+                    if (!productCheck.Success) return ResponseDTO<PageWithMentionsDTO<ReportDTO>>.Forbidden(Errors.ForbiddenProduct);
 
                     result = await _repo.GetForProductWithRestrictionAsync(currentUser.Id, request.PageNumber, request.PageSize, request.ProductId, request.CreatorId, filter);
                 }
@@ -404,11 +412,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(mentionedProducts);
 
             List<ReportDTO> reportDTOs = _mapper.Map<List<ReportDTO>>(result.Items);
-            return new ReportsDTO(reportDTOs, result.TotalCount)
+            var data = new PageWithMentionsDTO<ReportDTO>(reportDTOs, result.TotalCount)
             {
                 MentionedProducts = productDTOs,
                 MentionedUsers = userDTOs
             };
+            return new ResponseDTO<PageWithMentionsDTO<ReportDTO>>(data);
         }
 
         public async Task<ResponseDTO<bool>> DeleteAsync(int reportId)
@@ -416,7 +425,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             Report report = null;
             var accessCheck = await CheckAccessAsync(reportId);
             if (!accessCheck.Success) return ResponseDTO<bool>.Error(accessCheck);
-            report = accessCheck.Response;
+            report = accessCheck.Data;
 
             _repo.Delete(report);
             await _unitOfWork.CommitAsync();

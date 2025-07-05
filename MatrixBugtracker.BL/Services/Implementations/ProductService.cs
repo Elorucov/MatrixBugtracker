@@ -53,7 +53,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 var fileResponse = await _fileService.GetFileEntityAsync(request.PhotoFileId.Value, true);
                 if (!fileResponse.Success) return ResponseDTO<int?>.Error(fileResponse);
 
-                imageFile = fileResponse.Response;
+                imageFile = fileResponse.Data;
             }
 
             Product product = _mapper.Map<Product>(request);
@@ -81,7 +81,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
                 var fileResponse = await _fileService.GetFileEntityAsync(request.PhotoFileId.Value, true);
                 if (!fileResponse.Success) return ResponseDTO<bool>.Error(fileResponse);
 
-                imageFile = fileResponse.Response;
+                imageFile = fileResponse.Data;
             }
 
             product = _mapper.Map(request, product);
@@ -236,7 +236,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         // Returns a list of all products in the bugtracker.
         // Note: if user is tester, the list should NOT contain secret products that the tester is not a member of.
-        public async Task<PaginationResponseDTO<ProductDTO>> GetAllAsync(GetProductsRequestDTO request)
+        public async Task<ResponseDTO<PageDTO<ProductDTO>>> GetAllAsync(GetProductsRequestDTO request)
         {
             var currentUser = await _userService.GetSingleUserAsync(_userIdProvider.UserId);
             PaginationResult<Product> result = currentUser.Role switch
@@ -248,7 +248,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             };
 
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(result.Items);
-            return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
+            var data = new PageDTO<ProductDTO>(productDTOs, result.TotalCount);
+            return new ResponseDTO<PageDTO<ProductDTO>>(data);
         }
 
         public async Task<ResponseDTO<ProductDTO>> GetByIdAsync(int productId)
@@ -307,30 +308,55 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<ProductDTO>(dto);
         }
 
-        public async Task<PaginationResponseDTO<UserDTO>> GetMembersAsync(GetMembersRequestDTO request)
+        // Returns users that joined to product
+        public async Task<ResponseDTO<PageDTO<UserDTO>>> GetMembersAsync(GetMembersRequestDTO request)
         {
             Product product = null;
             var access = await CheckAccessAsync(request.ProductId, false);
-            if (!access.Success) return PaginationResponseDTO<UserDTO>.Error(access);
-            product = access.Response;
+            if (!access.Success) return ResponseDTO<PageDTO<UserDTO>>.Error(access);
+            product = access.Data;
 
-            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.Joined, request.ProductId, request.PageNumber, request.PageSize);
+            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.Joined, request.ProductId, 
+                request.PageNumber, request.PageSize);
+
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(result.Items);
-            return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
+            var data = new PageDTO<UserDTO>(userDTOs, result.TotalCount);
+            return new ResponseDTO<PageDTO<UserDTO>>(data);
+        }
+
+        // For product creator and admins: get users that sent join request to product
+        public async Task<ResponseDTO<PageDTO<UserDTO>>> GetJoinRequestUsers(GetMembersRequestDTO request)
+        {
+            Product product = await _repo.GetByIdAsync(request.ProductId);
+            if (product == null) return ResponseDTO<PageDTO<UserDTO>>.NotFound();
+
+            // Admins can access to all products, employees can access to only own created products
+            var access = await _accessService.CheckAccessAsync(product);
+            if (!access.Success) return ResponseDTO<PageDTO<UserDTO>>.Error(access);
+
+            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.JoinRequested, request.ProductId, request.PageNumber, request.PageSize);
+            var users = result.Items;
+
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);
+            var data = new PageDTO<UserDTO>(userDTOs, result.TotalCount);
+            return new ResponseDTO<PageDTO<UserDTO>>(data);
         }
 
         // Returns a list of products that user is joined to product, or have invite request, etc. (depends on status)
-        public async Task<PaginationResponseDTO<ProductDTO>> GetProductsByUserMembershipAsync(int userId, ProductMemberStatus status, PaginationRequestDTO request)
+        public async Task<ResponseDTO<PageDTO<ProductDTO>>> GetProductsByUserMembershipAsync(int userId, ProductMemberStatus status, PaginationRequestDTO request)
         {
+            if (userId <= 0) return ResponseDTO<PageDTO<ProductDTO>>.BadRequest(Errors.InvalidUserId);
+
             var result = await _repo.GetProductsForUserByStatusAsync(status, userId, request.PageNumber, request.PageSize);
             var products = result.Items;
 
             List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
-            return new PaginationResponseDTO<ProductDTO>(productDTOs, result.TotalCount);
+            var data = new PageDTO<ProductDTO>(productDTOs, result.TotalCount);
+            return new ResponseDTO<PageDTO<ProductDTO>>(data);
         }
 
         // Returns a list of products that current user has an invite.
-        public async Task<PaginationResponseDTO<ProductDTO>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request)
+        public async Task<ResponseDTO<PageDTO<ProductDTO>>> GetProductsWithInviteRequestAsync(PaginationRequestDTO request)
         {
             int currentUserId = _userIdProvider.UserId;
 
@@ -339,30 +365,12 @@ namespace MatrixBugtracker.BL.Services.Implementations
         }
 
         // Returns a list of products that current user has joined.
-        public async Task<PaginationResponseDTO<ProductDTO>> GetJoinedProductsAsync(PaginationRequestDTO request)
+        public async Task<ResponseDTO<PageDTO<ProductDTO>>> GetJoinedProductsAsync(PaginationRequestDTO request)
         {
             int currentUserId = _userIdProvider.UserId;
 
             var result = await GetProductsByUserMembershipAsync(currentUserId, ProductMemberStatus.Joined, request);
             return result;
-        }
-
-        // For product creator and admins: get users that sent join request to product
-        public async Task<PaginationResponseDTO<UserDTO>> GetJoinRequestUsers(GetMembersRequestDTO request)
-        {
-            Product product = await _repo.GetByIdAsync(request.ProductId);
-            if (product == null) return PaginationResponseDTO<UserDTO>.NotFound();
-
-            // Admins can access to all products, employees can access to only own created products
-            var access = await _accessService.CheckAccessAsync(product);
-            if (!access.Success) return PaginationResponseDTO<UserDTO>.Error(access);
-
-            var result = await _repo.GetUsersForProductByStatusAsync(ProductMemberStatus.JoinRequested, request.ProductId, request.PageNumber, request.PageSize);
-            var users = result.Items;
-
-            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);
-            return new PaginationResponseDTO<UserDTO>(userDTOs, result.TotalCount);
-
         }
 
         // Users that not member of the open product can access to it, but not create reports for this.

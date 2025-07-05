@@ -116,7 +116,7 @@ namespace MatrixBugtracker.Tests
 
             // Assert
             Assert.True(response.Success);
-            Assert.Equal(productId, response.Response.Id);
+            Assert.Equal(productId, response.Data.Id);
         }
 
         // Testing product counters
@@ -153,11 +153,11 @@ namespace MatrixBugtracker.Tests
 
             // Assert
             Assert.True(response.Success);
-            Assert.Equal(productId, response.Response.Id);
-            Assert.Equal(27, response.Response.Counters.TotalReports);
-            Assert.Equal(4, response.Response.Counters.OpenReports);
-            Assert.Equal(6, response.Response.Counters.WorkingReports);
-            Assert.Equal(3, response.Response.Counters.FixedReports);
+            Assert.Equal(productId, response.Data.Id);
+            Assert.Equal(27, response.Data.Counters.TotalReports);
+            Assert.Equal(4, response.Data.Counters.OpenReports);
+            Assert.Equal(6, response.Data.Counters.WorkingReports);
+            Assert.Equal(3, response.Data.Counters.FixedReports);
         }
     }
 }

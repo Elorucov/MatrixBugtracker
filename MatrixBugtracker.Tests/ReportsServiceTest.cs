@@ -159,7 +159,7 @@ namespace MatrixBugtracker.Tests
 
             // Assert
             Assert.True(response.Success);
-            Assert.Equal(product.Id, response.Response.ProductId);
+            Assert.Equal(product.Id, response.Data.ProductId);
         }
 
         // Testing access to report if user as tester is member of secret product for which the report is created
@@ -197,7 +197,7 @@ namespace MatrixBugtracker.Tests
 
             // Assert
             Assert.True(response.Success);
-            Assert.Equal(reportId, response.Response.Id);
+            Assert.Equal(reportId, response.Data.Id);
         }
     }
 }

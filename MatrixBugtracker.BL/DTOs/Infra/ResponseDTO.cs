@@ -9,13 +9,13 @@ namespace MatrixBugtracker.BL.DTOs.Infra
         [JsonIgnore]
         public int HttpStatusCode { get; protected set; }
         public bool Success { get; protected set; }
-        public T Response { get; protected set; }
+        public T Data { get; protected set; }
         public string ErrorMessage { get; protected set; }
         public Dictionary<string, string> ErrorFields { get; protected set; }
 
-        public ResponseDTO(T response, int httpStatusCode = StatusCodes.Status200OK)
+        public ResponseDTO(T data, int httpStatusCode = StatusCodes.Status200OK)
         {
-            Response = response;
+            Data = data;
             Success = true;
             HttpStatusCode = httpStatusCode;
         }
@@ -30,6 +30,7 @@ namespace MatrixBugtracker.BL.DTOs.Infra
             };
         }
 
+        // Used to convert error response from one generic type to another.
         public static ResponseDTO<T> Error<T1>(ResponseDTO<T1> response)
         {
             return Error(response.HttpStatusCode, response.ErrorMessage);

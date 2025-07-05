@@ -91,8 +91,28 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<UploadedFile>(file);
         }
 
+        public async Task<ResponseDTO<PageDTO<FileDTO>>> GetCurrentUserFilesAsync(PaginationRequestDTO request)
+        {
+            int currentUserId = _userIdProvider.UserId;
+            var result = await _repo.GetUserFilesAsync(currentUserId, request.PageNumber, request.PageSize);
+
+            List<FileDTO> fileDTOs = _mapper.Map<List<FileDTO>>(result.Items);
+            var data = new PageDTO<FileDTO>(fileDTOs, result.TotalCount);
+            return new ResponseDTO<PageDTO<FileDTO>>(data);
+        }
+
+        public async Task<ResponseDTO<PageDTO<FileAdminDTO>>> GetAllFilesAsync(PaginationRequestDTO request)
+        {
+            int currentUserId = _userIdProvider.UserId;
+            var result = await _repo.GetPageAsync(request.PageNumber, request.PageSize);
+
+            List<FileAdminDTO> fileDTOs = _mapper.Map<List<FileAdminDTO>>(result.Items);
+            var data = new PageDTO<FileAdminDTO>(fileDTOs, result.TotalCount);
+            return new ResponseDTO<PageDTO<FileAdminDTO>>(data);
+        }
+
         // Check is files with those fileIds available and accessible
-        // Returns UploadedFile entities
+        // For internal use in other services only. Returns UploadedFile entities
         public async Task<ResponseDTO<List<UploadedFile>>> CheckFilesAccessAsync(int[] fileIds)
         {
             List<UploadedFile> files = await _repo.GetIntersectingAsync(fileIds);
@@ -126,24 +146,6 @@ namespace MatrixBugtracker.BL.Services.Implementations
             byte[] content = await File.ReadAllBytesAsync(filePath);
 
             return (content, contentType);
-        }
-
-        public async Task<PaginationResponseDTO<FileDTO>> GetCurrentUserFilesAsync(PaginationRequestDTO request)
-        {
-            int currentUserId = _userIdProvider.UserId;
-            var result = await _repo.GetUserFilesAsync(currentUserId, request.PageNumber, request.PageSize);
-
-            List<FileDTO> fileDTOs = _mapper.Map<List<FileDTO>>(result.Items);
-            return new PaginationResponseDTO<FileDTO>(fileDTOs, result.TotalCount);
-        }
-
-        public async Task<PaginationResponseDTO<FileAdminDTO>> GetAllFilesAsync(PaginationRequestDTO request)
-        {
-            int currentUserId = _userIdProvider.UserId;
-            var result = await _repo.GetPageAsync(request.PageNumber, request.PageSize);
-
-            List<FileAdminDTO> fileDTOs = _mapper.Map<List<FileAdminDTO>>(result.Items);
-            return new PaginationResponseDTO<FileAdminDTO>(fileDTOs, result.TotalCount);
         }
     }
 }
