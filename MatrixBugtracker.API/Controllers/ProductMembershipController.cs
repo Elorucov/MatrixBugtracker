@@ -67,7 +67,7 @@ namespace MatrixBugtracker.API.Controllers
         /// Gets a list of products that have an invite to
         /// </summary>
         /// <returns>List of products</returns>
-        [HttpGet("get-invited")]
+        [HttpGet("invited")]
         [AuthorizeApi()]
         public async Task<IActionResult> GetInvitedProductsAsync([FromQuery] PaginationRequestDTO request)
         {
@@ -78,7 +78,7 @@ namespace MatrixBugtracker.API.Controllers
         /// Gets a list of users that sent a join request to product
         /// </summary>
         /// <returns>List of users</returns>
-        [HttpGet("get-join-requests")]
+        [HttpGet("join-requests")]
         [AuthorizeApi([UserRole.Admin, UserRole.Employee])]
         public async Task<IActionResult> GetJoinRequestsAsync([FromQuery] GetMembersRequestDTO request)
         {
