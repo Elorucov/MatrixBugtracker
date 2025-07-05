@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MatrixBugtracker.Abstractions;
+using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.Profiles;
+using MatrixBugtracker.BL.Resources;
 using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.BL.Services.Implementations;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
@@ -198,6 +200,40 @@ namespace MatrixBugtracker.Tests
             // Assert
             Assert.True(response.Success);
             Assert.Equal(reportId, response.Data.Id);
+        }
+
+        // Testing creating a report for a product in which the user is not a member
+        [Fact]
+        public async Task CreateAsync_ToProductIsNotMember_Forbidden()
+        {
+            // Arrange
+            int currentUserId = 7;
+            int productId = 3;
+            var product = Seed.Products.SingleOrDefault(p => p.Id == productId);
+
+            _userIdProviderMock.Setup(uip => uip.UserId).Returns(currentUserId);
+
+            _userServiceMock.Setup(us => us.GetSingleUserAsync(currentUserId))
+                .ReturnsAsync(Seed.Users.SingleOrDefault(u => u.Id == currentUserId));
+
+            _productsRepoMock.Setup(pr => pr.GetByIdAsync(productId))
+                .ReturnsAsync(product);
+
+            ReportCreateDTO request = new ReportCreateDTO
+            {
+                ProductId = productId,
+                Title = "Sample report",
+                Severity = ReportSeverity.Low,
+                ProblemType = ReportProblemType.FunctionNotWorking
+            };
+
+            // Act
+            var response = await _service.CreateAsync(request);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal(StatusCodes.Status403Forbidden, response.HttpStatusCode);
+            Assert.Equal(Errors.ForbiddenProduct, response.ErrorMessage);
         }
     }
 }
