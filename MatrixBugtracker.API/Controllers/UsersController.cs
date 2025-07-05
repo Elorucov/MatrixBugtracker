@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
+    /// <summary>
+    /// Methods for working with tags
+    /// </summary>
     [Route("api/v1/users")]
     public class UsersController : BaseController
     {
@@ -16,6 +19,10 @@ namespace MatrixBugtracker.API.Controllers
             _service = service;
         }
 
+        /// <summary>
+        /// Returns an info about the user
+        /// </summary>
+        /// <returns>User with extended info</returns>
         [HttpGet("{userId}")]
         [AuthorizeApi]
         public async Task<IActionResult> GetByIdAsync(int userId)
@@ -23,6 +30,10 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.GetByIdAsync(userId));
         }
 
+        /// <summary>
+        /// Returns users by role
+        /// </summary>
+        /// <returns>List of users</returns>
         [HttpGet("get-by-role")]
         [AuthorizeApi([UserRole.Admin])]
         public async Task<IActionResult> GetByRoleAsync([FromQuery] GetUsersByRoleRequestDTO request)
@@ -30,6 +41,10 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.GetUsersByRoleAsync(request));
         }
 
+        /// <summary>
+        /// Find users by first and last names
+        /// </summary>
+        /// <returns>List of users</returns>
         [HttpGet("search")]
         [AuthorizeApi]
         public async Task<IActionResult> SearchAsync([FromQuery] PaginatedSearchRequestDTO request)
@@ -37,6 +52,10 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.SearchUsersAsync(request));
         }
 
+        /// <summary>
+        /// Edits authenticated user's info
+        /// </summary>
+        /// <returns>'true' if success</returns>
         [HttpPut]
         [AuthorizeApi]
         public async Task<IActionResult> EditAsync(UserEditDTO request)
@@ -44,6 +63,10 @@ namespace MatrixBugtracker.API.Controllers
             return APIResponse(await _service.EditAsync(request));
         }
 
+        /// <summary>
+        /// Change authenticated user's photo
+        /// </summary>
+        /// <returns>'true' if success</returns>
         [HttpPatch("change-photo")]
         [AuthorizeApi]
         public async Task<IActionResult> ChangePhotoAsync([FromForm] int photoFileId)

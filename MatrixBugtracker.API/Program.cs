@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -50,7 +51,11 @@ namespace MatrixBugtracker.API
             builder.Services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Matrix Bugtracker", Version = "v1" });
-                opt.DescribeAllParametersInCamelCase();
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                opt.IncludeXmlComments(xmlPath, true);
+
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,

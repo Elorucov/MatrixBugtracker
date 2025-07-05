@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MatrixBugtracker.API.Controllers
 {
+    /// <summary>
+    /// Methods for admins
+    /// </summary>
     [Route("api/v1/admin")]
     [AuthorizeApi([UserRole.Admin])]
     public class AdminController : BaseController
@@ -17,16 +20,15 @@ namespace MatrixBugtracker.API.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Change user's role
+        /// </summary>
+        /// <returns>'true' if success</returns>
+
         [HttpPost("set-role")]
         public async Task<IActionResult> SetRoleAsync(SetRoleRequestDTO request)
         {
             return APIResponse(await _userService.SetUserRoleAsync(request));
-        }
-
-        [HttpGet("test-error")]
-        public IActionResult TestError()
-        {
-            throw new ApplicationException("Test error.");
         }
     }
 }

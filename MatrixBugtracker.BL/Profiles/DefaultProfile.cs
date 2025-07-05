@@ -97,6 +97,7 @@ namespace MatrixBugtracker.BL.Profiles
             var uri = _contextAccessor.HttpContext.Request;
             string link = $"{uri.Scheme}://{uri.Host}/api/v1/files/{file.Path}";
             dto.Url = link;
+            dto.Name = file.OriginalName;
         }
 
         private void ToUserDTO(User user, UserDTO dto)

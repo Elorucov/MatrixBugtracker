@@ -85,7 +85,7 @@ namespace MatrixBugtracker.DAL.Repositories.Implementations
 
         public async Task<PaginationResult<User>> GetUsersForProductByStatusAsync(ProductMemberStatus status, int productId, int number, int size)
         {
-            return await _db.ProductMembers.Include(pm => pm.Member)
+            return await _db.ProductMembers.Include(pm => pm.Member).ThenInclude(u => u.PhotoFile)
                 .Where(e => e.Status == status && e.ProductId == productId)
                 .Select(e => e.Member)
                 .GetPageAsync(number, size);
