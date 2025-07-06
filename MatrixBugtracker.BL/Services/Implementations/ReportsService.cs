@@ -33,7 +33,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
         public ReportsService(IUnitOfWork unitOfWork, IFileService fileService,
             IProductsService productService, ITagsService tagsService,
-            IUserService userService, IUserIdProvider userIdProvider, 
+            IUserService userService, IUserIdProvider userIdProvider,
             IHttpContextAccessor httpContextAccessor, IMapper mapper, ILogger<ReportsService> logger)
         {
             _unitOfWork = unitOfWork;
@@ -398,7 +398,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
             else
             {
-                result = await _repo.GetFilteredAsync(request.PageNumber, request.PageSize, 
+                result = await _repo.GetFilteredAsync(request.PageNumber, request.PageSize,
                     request.ProductId, request.CreatorId, filter);
             }
 

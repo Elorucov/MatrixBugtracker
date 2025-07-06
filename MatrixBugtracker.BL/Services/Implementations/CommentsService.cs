@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Comments;
 using MatrixBugtracker.BL.DTOs.Infra;

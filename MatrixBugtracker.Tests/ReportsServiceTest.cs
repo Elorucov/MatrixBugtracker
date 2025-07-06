@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Castle.Core.Logging;
 using MatrixBugtracker.Abstractions;
 using MatrixBugtracker.BL.DTOs.Reports;
 using MatrixBugtracker.BL.Profiles;
@@ -8,13 +7,11 @@ using MatrixBugtracker.BL.Services.Abstractions;
 using MatrixBugtracker.BL.Services.Implementations;
 using MatrixBugtracker.DAL.Repositories.Abstractions;
 using MatrixBugtracker.DAL.Repositories.Abstractions.Base;
-using MatrixBugtracker.DAL.Repositories.Implementations.Base;
 using MatrixBugtracker.Domain.Entities;
 using MatrixBugtracker.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
 
 namespace MatrixBugtracker.Tests
 {
@@ -32,6 +29,7 @@ namespace MatrixBugtracker.Tests
         private readonly Mock<INotificationService> _notificationServiceMock;
         private readonly Mock<IUserIdProvider> _userIdProviderMock;
         private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
+        private readonly Mock<ILogger<ReportsService>> _loggerMock;
         private readonly IMapper _mapper;
         private readonly IProductsService _productService;
         private readonly ITagsService _tagsService;
@@ -51,7 +49,7 @@ namespace MatrixBugtracker.Tests
             _notificationServiceMock = new Mock<INotificationService>();
             _userIdProviderMock = new Mock<IUserIdProvider>();
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
-            var _loggerMock = new Mock<ILogger<ReportsService>>();
+            _loggerMock = new Mock<ILogger<ReportsService>>();
 
             _unitOfWorkMock.Setup(uow => uow.GetRepository<IProductRepository>())
                 .Returns(_productsRepoMock.Object);
