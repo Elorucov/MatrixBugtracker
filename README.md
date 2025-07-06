@@ -21,29 +21,29 @@ dotnet tool install --global dotnet-ef --version 8.0.17
 
 ## Getting started
 
-1. __Clone this repository__
+### 1. Clone this repository
 
 ```
 git clone https://github.com/Elorucov/MatrixBugtracker.git
 cd MatrixBugtracker
 ```
 
-2. __Configure the project__
+### Configure the project
 
 Don't forget change these values in `appsettings.json`: 
 
-  *  `ConnectionStrings > DefaultConnection` (connection string to point to your database)
-  *  `Serilog > WriteTo[1] > Args > path` (path to the folder where the logs will be stored)
-  *  `PathForUploadedFiles` (path to the folder where the uploaded files will be stored)
-  *  `EmailConfig` (сonfiguration of the email address on behalf of which notifications will be sent)
+* `ConnectionStrings > DefaultConnection` (connection string to point to your database)
+* `Serilog > WriteTo[1] > Args > path` (path to the folder where the logs will be stored)
+* `PathForUploadedFiles` (path to the folder where the uploaded files will be stored)
+* `EmailConfig` (сonfiguration of the email address on behalf of which notifications will be sent)
 
-3. __Run migrations__
+### Run migrations
 
 ```
 dotnet ef database update --project MatrixBugtracker.API
 ```
 
-4. __Run the project__
+### Run the project
 
 ```
 dotnet run --project MatrixBugtracker.API
@@ -51,7 +51,7 @@ dotnet run --project MatrixBugtracker.API
 
 The API should now be running locally at `http://localhost:5196`.
 
-__Note:__ For detailed API documentation, refer to the Swagger documentation available at `http://localhost:5196/swagger` when the application is running.
+> __Note:__ For detailed API documentation, refer to the Swagger documentation available at `http://localhost:5196/swagger` when the application is running.
 
 ## Technologies and principles used
 
@@ -64,7 +64,5 @@ __Note:__ For detailed API documentation, refer to the Swagger documentation ava
 * Design following SOLID Principles
 * Repository and Unit-of-Work pattern
 
-<details>
-  <summary>Please note!</summary>
-  This project is proof-of-concept and designed for demonstration purposes. It cannot be used in production.
-</details>
+> [!WARNING]
+> This project is proof-of-concept and designed for demonstration purposes. It cannot be used in production.
