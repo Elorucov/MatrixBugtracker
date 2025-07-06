@@ -8,7 +8,7 @@ The company's __employees__ create and manage __products__ in the platform. __Us
 
 It is possible to leave __comments__ on reports and attach __files__ to reports and comments. Testers can mark other reports as "reproduced".
 
-There is a notification system. Sending notifications by e-mail to users has been implemented.
+There is a notifications system. Sending notifications by e-mail to users has been implemented.
 
 ## Prerequisites
 
