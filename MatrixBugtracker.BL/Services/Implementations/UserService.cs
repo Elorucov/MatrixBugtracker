@@ -369,7 +369,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             return new ResponseDTO<bool>(true);
         }
 
-        public async Task<ResponseDTO<bool>> ChangePhotoAsync(int photoFileId)
+        public async Task<ResponseDTO<bool>> ChangeAvatarAsync(int photoFileId)
         {
             int userId = _userIdProvider.UserId;
 
@@ -381,6 +381,18 @@ namespace MatrixBugtracker.BL.Services.Implementations
 
             User user = await GetSingleUserAsync(userId);
             user.PhotoFile = file;
+
+            _userRepo.Update(user);
+            await _unitOfWork.CommitAsync();
+
+            return new ResponseDTO<bool>(true);
+        }
+
+        public async Task<ResponseDTO<bool>> DeleteAvatarAsync()
+        {
+            int userId = _userIdProvider.UserId;
+            User user = await GetSingleUserAsync(userId);
+            user.PhotoFile = null;
 
             _userRepo.Update(user);
             await _unitOfWork.CommitAsync();

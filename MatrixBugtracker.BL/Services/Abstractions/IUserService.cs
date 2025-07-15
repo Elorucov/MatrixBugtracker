@@ -20,6 +20,7 @@ namespace MatrixBugtracker.BL.Services.Abstractions
         Task<ResponseDTO<PageDTO<UserDTO>>> SearchUsersAsync(PaginatedSearchRequestDTO request);
         Task<ResponseDTO<bool>> SetUserRoleAsync(SetRoleRequestDTO request);
         Task<ResponseDTO<bool>> EditAsync(UserEditDTO request);
-        Task<ResponseDTO<bool>> ChangePhotoAsync(int photoFileId);
+        Task<ResponseDTO<bool>> ChangeAvatarAsync(int photoFileId);
+        Task<ResponseDTO<bool>> DeleteAvatarAsync();
     }
 }

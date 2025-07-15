@@ -64,14 +64,25 @@ namespace MatrixBugtracker.API.Controllers
         }
 
         /// <summary>
-        /// Change authenticated user's photo
+        /// Change authenticated user's profile photo (avatar)
         /// </summary>
         /// <returns>'true' if success</returns>
-        [HttpPatch("change-photo")]
+        [HttpPatch("avatar")]
         [AuthorizeApi]
-        public async Task<IActionResult> ChangePhotoAsync([FromForm] int photoFileId)
+        public async Task<IActionResult> ChangeAvatarAsync([FromForm] int photoFileId)
         {
             return APIResponse(await _service.ChangePhotoAsync(photoFileId));
+        }
+
+        /// <summary>
+        /// Delete authenticated user's profile photo (avatar)
+        /// </summary>
+        /// <returns>'true' if success</returns>
+        [HttpDelete("avatar")]
+        [AuthorizeApi]
+        public async Task<IActionResult> DeleteAvatarAsync()
+        {
+            return APIResponse(await _service.DeletePhotoAsync());
         }
     }
 }
