@@ -1,8 +1,11 @@
-﻿namespace MatrixBugtracker.BL.DTOs.Auth
+﻿using MatrixBugtracker.Domain.Enums;
+
+namespace MatrixBugtracker.BL.DTOs.Auth
 {
     public class TokenDTO
     {
         public int UserId { get; set; }
+        public UserRole Role { get; set; }
         public string AccessToken { get; init; }
         public DateTime AccessTokenExpiresAt { get; init; }
         public string RefreshToken { get; set; }

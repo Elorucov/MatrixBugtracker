@@ -117,20 +117,21 @@ namespace MatrixBugtracker.BL.Services.Implementations
             }
 
             // Create refresh token
-            string rToken = _tokenService.GenerateRefreshToken();
-            var rTokenExpiresAt = DateTime.Now.AddDays(Convert.ToInt32(_config["Jwt:RefreshTokenExpirationDays"]));
+            string refreshToken = _tokenService.GenerateRefreshToken();
+            var refreshTokenExpiresAt = DateTime.Now.AddDays(Convert.ToInt32(_config["Jwt:RefreshTokenExpirationDays"]));
 
             RefreshToken rte = new RefreshToken
             {
                 User = user,
-                Token = rToken,
-                ExpirationTime = rTokenExpiresAt
+                Token = refreshToken,
+                ExpirationTime = refreshTokenExpiresAt
             };
 
             await _refreshTokenRepo.AddAsync(rte);
             await _unitOfWork.CommitAsync();
 
             var tokenDTO = _tokenService.GetToken(user.Id);
+            tokenDTO.Role = user.Role;
             tokenDTO.RefreshToken = rte.Token;
             tokenDTO.RefreshTokenExpiresAt = rte.ExpirationTime;
 
@@ -161,6 +162,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             _refreshTokenRepo.Update(rte);
             await _unitOfWork.CommitAsync();
 
+            tokenDTO.Role = rte.User.Role;
             tokenDTO.RefreshToken = rte.Token;
             tokenDTO.RefreshTokenExpiresAt = rte.ExpirationTime;
 

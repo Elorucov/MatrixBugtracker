@@ -71,7 +71,7 @@ namespace MatrixBugtracker.API.Controllers
         [AuthorizeApi]
         public async Task<IActionResult> ChangeAvatarAsync([FromForm] int photoFileId)
         {
-            return APIResponse(await _service.ChangePhotoAsync(photoFileId));
+            return APIResponse(await _service.ChangeAvatarAsync(photoFileId));
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace MatrixBugtracker.API.Controllers
         [AuthorizeApi]
         public async Task<IActionResult> DeleteAvatarAsync()
         {
-            return APIResponse(await _service.DeletePhotoAsync());
+            return APIResponse(await _service.DeleteAvatarAsync());
         }
     }
 }
