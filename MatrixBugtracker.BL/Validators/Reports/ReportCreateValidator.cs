@@ -29,7 +29,7 @@ namespace MatrixBugtracker.BL.Validators.Reports
             RuleFor(p => p.Severity).NotEmpty();
             RuleFor(p => p.ProblemType).NotEmpty();
 
-            RuleFor(p => p.FileIds).Must(x => x.Length <= 5);
+            // RuleFor(p => p.FileIds).Must(x => x.Length <= 5);
         }
     }
 }

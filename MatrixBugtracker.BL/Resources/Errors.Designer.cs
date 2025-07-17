@@ -448,6 +448,15 @@ namespace MatrixBugtracker.BL.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Too many files.
+        /// </summary>
+        public static string TooManyFiles {
+            get {
+                return ResourceManager.GetString("TooManyFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value is too long.
         /// </summary>
         public static string TooShort {

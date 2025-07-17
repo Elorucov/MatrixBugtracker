@@ -246,6 +246,9 @@
   <data name="TooLong" xml:space="preserve">
     <value>Value is too short</value>
   </data>
+  <data name="TooManyFiles" xml:space="preserve">
+    <value>Too many files</value>
+  </data>
   <data name="TooShort" xml:space="preserve">
     <value>Value is too long</value>
   </data>

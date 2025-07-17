@@ -14,7 +14,7 @@ namespace MatrixBugtracker.BL.Validators.Comments
                 .MinimumLength(1).WithMessage(Errors.TooShort)
                 .MaximumLength(2048).WithMessage(Errors.TooLong);
 
-            RuleFor(p => p.FileIds).Must(x => x.Length <= 5);
+            // RuleFor(p => p.FileIds).Must(x => x.Length <= 5);
         }
     }
 }

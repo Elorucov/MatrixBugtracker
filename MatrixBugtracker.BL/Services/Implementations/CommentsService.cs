@@ -58,6 +58,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
             {
+                if (request.FileIds.Count() > 5) return ResponseDTO<int?>.BadRequest(Errors.TooManyFiles);
+
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<int?>.Error(filesCheck);
                 files = filesCheck.Data;
@@ -138,6 +140,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
             {
+                if (request.FileIds.Count() > 5) return ResponseDTO<bool>.BadRequest(Errors.TooManyFiles);
+
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<bool>.Error(filesCheck);
                 files = filesCheck.Data;

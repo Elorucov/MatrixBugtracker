@@ -350,7 +350,16 @@ namespace MatrixBugtracker.BL.Services.Implementations
             var result = await _repo.GetProductsForUserByStatusAsync(status, userId, request.PageNumber, request.PageSize);
             var products = result.Items;
 
-            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
+            List<ProductDTO> productDTOs = new List<ProductDTO>();
+
+            // Automapper doesn't set MembershipStatus value for this case!
+            foreach (var product in products)
+            {
+                ProductDTO dto = _mapper.Map<ProductDTO>(product);
+                dto.MembershipStatus = status;
+                productDTOs.Add(dto);
+            };
+
             var data = new PageDTO<ProductDTO>(productDTOs, result.TotalCount);
             return new ResponseDTO<PageDTO<ProductDTO>>(data);
         }

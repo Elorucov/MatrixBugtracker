@@ -97,6 +97,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
             {
+                if (request.FileIds.Count() > 5) return ResponseDTO<int?>.BadRequest(Errors.TooManyFiles);
+
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<int?>.Error(filesCheck);
                 files = filesCheck.Data;
@@ -140,6 +142,8 @@ namespace MatrixBugtracker.BL.Services.Implementations
             List<UploadedFile> files = null;
             if (request.FileIds?.Length > 0)
             {
+                if (request.FileIds.Count() > 5) return ResponseDTO<bool>.BadRequest(Errors.TooManyFiles);
+
                 var filesCheck = await _fileService.CheckFilesAccessAsync(request.FileIds);
                 if (!filesCheck.Success) return ResponseDTO<bool>.Error(filesCheck);
                 files = filesCheck.Data;
@@ -332,7 +336,7 @@ namespace MatrixBugtracker.BL.Services.Implementations
             // Return "bad request" if current user that is not moder (or higher)
             // trying to access other user's vulnerability reports
             if (request.CreatorId != currentUser.Id && currentUser.Role == UserRole.Tester
-                && request.Severities.Any(s => s == ReportSeverity.Vulnerability))
+                && request.Severities?.Any(s => s == ReportSeverity.Vulnerability) == true)
                 return ResponseDTO<PageWithMentionsDTO<ReportDTO>>.BadRequest();
 
             // Get found tags entities
