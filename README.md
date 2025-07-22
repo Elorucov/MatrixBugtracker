@@ -12,7 +12,7 @@ There is a notifications system. Sending notifications by e-mail to users has be
 
 ## Prerequisites
 
-* [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+* [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 * An Entity Framework Core compatible database (SQL Server, MySQL, etc.). Please note that this project uses SQL Server by default.
 * `dotnet-ef` tool:
 ```
