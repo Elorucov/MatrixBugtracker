@@ -1,3 +1,6 @@
+> [!WARNING]
+> This project is prototype and designed for demonstration purposes. It cannot be used in production.
+ 
 # MatrixBugtracker
 
 A simple bug-tracker project created for demonstration in [Matrix Academy](https://matrixacademy.edu.az). Inspired by [VK's bug-tracker](https://vk.com/testing). 
@@ -63,6 +66,3 @@ The API should now be running locally at `http://localhost:5196`.
 * N-Layer architecture
 * Design following SOLID Principles
 * Repository and Unit-of-Work pattern
-
-> [!WARNING]
-> This project is proof-of-concept and designed for demonstration purposes. It cannot be used in production.
